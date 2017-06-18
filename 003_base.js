@@ -19,7 +19,7 @@ base.screen = {
   data: [],
   interval: new common.Interval(),
   loop: function(){
-    this.display();
+    this.draw();
   },
   init: function(char){
     this.data = [];
@@ -31,7 +31,7 @@ base.screen = {
     }
     this.interval.init(setting.env.fts, _=>this.loop());
   },
-  display: function() {
+  draw: function() {
     var $dom = $("#"+setting.env.domId);
     var text = "";
     for(var i = 0; i <setting.game.frame.row; i++){

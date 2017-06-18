@@ -61,22 +61,30 @@ common.Interval.prototype.init = function (speed,func) {
   this.start();
 };
 
-common.TextObject = function(textObj,speed){
+common.TextObject = function(parent,textObj,func){
+  this.parent = parent;
   if(textObj.constructor != Object) return console.error(textObj+" is invalid");
   if(textObj.text.constructor != String) return console.error(textObj.text+" is invalid");
   this.text=textObj.text;
   this.width=textObj.text.length;
-  this.speed=common.isNumber(speed)?speed:null;
+  this.speed=common.isNumber(textObj.speed)?textObj.speed:null;
+  this.speedCount=0;
   this.xN=this.x=common.isNumber(textObj.x)?textObj.x:0-this.width;
   this.yN=this.y=common.isNumber(textObj.y)?textObj.y:0;
   this.xD=common.isNumber(textObj.xD)?textObj.xD:0-this.width;
   this.yD=common.isNumber(textObj.yD)?textObj.yD:0;
-  this.interval = new common.Interval();
+  this.calculate = func;
   this.init();
 };
+common.TextObject.prototype.init = function(){
+  this.parent.push(this);
+};
+common.TextObject.prototype.destroy = function(){
+  var i = this.parent.indexOf(this);
+  this.parent.splice(i,1);
+}
 common.TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
-  this.interval.setSpeed(speed);
 };
 common.TextObject.prototype.draw = function(){
   base.screen.deleteText(this.x,this.y,this.text);
@@ -84,13 +92,14 @@ common.TextObject.prototype.draw = function(){
   this.y = this.yN;
   base.screen.insertText(this.x,this.y,this.text);
 };
-common.TextObject.prototype.calculate = function(){
-
-};
 common.TextObject.prototype.loop = function(){
+  if(this.speed){
+    if(this.speedCount >= this.speed){
+      this.calculate();
+      this.speedCount = 0;
+    } else {
+      this.speedCount++;
+    }
+  }
   this.draw();
-  this.calculate();
-};
-common.TextObject.prototype.init = function(){
-  if(this.speed) this.interval.init(this.speed, _=>this.loop());
 };
