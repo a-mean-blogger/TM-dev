@@ -91,6 +91,10 @@ base.inputs = {
       document.addEventListener("keydown", this.eventHandlers.keydown);
       document.addEventListener("keyup", this.eventHandlers.keyup);
     },
+    check: function(keyCode){
+      if(this.keystate[keyCode]) return true;
+      else return false;
+    },
   },
   init: function(){
     this.keyboard.init();

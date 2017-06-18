@@ -13,11 +13,11 @@ game.test.calculate = function(){
       this.xD *= -1;
     } else {
       this.xN += this.xD;
+      if(base.inputs.keyboard.check(KEY_LEFT)) this.xN = this.x-1
+      if(base.inputs.keyboard.check(KEY_RIGHT)) this.xN = this.x+1
     }
   } else {
     this.interval.stop();
     delete game.test;
   }
 };
-
-game.test.init();

@@ -33,8 +33,8 @@ common.getBlockHeight = function(fontSize){
   return blockHeight;
 };
 common.isNumber = function(num){
-  if(num.constructor != Number) return false;
-  else return true;
+  if(num === 0|| (num && num.constructor == Number)) return true;
+  else return false;
 };
 
 common.Interval = function(){
@@ -64,15 +64,15 @@ common.Interval.prototype.init = function (speed,func) {
 common.TextObject = function(textObj,speed){
   if(textObj.constructor != Object) return console.error(textObj+" is invalid");
   if(textObj.text.constructor != String) return console.error(textObj.text+" is invalid");
-  if(speed.constructor != Number) return console.error(speed+" is invalid");
   this.text=textObj.text;
   this.width=textObj.text.length;
-  this.speed=speed;
+  this.speed=common.isNumber(speed)?speed:null;
   this.xN=this.x=common.isNumber(textObj.x)?textObj.x:0-this.width;
   this.yN=this.y=common.isNumber(textObj.y)?textObj.y:0;
   this.xD=common.isNumber(textObj.xD)?textObj.xD:0-this.width;
   this.yD=common.isNumber(textObj.yD)?textObj.yD:0;
   this.interval = new common.Interval();
+  this.init();
 };
 common.TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
@@ -92,5 +92,5 @@ common.TextObject.prototype.loop = function(){
   this.calculate();
 };
 common.TextObject.prototype.init = function(){
-  this.interval.init(this.speed, _=>this.loop());
+  if(this.speed) this.interval.init(this.speed, _=>this.loop());
 };
