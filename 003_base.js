@@ -67,5 +67,36 @@ base.screen = {
   },
 };
 
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_RIGHT = 39;
+const KEY_LEFT = 37;
+const KEY_SPACE = 32;
+base.inputs = {
+  isAllowed: true,
+  keyboard:{
+    isAllowed: true,
+    keystate:{},
+    eventHandlers:{
+      keydown: function(e){
+        if(base.inputs.isAllowed && base.inputs.keyboard.isAllowed){
+          base.inputs.keyboard.keystate[e.keyCode] = true;
+        }
+      },
+      keyup: function(e){
+        delete base.inputs.keyboard.keystate[e.keyCode];
+      },
+    },
+    init: function(){
+      document.addEventListener("keydown", this.eventHandlers.keydown);
+      document.addEventListener("keyup", this.eventHandlers.keyup);
+    },
+  },
+  init: function(){
+    this.keyboard.init();
+  }
+};
+
 base.frame.init();
 base.screen.init(" ");
+base.inputs.init();
