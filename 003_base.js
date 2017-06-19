@@ -4,6 +4,7 @@ var base = {};
 
 
 base.frame = {
+  canvas: undefined,
   ctx: undefined,
   width: common.getBlockWidth(setting.env.fontSize) * setting.game.frame.column,
   height: common.getBlockHeight(setting.env.fontSize) * setting.game.frame.row,
@@ -14,6 +15,7 @@ base.frame = {
     canvas.height = this.height;
     canvas.style.border = this.backgroundColor+" 1px solid";
     canvas.style.borderRadius = "5px";
+    this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
   },
 };
@@ -31,7 +33,7 @@ base.screen = {
   },
   init: function(){
     this.clear();
-    this.interval.init(setting.env.fts, _=>this.loop());
+    this.interval.init(setting.env.fps, _=>this.loop());
   },
   fill: function(char){
     if(typeof char != "string") char = " ";
@@ -129,12 +131,14 @@ base.inputs = {
     keystate:{},
     eventHandlers:{
       keydown: function(e){
+        e.preventDefault();
         if(base.inputs.isAllowed && base.inputs.keyboard.isAllowed){
           base.inputs.keyboard.keystate[e.keyCode] = true;
           // console.log("e.keyCode: ", e.keyCode);
         }
       },
       keyup: function(e){
+        e.preventDefault();
         delete base.inputs.keyboard.keystate[e.keyCode];
       },
     },
@@ -143,10 +147,12 @@ base.inputs = {
       document.addEventListener("keyup", this.eventHandlers.keyup);
     },
     check: function(keyCode){
+      // console.log("keyCode: ", keyCode);
+      // console.log("this.keystate: ", this.keystate);
       if(this.keystate[keyCode]) return true;
       else return false;
     },
-    checkAny: function(keyCode){
+    checkAny: function(){
       if(Object.keys(this.keystate).length) return true;
       else return false;
     },

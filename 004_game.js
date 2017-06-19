@@ -31,7 +31,7 @@ game.intro= {
     // console.log("intro init");
     this.count = 0;
     base.screen.init();
-    this.interval.init(setting.env.fts, _=>this.loop());
+    this.interval.init(setting.env.fps, _=>this.loop());
   },
   calculate: function(){
     if(this.count>10 && base.inputs.keyboard.checkAny()){
@@ -69,7 +69,7 @@ game.intro= {
 game.tetris = {
   x:5,
   y:3,
-  speed: 100,
+  speed: 10,
   speedCount: 0,
   objects:[],
   interval: new common.Interval(),
@@ -84,8 +84,8 @@ game.tetris = {
     // console.log("tetris init");
     base.screen.init();
     this.status.drawFrame();
-    new Tetris(this.objects,{x:3,y:1,speed:100,keyset:setting.game.tetris1.keyset});
-    this.interval.init(setting.env.fts, _=>this.loop());
+    new Tetris(this.objects,{x:3,y:1,keyset:setting.game.tetris1.keyset});
+    this.interval.init(this.speed, _=>this.loop());
   },
   calculate: function(){
     if(base.inputs.keyboard.check(KEY_ESC)){
@@ -99,7 +99,7 @@ game.tetris = {
   },
   status: {
     x:28,
-    y:2,
+    y:3,
     drawFrame:function(){
       base.screen.insertText(this.x, this.y+0," LEVEL :");
       base.screen.insertText(this.x, this.y+1," GOAL  :");
