@@ -143,6 +143,10 @@ base.inputs = {
       if(this.keystate[keyCode]) return true;
       else return false;
     },
+    checkAny: function(keyCode){
+      if(Object.keys(this.keystate).length) return true;
+      else return false;
+    },
   },
   init: function(){
     this.keyboard.init();

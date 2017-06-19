@@ -78,18 +78,18 @@ common.Interval.prototype.init = function (speed,func) {
   this.start();
 };
 
-common.TextObject = function(parent,textObj,func){
+common.TextObject = function(parent,values,func){
   this.parent = parent;
-  if(textObj.constructor != Object) return console.error(textObj+" is invalid");
-  if(textObj.text.constructor != String) return console.error(textObj.text+" is invalid");
-  this.text=textObj.text;
-  this.width=textObj.text.length;
-  this.speed=common.isNumber(textObj.speed)?textObj.speed:null;
+  if(values.constructor != Object) return console.error(values+" is invalid");
+  if(values.text.constructor != String) return console.error(values.text+" is invalid");
+  this.text=values.text;
+  this.width=values.text.length;
+  this.speed=common.isNumber(values.speed)?values.speed:null;
   this.speedCount=0;
-  this.xN=this.x=common.isNumber(textObj.x)?textObj.x:0-this.width;
-  this.yN=this.y=common.isNumber(textObj.y)?textObj.y:0;
-  this.xD=common.isNumber(textObj.xD)?textObj.xD:0-this.width;
-  this.yD=common.isNumber(textObj.yD)?textObj.yD:0;
+  this.xN=this.x=common.isNumber(values.x)?values.x:0-this.width;
+  this.yN=this.y=common.isNumber(values.y)?values.y:0;
+  this.xD=common.isNumber(values.xD)?values.xD:0-this.width;
+  this.yD=common.isNumber(values.yD)?values.yD:0;
   this.calculate = func;
   this.init();
 };

@@ -11,8 +11,8 @@ setting.env={
 
 setting.game={
   frame:{
-    column: 20, //120,
-    row: 10, //40,
+    column: 60, //120,
+    row: 25, //40,
     backgroundColor:"#000",
     defalutFont:"monospace",
     defalutFontColor:"#fff",
