@@ -30,10 +30,27 @@ common.getBlockHeight = function(fontSize){
     recursive(val);
     blockHeight = fontSize + adjustment;
   }
-  return blockHeight;
+  return blockHeight * 0.9;
 };
 common.isNumber = function(num){
   if(num === 0|| (num && num.constructor == Number)) return true;
+  else return false;
+};
+
+common.Block = function(char,color,backgroundColor){
+  this.char = char;
+  this.color = color?color:setting.game.frame.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:setting.game.frame.backgroundColor;
+  this.font = setting.game.frame.defalutFont;
+};
+common.isCharGroup1 = function(char){
+  var regex = new RegExp("^["+setting.game.charGroup1+"]$");
+  if(regex.test(char)) return true;
+  else return false;
+};
+common.isCharGroup2 = function(char){
+  var regex = new RegExp("^["+setting.game.charGroup2+"]$");
+  if(regex.test(char)) return true;
   else return false;
 };
 
@@ -82,7 +99,7 @@ common.TextObject.prototype.init = function(){
 common.TextObject.prototype.destroy = function(){
   var i = this.parent.indexOf(this);
   this.parent.splice(i,1);
-}
+};
 common.TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
 };

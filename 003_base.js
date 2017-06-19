@@ -4,61 +4,109 @@ var base = {};
 
 
 base.frame = {
+  ctx: undefined,
+  width: common.getBlockWidth(setting.env.fontSize) * setting.game.frame.column,
+  height: common.getBlockHeight(setting.env.fontSize) * setting.game.frame.row,
+  backgroundColor: setting.game.frame.backgroundColor,
   init:function(){
-    var $dom = $("#"+setting.env.domId);
-    $dom.css("width", common.getBlockWidth(setting.env.fontSize) * setting.game.frame.column + "px");
-    $dom.css("height", common.getBlockHeight(setting.env.fontSize) * setting.game.frame.row + "px");
-    $dom.css("lineHeight", common.getBlockHeight(setting.env.fontSize) + "px");
-    $dom.css("backgroundColor", setting.game.frame.backgroundColor);
-    $dom.css("color", setting.game.frame.fontColor);
-    $dom.css("borderRadius", "5px");
+    var canvas = document.querySelector("#"+setting.env.canvasId);
+    canvas.width = this.width;
+    canvas.height = this.height;
+    canvas.style.border = this.backgroundColor+" 1px solid";
+    canvas.style.borderRadius = "5px";
+    this.ctx = canvas.getContext("2d");
   },
 };
 
 base.screen = {
   data: [],
+  font: {
+    size: setting.env.fontSize,
+    width: common.getBlockWidth(setting.env.fontSize),
+    height: common.getBlockHeight(setting.env.fontSize),
+  },
   interval: new common.Interval(),
   loop: function(){
     this.draw();
   },
-  init: function(char){
+  init: function(){
+    this.clear();
+    this.interval.init(setting.env.fts, _=>this.loop());
+  },
+  fill: function(char){
+    if(typeof char != "string") char = " ";
     this.data = [];
     for(var i = 0; i <setting.game.frame.row; i++){
       this.data[i]=[];
       for(var j = 0; j<setting.game.frame.column; j++){
-        this.data[i][j]=char;
+        this.data[i][j]=new common.Block(char);
       }
     }
-    this.interval.init(setting.env.fts, _=>this.loop());
+  },
+  clear: function(){
+    this.fill(" ");
   },
   draw: function() {
-    var $dom = $("#"+setting.env.domId);
-    var text = "";
+    var ctx = base.frame.ctx;
+    ctx.fillStyle = base.frame.backgroundColor;
+    ctx.fillRect(0,0,base.frame.width,base.frame.height);
+    ctx.textBaseline = "buttom";
+
     for(var i = 0; i <setting.game.frame.row; i++){
-      var row = "";
       for(var j = 0; j<setting.game.frame.column; j++){
-        row += this.data[i][j];
+        var x = this.font.width*j;
+        var y = this.font.height*i;
+        ctx.fillStyle = this.data[i][j].backgroundColor;
+        ctx.fillRect(x,y,this.font.width+1,this.font.height+1);
       }
-      text += row +"\n";
     }
-    $dom.text(text);
+
+    for(var i = 0; i <setting.game.frame.row; i++){
+      for(var j = 0; j<setting.game.frame.column; j++){
+        var x = this.font.width*j;
+        var y = this.font.height*i+this.font.height*0.8; // y adjustment
+        if(common.isCharGroup1(this.data[i][j].char)){
+          ctx.font = this.font.size*2.25+"px "+this.data[i][j].font;
+          y = y +this.font.height*0.4;
+          // console.log(this.data[i][j].char, "symbol");
+        }
+        else if(common.isCharGroup2(this.data[i][j].char)){
+          ctx.font = this.font.size+"px "+this.data[i][j].font;
+          x = x+this.font.width*0.3;
+          y = y+this.font.height*0.05;
+          // console.log(this.data[i][j].char,"korean");
+        }
+        else if(/[[\]()]/.test(this.data[i][j].char)){
+          ctx.font = this.font.size+"px "+this.data[i][j].font;
+          y = y-this.font.height*0.1;
+          // console.log(this.data[i][j].char,"base");
+        } else {
+          ctx.font = this.font.size+"px "+this.data[i][j].font;
+        }
+        ctx.fillStyle = this.data[i][j].color;
+        ctx.fillText(this.data[i][j].char,x,y);
+      }
+    }
   },
-  insertChar : function(x,y,char){
+  insertChar : function(x,y,char,color,backgroundColor){
     if(char.constructor != String) return console.error(char+" is invalid");
+
     if(y<this.data.length && x<this.data[y].length){
-      this.data[y][x] = char[0];
+      this.data[y][x] = new common.Block(char[0],color,backgroundColor);
     }
   },
   deleteChar : function(x,y){
     if(char.constructor != String) return console.error(char+" is invalid");
     this.insertChar(x,y," ");
   },
-  insertText : function(x,y,text){
+  insertText : function(x,y,text,color,backgroundColor){
+    var regex = new RegExp("(["+setting.game.charGroup1+setting.game.charGroup2+"])","g");
+    text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
     if(y<0 || y>=this.data.length) return;
     for(var i = 0; i<text.length; i++){
       if(x+i>=0 && x+i <setting.game.frame.column)
-      this.insertChar(x+i,y,text[i]);
+      this.insertChar(x+i,y,text[i],color,backgroundColor);
     }
   },
   deleteText : function(x,y,text){
@@ -102,5 +150,5 @@ base.inputs = {
 };
 
 base.frame.init();
-base.screen.init(" ");
+base.screen.init();
 base.inputs.init();
