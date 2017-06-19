@@ -120,6 +120,8 @@ const KEY_DOWN = 40;
 const KEY_RIGHT = 39;
 const KEY_LEFT = 37;
 const KEY_SPACE = 32;
+const KEY_ESC = 27;
+const KEY_P = 80;
 base.inputs = {
   isAllowed: true,
   keyboard:{
@@ -129,6 +131,7 @@ base.inputs = {
       keydown: function(e){
         if(base.inputs.isAllowed && base.inputs.keyboard.isAllowed){
           base.inputs.keyboard.keystate[e.keyCode] = true;
+          // console.log("e.keyCode: ", e.keyCode);
         }
       },
       keyup: function(e){
