@@ -52,8 +52,8 @@ game.intro= {
     if(this.count ==  6) base.canvas.insertText(this.x,this.y+5, "           www.A-MEAN-Blog.com");
     if(this.count ==  7) base.canvas.insertText(this.x+10,this.y+2, "T E T R I S");
     if(this.count ==  7){
-      new Star(game.intro.objects,{x:this.x+8,y:this.y+1,speed:10});
-      new Star(game.intro.objects,{x:this.x+26,y:this.y+2,speed:35});
+      new Star(game.intro,{x:this.x+8,y:this.y+1,speed:10});
+      new Star(game.intro,{x:this.x+26,y:this.y+2,speed:35});
       base.canvas.insertText(this.x,this.y+7, "Please Enter Any Key to Start..");
       base.canvas.insertText(this.x,this.y+9, "  △   : Shift");
       base.canvas.insertText(this.x,this.y+10,"◁  ▷ : Left / Right");
@@ -84,7 +84,7 @@ game.tetris = {
     // console.log("tetris init");
     base.canvas.init();
     this.status.drawFrame();
-    new Tetris(this.objects,{x:3,y:1,keyset:setting.game.tetris1.keyset});
+    new Tetris(this,{x:3,y:1,keyset:setting.game.tetris1.keyset});
     this.interval.init(this.speed, _=>this.loop());
   },
   calculate: function(){
@@ -119,7 +119,19 @@ game.tetris = {
       base.canvas.insertText(this.x, this.y+16,"◁  ▷ : Left / Right   P   : Pause");
       base.canvas.insertText(this.x, this.y+17,"  ▽   : Soft Drop     ESC  : Quit");
       base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
-    }
+    },
+    drawNextBlock: function(blockType){
+      for(var i=1;i<3;i++){
+        for(var j=0;j<4;j++){
+          if(BLOCKS[blockType][0][i][j]==1) {
+            base.canvas.insertText(this.x+4+j*2,this.y+3+i,"■");
+          }
+          else {
+            base.canvas.insertText(this.x+4+j*2,this.y+3+i," ");
+          }
+        }
+      }
+    },
   }
 }
 
