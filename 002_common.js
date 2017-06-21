@@ -37,21 +37,18 @@ common.isNumber = function(num){
   else return false;
 };
 
-common.Block = function(char,color,backgroundColor){
+common.getCharGroup = function(char){
+  for (var group in setting.charSets){
+    var regex = new RegExp("^["+setting.charSets[group]+"]$");
+    if(regex.test(char)) return group;
+  }
+}
+
+common.Char = function(char,color,backgroundColor){
   this.char = char;
-  this.color = color?color:setting.game.frame.defalutFontColor;
-  this.backgroundColor = backgroundColor?backgroundColor:setting.game.frame.backgroundColor;
-  this.font = setting.game.frame.defalutFont;
-};
-common.isCharGroup1 = function(char){
-  var regex = new RegExp("^["+setting.game.charGroup1+"]$");
-  if(regex.test(char)) return true;
-  else return false;
-};
-common.isCharGroup2 = function(char){
-  var regex = new RegExp("^["+setting.game.charGroup2+"]$");
-  if(regex.test(char)) return true;
-  else return false;
+  this.color = color?color:setting.screen.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
+  this.font = setting.screen.defalutFont;
 };
 
 common.Interval = function(){
@@ -104,10 +101,10 @@ common.TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
 };
 common.TextObject.prototype.draw = function(){
-  base.screen.deleteText(this.x,this.y,this.text);
+  base.canvas.deleteText(this.x,this.y,this.text);
   this.x = this.xN;
   this.y = this.yN;
-  base.screen.insertText(this.x,this.y,this.text);
+  base.canvas.insertText(this.x,this.y,this.text);
 };
 common.TextObject.prototype.loop = function(){
   if(this.speed){

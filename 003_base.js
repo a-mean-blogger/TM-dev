@@ -2,60 +2,54 @@ console.log("base.js loaded");
 
 var base = {};
 
-
-base.frame = {
+base.canvas = {
   canvas: undefined,
   ctx: undefined,
-  width: common.getBlockWidth(setting.env.fontSize) * setting.game.frame.column,
-  height: common.getBlockHeight(setting.env.fontSize) * setting.game.frame.row,
-  backgroundColor: setting.game.frame.backgroundColor,
-  init:function(){
-    var canvas = document.querySelector("#"+setting.env.canvasId);
-    canvas.width = this.width;
-    canvas.height = this.height;
-    canvas.style.border = this.backgroundColor+" 1px solid";
-    canvas.style.borderRadius = "5px";
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
-  },
-};
-
-base.screen = {
-  data: [],
+  width: common.getBlockWidth(setting.env.fontSize) * setting.screen.column,
+  height: common.getBlockHeight(setting.env.fontSize) * setting.screen.row,
+  backgroundColor: setting.screen.backgroundColor,
   font: {
     size: setting.env.fontSize,
     width: common.getBlockWidth(setting.env.fontSize),
     height: common.getBlockHeight(setting.env.fontSize),
   },
+  data: [],
   interval: new common.Interval(),
   loop: function(){
     this.draw();
   },
   init: function(){
+    this.canvas = document.querySelector("#"+setting.env.canvasId);
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+    this.canvas.style.border = this.backgroundColor+" 1px solid";
+    this.canvas.style.borderRadius = "5px";
+    this.ctx = this.canvas.getContext("2d");
+
     this.clear();
     this.interval.init(setting.env.fps, _=>this.loop());
   },
-  fill: function(char){
+  fillChar: function(char){
     if(typeof char != "string") char = " ";
     this.data = [];
-    for(var i = 0; i <setting.game.frame.row; i++){
+    for(var i = 0; i <setting.screen.row; i++){
       this.data[i]=[];
-      for(var j = 0; j<setting.game.frame.column; j++){
-        this.data[i][j]=new common.Block(char);
+      for(var j = 0; j<setting.screen.column; j++){
+        this.data[i][j]=new common.Char(char);
       }
     }
   },
   clear: function(){
-    this.fill(" ");
+    this.fillChar(" ");
   },
   draw: function() {
-    var ctx = base.frame.ctx;
-    ctx.fillStyle = base.frame.backgroundColor;
-    ctx.fillRect(0,0,base.frame.width,base.frame.height);
+    var ctx = this.ctx;
+    ctx.fillStyle = this.backgroundColor;
+    ctx.fillRect(0,0,this.width,this.height);
     ctx.textBaseline = "buttom";
 
-    for(var i = 0; i <setting.game.frame.row; i++){
-      for(var j = 0; j<setting.game.frame.column; j++){
+    for(var i = 0; i <setting.screen.row; i++){
+      for(var j = 0; j<setting.screen.column; j++){
         var x = this.font.width*j;
         var y = this.font.height*i;
         ctx.fillStyle = this.data[i][j].backgroundColor;
@@ -63,27 +57,27 @@ base.screen = {
       }
     }
 
-    for(var i = 0; i <setting.game.frame.row; i++){
-      for(var j = 0; j<setting.game.frame.column; j++){
+    for(var i = 0; i <setting.screen.row; i++){
+      for(var j = 0; j<setting.screen.column; j++){
         var x = this.font.width*j;
         var y = this.font.height*i+this.font.height*0.8; // y adjustment
-        if(common.isCharGroup1(this.data[i][j].char)){
-          ctx.font = this.font.size*2.25+"px "+this.data[i][j].font;
-          y = y +this.font.height*0.4;
-          // console.log(this.data[i][j].char, "symbol");
-        }
-        else if(common.isCharGroup2(this.data[i][j].char)){
-          ctx.font = this.font.size+"px "+this.data[i][j].font;
-          x = x+this.font.width*0.3;
-          y = y+this.font.height*0.05;
-          // console.log(this.data[i][j].char,"korean");
-        }
-        else if(/[[\]()]/.test(this.data[i][j].char)){
-          ctx.font = this.font.size+"px "+this.data[i][j].font;
-          y = y-this.font.height*0.1;
-          // console.log(this.data[i][j].char,"base");
-        } else {
-          ctx.font = this.font.size+"px "+this.data[i][j].font;
+
+        switch(common.getCharGroup(this.data[i][j].char)){
+          case "group1":
+            ctx.font = this.font.size*2.25+"px "+this.data[i][j].font;
+            y = y +this.font.height*0.4;
+            break;
+          case "group2":
+            ctx.font = this.font.size+"px "+this.data[i][j].font;
+            x = x+this.font.width*0.3;
+            y = y+this.font.height*0.05;
+            break;
+          case "group3":
+            ctx.font = this.font.size+"px "+this.data[i][j].font;
+            y = y-this.font.height*0.1;
+            break;
+          default:
+            ctx.font = this.font.size+"px "+this.data[i][j].font;
         }
         ctx.fillStyle = this.data[i][j].color;
         ctx.fillText(this.data[i][j].char,x,y);
@@ -94,7 +88,7 @@ base.screen = {
     if(char.constructor != String) return console.error(char+" is invalid");
 
     if(y<this.data.length && x<this.data[y].length){
-      this.data[y][x] = new common.Block(char[0],color,backgroundColor);
+      this.data[y][x] = new common.Char(char[0],color,backgroundColor);
     }
   },
   deleteChar : function(x,y){
@@ -102,12 +96,12 @@ base.screen = {
     this.insertChar(x,y," ");
   },
   insertText : function(x,y,text,color,backgroundColor){
-    var regex = new RegExp("(["+setting.game.charGroup1+setting.game.charGroup2+"])","g");
+    var regex = new RegExp("(["+setting.charSets.group1+setting.charSets.group2+"])","g");
     text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
     if(y<0 || y>=this.data.length) return;
     for(var i = 0; i<text.length; i++){
-      if(x+i>=0 && x+i <setting.game.frame.column)
+      if(x+i>=0 && x+i <setting.screen.column)
       this.insertChar(x+i,y,text[i],color,backgroundColor);
     }
   },
@@ -162,6 +156,6 @@ base.inputs = {
   }
 };
 
-base.frame.init();
-base.screen.init();
+// base.canvas.init();
+base.canvas.init();
 base.inputs.init();

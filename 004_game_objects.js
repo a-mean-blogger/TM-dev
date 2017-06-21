@@ -30,8 +30,8 @@ Star.prototype.loop = function () {
   this.draw();
 };
 Star.prototype.draw = function () {
-  if(this.data.blank%2===0) base.screen.insertText(this.x,this.y,"★");
-  else base.screen.insertText(this.x,this.y,"☆");
+  if(this.data.blank%2===0) base.canvas.insertText(this.x,this.y,"★");
+  else base.canvas.insertText(this.x,this.y,"☆");
 };
 Star.prototype.calculate = function () {
   this.data.blank = (this.data.blank+1)%2;
@@ -108,7 +108,7 @@ Tetris.prototype.draw = function () {
           blockChar="■";
           break;
       }
-      base.screen.insertText(this.x+j*2,this.y+i,blockChar);
+      base.canvas.insertText(this.x+j*2,this.y+i,blockChar);
     }
   }
 
@@ -178,10 +178,10 @@ Tetris.prototype.drawNextBlock= function(){
   for(var i=1;i<3;i++){
     for(var j=0;j<4;j++){
       if(BLOCKS[this.data.nextBlockType][0][i][j]==1) {
-        base.screen.insertText(32+j*2,6+i,"■");
+        base.canvas.insertText(32+j*2,6+i,"■");
       }
       else {
-        base.screen.insertText(32+j*2,6+i," ");
+        base.canvas.insertText(32+j*2,6+i," ");
       }
     }
   }
