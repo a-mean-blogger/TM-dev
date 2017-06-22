@@ -19,6 +19,11 @@ base.canvas = {
     this.draw();
   },
   init: function(){
+    var link = script=document.createElement('link');
+    link.href = setting.font.source;
+    link.rel = "stylesheet";
+    document.getElementsByTagName('head')[0].appendChild(link);
+
     this.canvas = document.querySelector("#"+setting.env.canvasId);
     this.canvas.width = this.width;
     this.canvas.height = this.height;
@@ -62,22 +67,14 @@ base.canvas = {
         var x = this.font.width*j;
         var y = this.font.height*i+this.font.height*0.8; // y adjustment
 
-        switch(common.getCharGroup(this.data[i][j].char)){
-          case "group1":
-            ctx.font = this.font.size*2.25+"px "+this.data[i][j].font;
-            y = y +this.font.height*0.4;
-            break;
-          case "group2":
-            ctx.font = this.font.size+"px "+this.data[i][j].font;
-            x = x+this.font.width*0.3;
-            y = y+this.font.height*0.05;
-            break;
-          case "group3":
-            ctx.font = this.font.size+"px "+this.data[i][j].font;
-            y = y-this.font.height*0.1;
-            break;
-          default:
-            ctx.font = this.font.size+"px "+this.data[i][j].font;
+        var charset = common.getCharGroup(this.data[i][j].char);
+        if(charset){
+          ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
+          x = x+this.font.width*charset.xAdj;
+          y = y+this.font.height*charset.yAdj;
+        }
+        else {
+          ctx.font = this.font.size+"px "+this.data[i][j].font;
         }
         ctx.fillStyle = this.data[i][j].color;
         ctx.fillText(this.data[i][j].char,x,y);
@@ -96,7 +93,7 @@ base.canvas = {
     this.insertChar(x,y," ");
   },
   insertText : function(x,y,text,color,backgroundColor){
-    var regex = new RegExp("(["+setting.charSets.group1+setting.charSets.group2+"])","g");
+    var regex = common.getFullwidthRegex();
     text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
     if(y<0 || y>=this.data.length) return;
@@ -156,6 +153,5 @@ base.inputs = {
   }
 };
 
-// base.canvas.init();
 base.canvas.init();
 base.inputs.init();

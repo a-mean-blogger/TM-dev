@@ -6,23 +6,41 @@ var setting = {};
 setting.env={
   canvasId:"game",
   fontSize:16,
-  fps:60,
+  fps:200,
 };
 
-setting.charSets={
-  //group1: ■     □
-  group1:"\u25a0\u25a1",
-  //group2: ㄱ     -힝     ★     ☆     △     ▷     ▽     ◁     ▣
-  group2:"\u3131-\uD79D\u2605\u2606\u25b3\u25b7\u25bd\u25c1\u25a3",
-  //group2: [,],(,)
-  group3:"[\]()",
+setting.font={
+  source:"//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
+  fontFamily:'Nanum Gothic Coding',
+  adjustment:{
+    group1:{//ㄱ     -힝
+      regex:"\u3131-\uD79D",
+      isFullwidth:true,
+      sizeAdj:1,
+      xAdj:0,
+      yAdj:0,
+    },
+    group2:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣
+      regex:"\u25a0\u25a1\u2605\u2606\u25b3\u25b7\u25bd\u25c1\u25a3",
+      isFullwidth:true,
+      sizeAdj:1.1,
+      xAdj:0,
+      yAdj:0,
+    },
+    group3:{//[,],(,)
+      regex:"\\[\\](){}",
+      isFullwidth:false,
+      sizeAdj:0.95,
+      xAdj:0,
+      yAdj:0,
+    },
+  }
 };
 
 setting.screen={
   column: 70, //120,
   row: 25, //40,
   backgroundColor:"#000",
-  defalutFont:"monospace",
   defalutFontColor:"#fff",
 };
 

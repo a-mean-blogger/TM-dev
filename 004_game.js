@@ -30,7 +30,7 @@ game.intro= {
   init: function(){
     // console.log("intro init");
     this.count = 0;
-    base.canvas.init();
+    base.canvas.clear();
     this.interval.init(setting.env.fps, _=>this.loop());
   },
   calculate: function(){
@@ -82,7 +82,7 @@ game.tetris = {
   },
   init: function(){
     // console.log("tetris init");
-    base.canvas.init();
+    base.canvas.clear();
     this.status.drawFrame();
     new Tetris(this,{x:3,y:1,keyset:setting.game.tetris1.keyset});
     this.interval.init(this.speed, _=>this.loop());

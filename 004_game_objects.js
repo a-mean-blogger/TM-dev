@@ -15,11 +15,11 @@ function TextObject(parent,properties,func){
   this.init();
 }
 TextObject.prototype.init = function(){
-  this.parent.push(this);
+  this.parent.objects.push(this);
 };
 TextObject.prototype.destroy = function(){
-  var i = this.parent.indexOf(this);
-  this.parent.splice(i,1);
+  var i = this.parent.objects.indexOf(this);
+  this.parent.objects.splice(i,1);
 };
 TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
@@ -159,9 +159,9 @@ Tetris.prototype.calculate = function () {
   this.updateCeilling();
   this.updateActiveBlock();
   this.autoDrop();
-  this.updateInput();
+  this.getInput();
 };
-Tetris.prototype.updateInput = function () {
+Tetris.prototype.getInput = function () {
   if(this.inputSpeedCount == 0){
     if(base.inputs.keyboard.check(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
