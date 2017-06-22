@@ -16,6 +16,7 @@ game = {
 game.intro= {
   x:5,
   y:3,
+  speed: 60,
   objects:[],
   count:0,
   interval: new common.Interval(),
@@ -31,7 +32,7 @@ game.intro= {
     // console.log("intro init");
     this.count = 0;
     base.canvas.clear();
-    this.interval.init(setting.env.fps, _=>this.loop());
+    this.interval.init(this.speed, _=>this.loop());
   },
   calculate: function(){
     if(this.count>10 && base.inputs.keyboard.checkAny()){

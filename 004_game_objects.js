@@ -99,7 +99,7 @@ function Tetris(parent,properties){
   this.y = properties.y;
   this.dropSpeed = 100;
   this.dropSpeedCount = 0;
-  this.inputSpeed = 10;
+  this.inputSpeed = 20;
   this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;

@@ -6,11 +6,11 @@ var setting = {};
 setting.env={
   canvasId:"game",
   fontSize:16,
-  fps:200,
+  fps:100,
 };
 
 setting.font={
-  source:"//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
+  source:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
   fontFamily:'Nanum Gothic Coding',
   adjustment:{
     group1:{//ㄱ     -힝
@@ -23,7 +23,7 @@ setting.font={
     group2:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣
       regex:"\u25a0\u25a1\u2605\u2606\u25b3\u25b7\u25bd\u25c1\u25a3",
       isFullwidth:true,
-      sizeAdj:1.1,
+      sizeAdj:1.2,
       xAdj:0,
       yAdj:0,
     },
