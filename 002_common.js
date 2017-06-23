@@ -30,7 +30,7 @@ common.getBlockHeight = function(fontSize){
     recursive(val);
     blockHeight = fontSize + adjustment;
   }
-  return blockHeight*1.1;
+  return blockHeight;
 };
 common.isNumber = function(num){
   if(num === 0|| (num && num.constructor == Number)) return true;
