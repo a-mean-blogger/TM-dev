@@ -1,22 +1,17 @@
 console.log("game_object.js loaded");
 
 
-function BaseObject(parent){
-  this.parent = parent;
-  this.addToParent();
+function BaseObject(container){
+  this.container = container;
   this.init();
 }
 BaseObject.prototype.init = function(){};
 BaseObject.prototype.calculate = function(){};
 BaseObject.prototype.draw = function(){};
-BaseObject.prototype.addToParent = function(){
-  if(!Array.isArray(this.parent.objects)) this.parent.objects = [];
-  this.parent.objects.push(this);
-};
 BaseObject.prototype.destroy = function(){
-  if(Array.isArray(this.parent.objects)){
-    var i = this.parent.objects.indexOf(this);
-    if (i >= 0) this.parent.objects.splice(i,1);
+  if(Array.isArray(this.container)){
+    var i = container.indexOf(this);
+    if (i >= 0) container.splice(i,1);
   }
 };
 BaseObject.prototype.loop = function(){
@@ -24,7 +19,7 @@ BaseObject.prototype.loop = function(){
   this.draw();
 };
 
-function TextObject(parent,properties,patternFunc){
+function TextObject(container,properties,patternFunc){
   this.text=properties.text;
   this.length=properties.text.length;
   this.speed=common.isNumber(properties.speed)?properties.speed:null;
@@ -34,7 +29,7 @@ function TextObject(parent,properties,patternFunc){
   this.xD=common.isNumber(properties.xD)?properties.xD:0;
   this.yD=common.isNumber(properties.yD)?properties.yD:0;
   this.patternFunc=patternFunc;
-  BaseObject.call(this, parent);
+  BaseObject.call(this, container);
 }
 TextObject.prototype = Object.create(BaseObject.prototype);
 TextObject.prototype.constructor = TextObject;
@@ -58,7 +53,7 @@ TextObject.prototype.setSpeed = function(speed){
   this.speed=speed;
 };
 
-function Star(parent,properties){
+function Star(container,properties){
   this.x = properties.x;
   this.y = properties.y;
   this.speed = properties.speed;
@@ -66,7 +61,7 @@ function Star(parent,properties){
   this.data= {
     blank:0
   };
-  BaseObject.call(this, parent);
+  BaseObject.call(this, container);
 }
 Star.prototype = Object.create(BaseObject.prototype);
 Star.prototype.constructor = Star;
@@ -88,6 +83,59 @@ Star.prototype.patternFunc = function () {
   this.data.blank = (this.data.blank+1)%2;
 };
 
+function Status(properties){
+  this.x = properties.x;
+  this.y = properties.y;
+}
+Status.prototype.drawFrame = function(){
+  base.canvas.insertText(this.x, this.y+0, " LEVEL :");
+  base.canvas.insertText(this.x, this.y+1, " GOAL  :");
+  base.canvas.insertText(this.x, this.y+2, "+-  N E X T  -+ ");
+  base.canvas.insertText(this.x, this.y+3, "|             | ");
+  base.canvas.insertText(this.x, this.y+4, "|             | ");
+  base.canvas.insertText(this.x, this.y+5, "|             | ");
+  base.canvas.insertText(this.x, this.y+6, "|             | ");
+  base.canvas.insertText(this.x, this.y+7, "+-- -  -  - --+ ");
+  base.canvas.insertText(this.x, this.y+8, " YOUR SCORE :");
+  base.canvas.insertText(this.x, this.y+10," LAST SCORE :");
+  base.canvas.insertText(this.x, this.y+12," BEST SCORE :");
+  base.canvas.insertText(this.x, this.y+15,"  △   : Shift        SPACE : Hard Drop");
+  base.canvas.insertText(this.x, this.y+16,"◁  ▷ : Left / Right   P   : Pause");
+  base.canvas.insertText(this.x, this.y+17,"  ▽   : Soft Drop     ESC  : Quit");
+  base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
+};
+Status.prototype.drawNextBlock = function(blockType){
+  for(var i=1;i<3;i++){
+    for(var j=0;j<4;j++){
+      var x = this.x+4+j*2;
+      var y = this.y+3+i
+      if(BLOCKS[blockType][0][i][j]==1) {
+        base.canvas.insertText(x,y,"■");
+      }
+      else {
+        base.canvas.insertText(x,y," ");
+      }
+    }
+  }
+};
+Status.prototype.convertScore = function(score){
+  var string = score.toString();
+  var formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
+  var offset = 10 - formatted.length;
+  var padding = "";
+  for(let i=offset;i>0;i--) padding+=" ";
+  return padding+ formatted;
+};
+Status.prototype.drawScore = function(score){
+  base.canvas.insertText(this.x+7, this.y+9, this.convertScore(score));
+};
+Status.prototype.drawLastScore = function(score){
+  base.canvas.insertText(this.x+7, this.y+11, this.convertScore(score));
+};
+Status.prototype.drawBestScore = function(score){
+  base.canvas.insertText(this.x+7, this.y+13, this.convertScore(score));
+};
+
 const ACTIVE_BLOCK = -2;
 const CEILLING = -1;
 const EMPTY = 0;
@@ -102,12 +150,14 @@ const BLOCKS = [
   [[[0,0,0,0],[1,0,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,0,0],[1,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,0,1,0]],[[0,0,0,0],[0,1,1,0],[0,1,0,0],[0,1,0,0]]],
   [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
 ];
-function Tetris(parent,properties){
+function Tetris(properties,status){
+  this.parentObjects = {};
+  this.parentObjects.status = status;
   this.x = properties.x;
   this.y = properties.y;
   this.dropSpeed = 100;
   this.dropSpeedCount = 0;
-  this.inputSpeed = 20;
+  this.inputSpeed = 10;
   this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;
@@ -122,7 +172,7 @@ function Tetris(parent,properties){
     },
     nextBlockType:undefined,
   };
-  BaseObject.call(this, parent);
+  BaseObject.call(this);
 }
 Tetris.prototype = Object.create(BaseObject.prototype);
 Tetris.prototype.constructor = Tetris;
@@ -210,8 +260,7 @@ Tetris.prototype.createNewBlock= function(){
   this.data.activeBlock = newBlock;
   this.data.nextBlockType=Math.floor(Math.random()*7);
   this.updateActiveBlock();
-  // console.log(this.parent);
-  this.parent.status.drawNextBlock(this.data.nextBlockType);
+  this.parentObjects.status.drawNextBlock(this.data.nextBlockType);
 };
 Tetris.prototype.updateActiveBlock= function(){
   var activeBlock= this.data.activeBlock;

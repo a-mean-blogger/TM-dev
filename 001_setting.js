@@ -6,7 +6,7 @@ var setting = {};
 setting.env={
   canvasId:"game",
   fontSize:16,
-  fps:100,
+  fps:60,
 };
 
 setting.font={
