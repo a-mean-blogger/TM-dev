@@ -36,6 +36,9 @@ Program.prototype.loop = function(){
   this.objects.forEach(object => object.loop());
   this.uniqueObjectsLoop();
   this.calculate();
+  if(setting.env.devMode){
+    this.dev.displaySpeed();
+  }
 };
 Program.prototype.init = function(){
   this.objects = [];
@@ -46,6 +49,16 @@ Program.prototype.init = function(){
 Program.prototype.destroy = function(){
   this.interval.stop();
   this.objects = [];
+};
+Program.prototype.dev = {};
+Program.prototype.dev.savedTime = undefined
+Program.prototype.dev.displaySpeed = function(){
+    var now = Date.now();
+    if(this.savedTime){
+      var d = now-this.savedTime;
+      base.canvas.insertText(0,0,"speed: "+ d+"   ");
+    }
+    this.savedTime = now;
 }
 
 game.programs.intro = new Program({x:5,y:3,speed:10});

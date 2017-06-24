@@ -7,6 +7,7 @@ setting.env={
   canvasId:"game",
   fontSize:16,
   fps:60,
+  devMode:true,
 };
 
 setting.font={

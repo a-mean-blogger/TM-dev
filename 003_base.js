@@ -34,6 +34,9 @@ base.canvas = {
     this.clear();
     this.interval.init(setting.env.fps, _=>this.loop());
   },
+  changeSpeed: function(speed){
+    this.interval.init(speed, _=>this.loop());
+  },
   fillChar: function(char){
     if(typeof char != "string") char = " ";
     this.data = [];

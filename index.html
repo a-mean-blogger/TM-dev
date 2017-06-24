@@ -6,6 +6,12 @@
   </head>
   <body>
     <canvas id="game">canvas</canvas>
+    <div>
+      <label for="speed">Screen Refresh Speed</label>
+      <input type="button" value="Fast" onClick="base.canvas.changeSpeed(30)">
+      <input type="button" value="Medium" onClick="base.canvas.changeSpeed(60)">
+      <input type="button" value="Slow" onClick="base.canvas.changeSpeed(150)">
+    </div>
     <script type="text/javascript" src="001_setting.js"></script>
     <script type="text/javascript" src="002_common.js"></script>
     <script type="text/javascript" src="003_base.js"></script>
