@@ -143,7 +143,10 @@ base.inputs = {
     check: function(keyCode){
       // console.log("keyCode: ", keyCode);
       // console.log("this.keystate: ", this.keystate);
-      if(this.keystate[keyCode]) return true;
+      if(this.keystate[keyCode]) {
+        // delete base.inputs.keyboard.keystate[keyCode];
+        return true;
+      }
       else return false;
     },
     checkAny: function(){

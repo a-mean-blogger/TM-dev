@@ -155,9 +155,9 @@ function Tetris(properties,status){
   this.parentObjects.status = status;
   this.x = properties.x;
   this.y = properties.y;
-  this.dropSpeed = 100;
+  this.dropSpeed = 50;
   this.dropSpeedCount = 0;
-  this.inputSpeed = 10;
+  this.inputSpeed = 5;
   this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;
@@ -165,10 +165,15 @@ function Tetris(properties,status){
   this.data= {
     dataArray:undefined,
     activeBlock:{
-      x:undefined,
-      y:undefined,
       type:undefined,
       rotation:undefined,
+      x:undefined,
+      y:undefined,
+      inActivate:{
+        flag:false,
+        countMax:10,
+        count:0
+      },
     },
     nextBlockType:undefined,
   };
@@ -209,25 +214,8 @@ Tetris.prototype.calculate = function () {
   this.updateCeilling();
   this.updateActiveBlock();
   this.autoDrop();
+  if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
   this.getInput();
-};
-Tetris.prototype.getInput = function () {
-  if(this.inputSpeedCount == 0){
-    if(base.inputs.keyboard.check(this.keyset.RIGHT)){
-      this.moveActiveBlock(1,0);
-      this.inputSpeedCount =this.inputSpeed;
-    }
-    else if(base.inputs.keyboard.check(this.keyset.LEFT)){
-      this.moveActiveBlock(-1,0);
-      this.inputSpeedCount =this.inputSpeed;
-    }
-    else if(base.inputs.keyboard.check(this.keyset.DOWN)){
-      this.moveActiveBlock(0,1);
-      this.inputSpeedCount =this.inputSpeed;
-    }
-  } else {
-    this.inputSpeedCount--;
-  }
 };
 Tetris.prototype.resetDataArray = function () {
   this.data.dataArray=[];
@@ -245,27 +233,27 @@ Tetris.prototype.resetDataArray = function () {
     this.data.dataArray[this.rowNum-1][j]=WALL;
   }
 };
-Tetris.prototype.updateCeilling= function(){
+Tetris.prototype.updateCeilling = function(){
   for(j=1;j<this.colNum-1;j++){
     this.data.dataArray[3][j]=CEILLING;
   }
 };
-Tetris.prototype.createNewBlock= function(){
-  var newBlock= {
-    x: Math.floor(this.colNum/2)-2,
-    y: 0,
-    rotation: 0,
-    type: this.data.nextBlockType?this.data.nextBlockType:Math.floor(Math.random()*7),
-  };
-  this.data.activeBlock = newBlock;
-  this.data.nextBlockType=Math.floor(Math.random()*7);
+Tetris.prototype.createNewBlock = function(){
+  var newBlock = this.data.activeBlock;
+  newBlock.rotation = 0;
+  newBlock.type = this.data.nextBlockType?this.data.nextBlockType:Math.floor(Math.random()*7);
+  newBlock.x = Math.floor(this.colNum/2)-2;
+  newBlock.y = 0;
+  newBlock.inActivate.flag = false;
+  newBlock.inActivate.count = this.data.activeBlock.inActivate.countMax;
+  this.data.nextBlockType = Math.floor(Math.random()*7);
   this.updateActiveBlock();
   this.parentObjects.status.drawNextBlock(this.data.nextBlockType);
 };
-Tetris.prototype.updateActiveBlock= function(){
+Tetris.prototype.updateActiveBlock = function(){
   var activeBlock= this.data.activeBlock;
 
-  this.deleteActiveBlock();
+  this.changeActiveBlockTo(EMPTY);
 
   for(var i=0;i<4;i++){
     for(var j=0;j<4;j++){
@@ -274,25 +262,98 @@ Tetris.prototype.updateActiveBlock= function(){
     }
   }
 };
-Tetris.prototype.deleteActiveBlock= function(){
+Tetris.prototype.changeActiveBlockTo = function(to){
   for(var i=0;i<this.rowNum;i++){
     for(var j=0;j<this.colNum;j++){
       if(this.data.dataArray[i][j]==ACTIVE_BLOCK)
-        this.data.dataArray[i][j]=EMPTY;
+        this.data.dataArray[i][j]=to;
     }
   }
 };
-Tetris.prototype.moveActiveBlock= function(x,y){
-  var activeBlock= this.data.activeBlock;
-  activeBlock.x+=x;
-  activeBlock.y+=y;
+Tetris.prototype.getInput = function () {
+  if(this.inputSpeedCount == 0){
+    this.inputSpeedCount = this.inputSpeed;
+    if(base.inputs.keyboard.check(this.keyset.RIGHT)){
+      this.moveActiveBlock(1,0);
+    }
+    if(base.inputs.keyboard.check(this.keyset.LEFT)){
+      this.moveActiveBlock(-1,0);
+    }
+    if(base.inputs.keyboard.check(this.keyset.DOWN)){
+      this.moveDownActiveBlock();
+    }
+    if(base.inputs.keyboard.check(this.keyset.ROTATE)){
+      this.rotateActiveBlock();
+    }
+  } else {
+    this.inputSpeedCount--;
+  }
 };
-Tetris.prototype.autoDrop= function(){
-  // var activeBlock= this.data.activeBlock;
-  // if(this.dropSpeedCount >= this.dropSpeed){
-  //   this.dropSpeedCount = 0;
-  //   this.data.activeBlock.y++;
-  // } else {
-  //   this.dropSpeedCount++;
-  // }
+Tetris.prototype.moveActiveBlock = function(x,y){
+  var activeBlock = this.data.activeBlock;
+  var xN = activeBlock.x+x;
+  var yN = activeBlock.y+y;
+  var moved = false;
+  if(this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,xN,yN)){
+    activeBlock.x = xN;
+    activeBlock.y = yN;
+    moved = true;
+  }
+  return moved;
+};
+Tetris.prototype.moveDownActiveBlock = function(){
+  var activeBlock = this.data.activeBlock;
+  var moved = this.moveActiveBlock(0,1);
+  if(moved){
+    if(activeBlock.inActivate.count<activeBlock.inActivate.countMax) activeBlock.inActivate.count++;
+    activeBlock.inActivate.flag = false;
+  }
+  else {
+    activeBlock.inActivate.flag = true;
+  }
+};
+Tetris.prototype.rotateActiveBlock = function(){
+  var activeBlock = this.data.activeBlock;
+  var rN = (activeBlock.rotation+1)%4;
+  var moved = false;
+  if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y)){
+    activeBlock.rotation = rN;
+    moved = true;
+  } else if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y-1)){
+    activeBlock.rotation = rN;
+    activeBlock.y -= 1;
+    moved = true;
+  }
+  return moved;
+};
+Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
+  var activeBlock = this.data.activeBlock;
+  for(var i=0;i<4;i++){
+    for(var j=0;j<4;j++){
+      if(BLOCKS[type][rN][i][j]==1
+      && this.data.dataArray[yN+i][xN+j] > 0){
+        return false;
+      }
+    }
+  }
+  return true;
+};
+Tetris.prototype.autoDrop = function(){
+  var activeBlock= this.data.activeBlock;
+  if(this.dropSpeedCount >= this.dropSpeed){
+    this.dropSpeedCount = 0;
+    this.moveDownActiveBlock();
+  } else {
+    this.dropSpeedCount++;
+  }
+};
+Tetris.prototype.inActivateBlock = function(){
+  var inActivate = this.data.activeBlock.inActivate;
+
+  if(inActivate.count-- < 0){
+    inActivate.count = inActivate.countMax;
+    this.moveDownActiveBlock();
+    this.changeActiveBlockTo(INACTIVE_BLOCK);
+    this.createNewBlock();
+  }
 };
