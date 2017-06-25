@@ -113,7 +113,7 @@ Status.prototype.drawNextBlock = function(blockType){
         base.canvas.insertText(x,y,"■");
       }
       else {
-        base.canvas.insertText(x,y," ");
+        base.canvas.insertText(x,y,"  ");
       }
     }
   }
@@ -157,7 +157,7 @@ function Tetris(properties,status){
   this.y = properties.y;
   this.dropSpeed = 50;
   this.dropSpeedCount = 0;
-  this.inputSpeed = 5;
+  this.inputSpeed = 10;
   this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;
@@ -171,7 +171,7 @@ function Tetris(properties,status){
       y:undefined,
       inActivate:{
         flag:false,
-        countMax:10,
+        countMax:50,
         count:0
       },
     },
@@ -212,8 +212,8 @@ Tetris.prototype.draw = function () {
 };
 Tetris.prototype.calculate = function () {
   this.updateCeilling();
-  this.updateActiveBlock();
   this.autoDrop();
+  this.updateActiveBlock();
   if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
   this.getInput();
 };
@@ -235,7 +235,7 @@ Tetris.prototype.resetDataArray = function () {
 };
 Tetris.prototype.updateCeilling = function(){
   for(j=1;j<this.colNum-1;j++){
-    this.data.dataArray[3][j]=CEILLING;
+    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=CEILLING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
@@ -304,8 +304,9 @@ Tetris.prototype.moveActiveBlock = function(x,y){
 Tetris.prototype.moveDownActiveBlock = function(){
   var activeBlock = this.data.activeBlock;
   var moved = this.moveActiveBlock(0,1);
-  if(moved){
-    if(activeBlock.inActivate.count<activeBlock.inActivate.countMax) activeBlock.inActivate.count++;
+
+  if(moved && this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
+    activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     activeBlock.inActivate.flag = false;
   }
   else {
@@ -348,11 +349,10 @@ Tetris.prototype.autoDrop = function(){
   }
 };
 Tetris.prototype.inActivateBlock = function(){
-  var inActivate = this.data.activeBlock.inActivate;
-
-  if(inActivate.count-- < 0){
-    inActivate.count = inActivate.countMax;
-    this.moveDownActiveBlock();
+  var activeBlock = this.data.activeBlock;
+  if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1) && --activeBlock.inActivate.count < 0){
+    activeBlock.inActivate.count = activeBlock.inActivate.countMax;
+    this.updateActiveBlock();
     this.changeActiveBlockTo(INACTIVE_BLOCK);
     this.createNewBlock();
   }
