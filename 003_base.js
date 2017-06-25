@@ -14,12 +14,16 @@ base.canvas = {
     height: common.getBlockHeight(setting.env.fontSize),
   },
   data: [],
-  interval: new common.Interval(),
+  count: 0,
+  countMax: 6,
   loop: function(){
-    this.draw();
+    if(--this.count<=0){
+      this.count = this.countMax;
+      this.draw();
+    }
   },
   init: function(){
-    var link = script=document.createElement('link');
+    var link = document.createElement('link');
     link.href = setting.font.source;
     link.rel = "stylesheet";
     document.getElementsByTagName('head')[0].appendChild(link);
@@ -32,10 +36,6 @@ base.canvas = {
     this.ctx = this.canvas.getContext("2d");
 
     this.clear();
-    this.interval.init(setting.env.fps, _=>this.loop());
-  },
-  changeSpeed: function(speed){
-    this.interval.init(speed, _=>this.loop());
   },
   fillChar: function(char){
     if(typeof char != "string") char = " ";
@@ -159,5 +159,17 @@ base.inputs = {
   }
 };
 
+base.main = {
+  interval: new common.Interval(),
+  init: function(){
+    this.interval.init(10, _=>this.loop());
+  },
+  loop: function(){
+    base.canvas.loop();
+  },
+  gameLoop: function(){},
+}
+
 base.canvas.init();
 base.inputs.init();
+base.main.init();
