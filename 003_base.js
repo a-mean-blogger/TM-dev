@@ -15,12 +15,13 @@ base.canvas = {
   },
   data: [],
   count: 0,
-  countMax: 6,
+  countMax: 1,
   loop: function(){
     if(--this.count<=0){
       this.count = this.countMax;
       this.draw();
     }
+    this.dev.adjustDrawSpeed();
   },
   init: function(){
     var link = document.createElement('link');
@@ -111,6 +112,46 @@ base.canvas = {
   },
 };
 
+base.canvas.dev = {};
+base.canvas.dev.adjustDrawSpeed = function(){
+    var now = Date.now();
+    if(--this.adjustDrawSpeed.count<0){
+      this.adjustDrawSpeed.count = this.adjustDrawSpeed.countMax;
+      var drawSpeed = (now-this.adjustDrawSpeed.time)/this.adjustDrawSpeed.countMax;
+      var fps = this.adjustDrawSpeed.countMax/(now-this.adjustDrawSpeed.time)/base.canvas.countMax*1000;
+      if(setting.env.devMode){
+        base.canvas.insertText(0,0,"FPS: "+ fps.toFixed(2)
+        + " Draw Speed: " + drawSpeed.toFixed(2)
+        + " canvas.countMax: " + base.canvas.countMax
+        + " balance: " + this.adjustDrawSpeed.balance
+        + "    ");
+      } else {
+        base.canvas.insertText(0,0,"frame speed: "+ drawSpeed.toFixed(2) + "  ");
+      }
+      this.adjustDrawSpeed.time = now;
+
+      // console.log(drawSpeed, setting.env.frameSpeed*1.1);
+      var offset = this.adjustDrawSpeed.balanceMaxOffset;
+      if(drawSpeed > setting.env.frameSpeed*1.15 && ++this.adjustDrawSpeed.balance >= offset){
+        this.adjustDrawSpeed.balance = offset;
+        if(drawSpeed/setting.env.frameSpeed > 2) base.canvas.countMax += 20;
+        else if(drawSpeed/setting.env.frameSpeed > 1.5) base.canvas.countMax += base.canvas.countMax*2<20?base.canvas.countMax*2:20;
+        else if(drawSpeed/setting.env.frameSpeed > 1.3) base.canvas.countMax += base.canvas.countMax*2<10?base.canvas.countMax*2:10;
+        else base.canvas.countMax += 1;
+      }
+      else if(drawSpeed < setting.env.frameSpeed*1.15 && base.canvas.countMax > 0 && --this.adjustDrawSpeed.balance <= -offset){
+        this.adjustDrawSpeed.balance = -offset;
+        base.canvas.countMax -= 1;
+      }
+    }
+};
+base.canvas.dev.adjustDrawSpeed.time = Date.now();
+base.canvas.dev.adjustDrawSpeed.count = 0;
+base.canvas.dev.adjustDrawSpeed.countMax = 10;
+base.canvas.dev.adjustDrawSpeed.balance = 3;
+base.canvas.dev.adjustDrawSpeed.balanceMaxOffset = 3;
+
+
 const KEY_UP = 38;
 const KEY_DOWN = 40;
 const KEY_RIGHT = 39;
@@ -162,7 +203,7 @@ base.inputs = {
 base.main = {
   interval: new common.Interval(),
   init: function(){
-    this.interval.init(10, _=> {
+    this.interval.init(setting.env.frameSpeed, _=> {
       this.loop();
       base.canvas.loop();
     });

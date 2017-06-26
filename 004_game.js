@@ -29,15 +29,12 @@ Program.prototype.calculate = function(){};
 Program.prototype.getInput = function(){};
 Program.prototype.uniqueObjectsLoop = function(){};
 Program.prototype.loop = function(){
-  this.getInput();
   this.timeline();
   this.count++;
   this.objects.forEach(object => object.loop());
   this.uniqueObjectsLoop();
   this.calculate();
-  if(setting.env.devMode){
-    this.dev.displaySpeed();
-  }
+  this.getInput();
 };
 Program.prototype.init = function(){
   this.objects = [];
@@ -46,21 +43,9 @@ Program.prototype.init = function(){
   base.main.loop = _=>this.loop();
 };
 Program.prototype.destroy = function(){
+  this.count = 0;
   this.objects = [];
 };
-Program.prototype.dev = {};
-Program.prototype.dev.displaySpeed = function(){
-    var now = Date.now();
-    if(--this.displaySpeed.count<0){
-      this.displaySpeed.count = this.displaySpeed.countMax;
-      var d = now-this.displaySpeed.time;
-      base.canvas.insertText(0,0,"speed: "+ d+"   ");
-      this.displaySpeed.time = now;
-    }
-};
-Program.prototype.dev.displaySpeed.time = Date.now();
-Program.prototype.dev.displaySpeed.count = 0;
-Program.prototype.dev.displaySpeed.countMax = 10;
 
 
 game.programs.intro = new Program({x:5,y:3,speed:10});
@@ -86,7 +71,7 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(this.count>10 && base.inputs.keyboard.checkAny()){
+  if(!base.inputs.keyboard.check(KEY_ESC) &&  base.inputs.keyboard.checkAny()){
     this.destroy();
     game.programs.tetris.init();
   }

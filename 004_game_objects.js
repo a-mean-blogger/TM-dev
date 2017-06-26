@@ -155,14 +155,14 @@ function Tetris(properties,status){
   this.parentObjects.status = status;
   this.x = properties.x;
   this.y = properties.y;
-  this.dropSpeed = 50;
+  this.dropSpeed = 0;
   this.dropSpeedCount = 0;
   this.inputSpeed = 10;
   this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;
   this.rowNum = 23;
-  this.data= {
+  this.data = {
     dataArray:undefined,
     activeBlock:{
       type:undefined,
