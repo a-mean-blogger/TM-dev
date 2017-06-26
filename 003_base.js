@@ -14,6 +14,7 @@ base.canvas = {
     height: common.getBlockHeight(setting.env.fontSize),
   },
   data: [],
+  charCache: [],
   count: 0,
   countMax: 1,
   loop: function(){
@@ -64,9 +65,6 @@ base.canvas = {
         ctx.fillStyle = this.data[i][j].backgroundColor;
         ctx.fillRect(x,y,this.font.width+1,this.font.height+1);
       }
-    }
-
-    for(var i = 0; i <setting.screen.row; i++){
       for(var j = 0; j<setting.screen.column; j++){
         var x = this.font.width*j;
         var y = this.font.height*i+this.font.height*0.8; // y adjustment
@@ -80,8 +78,24 @@ base.canvas = {
         else {
           ctx.font = this.font.size+"px "+this.data[i][j].font;
         }
-        ctx.fillStyle = this.data[i][j].color;
-        ctx.fillText(this.data[i][j].char,x,y);
+        if(this.charCache[this.data[i][j].char]){
+        	ctx.drawImage(this.charCache[this.data[i][j].char],x,y-this.font.height*0.8);
+        }
+        else {
+          ctx.fillStyle = this.data[i][j].color;
+          ctx.fillText(this.data[i][j].char,x,y);
+
+          var tempCanvas = document.createElement("canvas"),
+          tCtx = tempCanvas.getContext("2d");
+          tempCanvas.width = this.font.width*2;
+          tempCanvas.height = this.font.height;
+          tCtx.fillStyle = ctx.fillStyle;
+          tCtx.font = ctx.font;
+          tCtx.textBaseline = "buttom";
+          tCtx.fillText(this.data[i][j].char,0,this.font.height-4);
+          this.charCache[this.data[i][j].char] = tempCanvas;
+
+        }
       }
     }
   },
@@ -119,15 +133,20 @@ base.canvas.dev.adjustDrawSpeed = function(){
       this.adjustDrawSpeed.count = this.adjustDrawSpeed.countMax;
       var drawSpeed = (now-this.adjustDrawSpeed.time)/this.adjustDrawSpeed.countMax;
       var fps = this.adjustDrawSpeed.countMax/(now-this.adjustDrawSpeed.time)/base.canvas.countMax*1000;
+      var text = "";
       if(setting.env.devMode){
-        base.canvas.insertText(0,0,"FPS: "+ fps.toFixed(2)
+        text = "FPS: "+ fps.toFixed(2)
         + " Draw Speed: " + drawSpeed.toFixed(2)
         + " canvas.countMax: " + base.canvas.countMax
         + " balance: " + this.adjustDrawSpeed.balance
-        + "    ");
-      } else {
-        base.canvas.insertText(0,0,"frame speed: "+ drawSpeed.toFixed(2) + "  ");
+        + "    ";
       }
+      else {
+        text="frame speed: "+ drawSpeed.toFixed(2) + "  ";
+      }
+      base.canvas.insertText(0,0,text);
+      document.querySelector("#fps").innerText=text;
+
       this.adjustDrawSpeed.time = now;
 
       // console.log(drawSpeed, setting.env.frameSpeed*1.1);
