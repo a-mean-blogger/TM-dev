@@ -162,12 +162,12 @@ base.inputs = {
 base.main = {
   interval: new common.Interval(),
   init: function(){
-    this.interval.init(10, _=>this.loop());
+    this.interval.init(10, _=> {
+      this.loop();
+      base.canvas.loop();
+    });
   },
-  loop: function(){
-    base.canvas.loop();
-  },
-  gameLoop: function(){},
+  loop: function(){}
 }
 
 base.canvas.init();

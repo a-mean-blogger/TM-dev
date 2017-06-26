@@ -23,7 +23,6 @@ function Program(properties){
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  this.interval = new common.Interval();
 }
 Program.prototype.timeline = function(){};
 Program.prototype.calculate = function(){};
@@ -44,10 +43,9 @@ Program.prototype.init = function(){
   this.objects = [];
   this.count = 0;
   base.canvas.clear();
-  this.interval.init(this.speed, _=>this.loop());
+  base.main.loop = _=>this.loop();
 };
 Program.prototype.destroy = function(){
-  this.interval.stop();
   this.objects = [];
 };
 Program.prototype.dev = {};
