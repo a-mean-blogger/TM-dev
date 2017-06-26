@@ -49,15 +49,19 @@ Program.prototype.destroy = function(){
   this.objects = [];
 };
 Program.prototype.dev = {};
-Program.prototype.dev.savedTime = undefined
 Program.prototype.dev.displaySpeed = function(){
     var now = Date.now();
-    if(this.savedTime){
-      var d = now-this.savedTime;
+    if(--this.displaySpeed.count<0){
+      this.displaySpeed.count = this.displaySpeed.countMax;
+      var d = now-this.displaySpeed.time;
       base.canvas.insertText(0,0,"speed: "+ d+"   ");
+      this.displaySpeed.time = now;
     }
-    this.savedTime = now;
-}
+};
+Program.prototype.dev.displaySpeed.time = Date.now();
+Program.prototype.dev.displaySpeed.count = 0;
+Program.prototype.dev.displaySpeed.countMax = 10;
+
 
 game.programs.intro = new Program({x:5,y:3,speed:10});
 game.programs.intro.timeline = function(){
