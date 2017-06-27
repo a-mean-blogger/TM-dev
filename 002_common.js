@@ -54,8 +54,9 @@ common.getFullwidthRegex = function(){
   if(string) return new RegExp("(["+string+"])","g");
 }
 
-common.Char = function(char,color,backgroundColor){
+common.Char = function(char,isFullwidth,color,backgroundColor){
   this.char = char;
+  this.isFullwidth = isFullwidth;
   this.color = color?color:setting.screen.defalutFontColor;
   this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
   this.font = setting.font.fontFamily;

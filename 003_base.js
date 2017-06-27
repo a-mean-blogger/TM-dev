@@ -14,7 +14,7 @@ base.canvas = {
     height: common.getBlockHeight(setting.env.fontSize),
   },
   data: [],
-  charCache: [],
+  previousData: [],
   count: 0,
   countMax: 1,
   loop: function(){
@@ -35,9 +35,19 @@ base.canvas = {
     this.canvas.height = this.height;
     this.canvas.style.border = this.backgroundColor+" 1px solid";
     this.canvas.style.borderRadius = "5px";
+    this.canvas.style.backgroundColor = this.backgroundColor;
     this.ctx = this.canvas.getContext("2d");
 
-    this.clear();
+    this.data = [];
+    this.previousData = [];
+    for(var i = 0; i <setting.screen.row; i++){
+      this.data[i]=[];
+      this.previousData[i]=[];
+      for(var j = 0; j<setting.screen.column; j++){
+        this.data[i][j]=new common.Char(" ");
+        this.previousData[i][j]=new common.Char(" ");
+      }
+    }
   },
   fillChar: function(char){
     if(typeof char != "string") char = " ";
@@ -54,56 +64,67 @@ base.canvas = {
   },
   draw: function() {
     var ctx = this.ctx;
-    ctx.fillStyle = this.backgroundColor;
-    ctx.fillRect(0,0,this.width,this.height);
     ctx.textBaseline = "buttom";
-
     for(var i = 0; i <setting.screen.row; i++){
       for(var j = 0; j<setting.screen.column; j++){
-        var x = this.font.width*j;
+        var x = this.font.width*j-1;
         var y = this.font.height*i;
-        ctx.fillStyle = this.data[i][j].backgroundColor;
-        ctx.fillRect(x,y,this.font.width+1,this.font.height+1);
-      }
-      for(var j = 0; j<setting.screen.column; j++){
-        var x = this.font.width*j;
-        var y = this.font.height*i+this.font.height*0.8; // y adjustment
 
-        var charset = common.getCharGroup(this.data[i][j].char);
-        if(charset){
-          ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
-          x = x+this.font.width*charset.xAdj;
-          y = y+this.font.height*charset.yAdj;
+        if(this.previousData[i][j].isFullwidth
+        && (!this.data[i][j].isFullwidth || this.data[i][j+1].char!=" ")){
+          var width = this.font.width*2+1;
+          var height = this.font.height+1;
+          ctx.fillStyle = this.backgroundColor;
+          ctx.fillRect(x,y,width,height);
         }
-        else {
-          ctx.font = this.font.size+"px "+this.data[i][j].font;
+        else if(this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor
+        || this.data[i][j].char != this.previousData[i][j].char){
+          var width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+1;
+          var height = this.font.height+1;
+          ctx.fillStyle = this.data[i][j].backgroundColor;
+          ctx.fillRect(x,y,width,height);
         }
-        if(this.charCache[this.data[i][j].char]){
-        	ctx.drawImage(this.charCache[this.data[i][j].char],x,y-this.font.height*0.8);
-        }
-        else {
+      }
+    }
+    for(var i = 0; i <setting.screen.row; i++){
+      for(var j = 0; j<setting.screen.column; j++){
+        if(this.data[i][j].char != this.previousData[i][j].char
+        || this.data[i][j].color != this.previousData[i][j].color
+        || this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor){
+          var x = this.font.width*j;
+          var y = this.font.height*i+this.font.height*0.8; // y adjustment
+
+          var charset = common.getCharGroup(this.data[i][j].char);
+          if(charset){
+            ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
+            x = x+this.font.width*charset.xAdj;
+            y = y+this.font.height*charset.yAdj;
+          }
+          else {
+            ctx.font = this.font.size+"px "+this.data[i][j].font;
+          }
           ctx.fillStyle = this.data[i][j].color;
           ctx.fillText(this.data[i][j].char,x,y);
-
-          var tempCanvas = document.createElement("canvas"),
-          tCtx = tempCanvas.getContext("2d");
-          tempCanvas.width = this.font.width*2;
-          tempCanvas.height = this.font.height;
-          tCtx.fillStyle = ctx.fillStyle;
-          tCtx.font = ctx.font;
-          tCtx.textBaseline = "buttom";
-          tCtx.fillText(this.data[i][j].char,0,this.font.height-4);
-          this.charCache[this.data[i][j].char] = tempCanvas;
-
         }
+      }
+    }
+    for(var i = 0; i <setting.screen.row; i++){
+      for(var j = 0; j<setting.screen.column; j++){
+        this.previousData[i][j].char = this.data[i][j].char;
+        this.previousData[i][j].isFullwidth = this.data[i][j].isFullwidth;
+        this.previousData[i][j].color = this.data[i][j].color;
+        this.previousData[i][j].backgroundColor = this.data[i][j].backgroundColor;
       }
     }
   },
   insertChar : function(x,y,char,color,backgroundColor){
     if(char.constructor != String) return console.error(char+" is invalid");
 
+    var regex = common.getFullwidthRegex();
+    var fullwidth = regex.test(char);
+
     if(y<this.data.length && x<this.data[y].length){
-      this.data[y][x] = new common.Char(char[0],color,backgroundColor);
+      this.data[y][x] = new common.Char(char[0],fullwidth,color,backgroundColor);
     }
   },
   deleteChar : function(x,y){
@@ -132,7 +153,7 @@ base.canvas.dev.adjustDrawSpeed = function(){
     if(--this.adjustDrawSpeed.count<0){
       this.adjustDrawSpeed.count = this.adjustDrawSpeed.countMax;
       var drawSpeed = (now-this.adjustDrawSpeed.time)/this.adjustDrawSpeed.countMax;
-      var fps = this.adjustDrawSpeed.countMax/(now-this.adjustDrawSpeed.time)/base.canvas.countMax*1000;
+      var fps = this.adjustDrawSpeed.countMax/(now-this.adjustDrawSpeed.time)/(base.canvas.countMax+1)*1000;
       var text = "";
       if(setting.env.devMode){
         text = "FPS: "+ fps.toFixed(2)
