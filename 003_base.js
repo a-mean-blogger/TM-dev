@@ -5,9 +5,9 @@ var base = {};
 base.canvas = {
   canvas: undefined,
   ctx: undefined,
-  width: common.getBlockWidth(setting.env.fontSize) * setting.screen.column,
-  height: common.getBlockHeight(setting.env.fontSize) * setting.screen.row,
-  backgroundColor: setting.screen.backgroundColor,
+  width: common.getBlockWidth(setting.env.fontSize) * setting.env.column,
+  height: common.getBlockHeight(setting.env.fontSize) * setting.env.row,
+  backgroundColor: setting.env.backgroundColor,
   font: {
     size: setting.env.fontSize,
     width: common.getBlockWidth(setting.env.fontSize),
@@ -22,7 +22,7 @@ base.canvas = {
       this.count = this.countMax;
       this.draw();
     }
-    this.dev.adjustDrawSpeed();
+    this.dev.showFps();
   },
   init: function(){
     var link = document.createElement('link');
@@ -36,14 +36,16 @@ base.canvas = {
     this.canvas.style.border = this.backgroundColor+" 1px solid";
     this.canvas.style.borderRadius = "5px";
     this.canvas.style.backgroundColor = this.backgroundColor;
+    this.canvas.style.width = this.width*(setting.env.zoom?setting.env.zoom:1)+"px";
+    this.canvas.style.height = this.height*(setting.env.zoom?setting.env.zoom:1)+"px";
     this.ctx = this.canvas.getContext("2d");
 
     this.data = [];
     this.previousData = [];
-    for(let i = 0; i <setting.screen.row; i++){
+    for(let i = 0; i <setting.env.row; i++){
       this.data[i]=[];
       this.previousData[i]=[];
-      for(let j = 0; j<setting.screen.column; j++){
+      for(let j = 0; j<setting.env.column; j++){
         this.data[i][j]=new common.Char(" ");
         this.previousData[i][j]=new common.Char(" ");
       }
@@ -52,9 +54,9 @@ base.canvas = {
   fillChar: function(char){
     if(typeof char != "string") char = " ";
     this.data = [];
-    for(let i = 0; i <setting.screen.row; i++){
+    for(let i = 0; i <setting.env.row; i++){
       this.data[i]=[];
-      for(let j = 0; j<setting.screen.column; j++){
+      for(let j = 0; j<setting.env.column; j++){
         this.data[i][j]=new common.Char(char);
       }
     }
@@ -65,32 +67,55 @@ base.canvas = {
   draw: function() {
     let ctx = this.ctx;
     ctx.textBaseline = "buttom";
-    for(let i = 0; i <setting.screen.row; i++){
-      for(let j = 0; j<setting.screen.column; j++){
-        let x = this.font.width*j-1;
+    for(let i = 0; i <setting.env.row; i++){
+      for(let j = 0; j<setting.env.column; j++){
+        let x = this.font.width*j-this.font.width*0.1;
         let y = this.font.height*i;
 
-        if(this.previousData[i][j].isFullwidth
-        && (!this.data[i][j].isFullwidth || this.data[i][j+1].char!=" ")){
-          let width = this.font.width*2+1;
-          let height = this.font.height+1;
-          ctx.fillStyle = this.backgroundColor;
-          ctx.fillRect(x,y,width,height);
+        // if(this.previousData[i][j].isFullwidth
+        // && (!this.data[i][j].isFullwidth || this.data[i][j+1].char!=" ")){
+        //   // let width = this.font.width*2+this.font.width*0.1;
+        //   // let height = this.font.height;
+        //   // ctx.fillStyle = this.backgroundColor;
+        //   // ctx.fillRect(x,y,width,height);
+        //   // if(this.data[i][j+1].char!=" ") this.data[i][j] = new common.Char(" ");
+        //   this.previousData[i][j].char = "$$";
+        //   this.previousData[i][j+1].char = "$$";
+        //
+        //
+        // }
+        if(this.previousData[i][j].isFullwidth && !this.data[i][j].isFullwidth){
+          this.previousData[i][j].char = "$$";
+          this.previousData[i][j+1].char = "$$";
         }
-        else if(this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor
-        || this.data[i][j].char != this.previousData[i][j].char){
-          let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+1;
-          let height = this.font.height+1;
+        if(this.data[i][j].isFullwidth && this.data[i][j+1].char!="$fullwidthFiller"){
+          this.data[i][j] = new common.Char(" ");
+        }
+        if(this.data[i][j].char == "$fullwidthFiller" && this.data[i][j-1].char == "$fullwidthFiller"){
+          this.data[i][j].char = " ";
+        }
+
+
+        if(this.data[i][j].char != "$fullwidthFiller"
+        && (this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor
+           || this.data[i][j].char != this.previousData[i][j].char)
+        ){
+          let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
+          let height = this.font.height;
           ctx.fillStyle = this.data[i][j].backgroundColor;
+          ctx.fillRect(x,y,width,height);
+          ctx.fillRect(x,y,width,height);
           ctx.fillRect(x,y,width,height);
         }
       }
     }
-    for(let i = 0; i <setting.screen.row; i++){
-      for(let j = 0; j<setting.screen.column; j++){
-        if(this.data[i][j].char != this.previousData[i][j].char
-        || this.data[i][j].color != this.previousData[i][j].color
-        || this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor){
+    for(let i = 0; i <setting.env.row; i++){
+      for(let j = 0; j<setting.env.column; j++){
+        if(this.data[i][j].char != "$fullwidthFiller"
+        && (this.data[i][j].char != this.previousData[i][j].char
+            || this.data[i][j].color != this.previousData[i][j].color
+            || this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor)
+        ){
           let x = this.font.width*j;
           let y = this.font.height*i+this.font.height*0.8; // y adjustment
 
@@ -108,8 +133,8 @@ base.canvas = {
         }
       }
     }
-    for(let i = 0; i <setting.screen.row; i++){
-      for(let j = 0; j<setting.screen.column; j++){
+    for(let i = 0; i <setting.env.row; i++){
+      for(let j = 0; j<setting.env.column; j++){
         this.previousData[i][j].char = this.data[i][j].char;
         this.previousData[i][j].isFullwidth = this.data[i][j].isFullwidth;
         this.previousData[i][j].color = this.data[i][j].color;
@@ -124,7 +149,7 @@ base.canvas = {
     var fullwidth = regex.test(char);
 
     if(y<this.data.length && x<this.data[y].length){
-      this.data[y][x] = new common.Char(char[0],fullwidth,color,backgroundColor);
+      this.data[y][x] = new common.Char(char,fullwidth,color,backgroundColor);
     }
   },
   deleteChar : function(x,y){
@@ -132,13 +157,21 @@ base.canvas = {
     this.insertChar(x,y," ");
   },
   insertText : function(x,y,text,color,backgroundColor){
-    var regex = common.getFullwidthRegex();
+    let regex = common.getFullwidthRegex();
     text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
     if(y<0 || y>=this.data.length) return;
     for(let i = 0; i<text.length; i++){
-      if(x+i>=0 && x+i <setting.screen.column)
-      this.insertChar(x+i,y,text[i],color,backgroundColor);
+      if(x+i>=0 && x+i <setting.env.column){
+        this.insertChar(x+i,y,text[i],color,backgroundColor);
+
+        let regex = common.getFullwidthRegex();
+        let fullwidth = regex.test(text[i]);
+        if(fullwidth){
+          i++;
+          this.insertChar(x+i,y,"$fullwidthFiller");
+        }
+      }
     }
   },
   deleteText : function(x,y,text){
@@ -148,48 +181,37 @@ base.canvas = {
 };
 
 base.canvas.dev = {};
-base.canvas.dev.adjustDrawSpeed = function(){
+base.canvas.dev.showFps = function(){
     var now = Date.now();
-    if(--this.adjustDrawSpeed.count<0){
-      this.adjustDrawSpeed.count = this.adjustDrawSpeed.countMax;
-      var drawSpeed = (now-this.adjustDrawSpeed.time)/this.adjustDrawSpeed.countMax;
-      var fps = this.adjustDrawSpeed.countMax/(now-this.adjustDrawSpeed.time)/(base.canvas.countMax+1)*1000;
+    if(--this.showFps.count<0){
+      this.showFps.count = this.showFps.countMax;
+      var drawSpeed = (now-this.showFps.time)/this.showFps.countMax;
+      var fps = this.showFps.countMax/(now-this.showFps.time)/(base.canvas.countMax+1)*1000;
+      base.canvas.dev.showFps.time=now;
+      
       var text = "";
-      if(setting.env.devMode){
+      if(setting.devMode.isActive) {
         text = "FPS: "+ fps.toFixed(2)
         + " Draw Speed: " + drawSpeed.toFixed(2)
-        + " canvas.countMax: " + base.canvas.countMax
-        + " balance: " + this.adjustDrawSpeed.balance
         + "    ";
+
+        var dom_fps = document.querySelector("#fps");
+        if(!dom_fps){
+          dom_fps = document.createElement("div");
+          dom_fps.id="#fps";
+          document.querySelector("#"+setting.devMode.outputDomId);
+        }
+        dom_fps.innerText=text;
       }
       else {
-        text="frame speed: "+ drawSpeed.toFixed(2) + "  ";
-      }
-      base.canvas.insertText(0,0,text);
-      document.querySelector("#fps").innerText=text;
-
-      this.adjustDrawSpeed.time = now;
-
-      // console.log(drawSpeed, setting.env.frameSpeed*1.1);
-      var offset = this.adjustDrawSpeed.balanceMaxOffset;
-      if(drawSpeed > setting.env.frameSpeed*1.15 && ++this.adjustDrawSpeed.balance >= offset){
-        this.adjustDrawSpeed.balance = offset;
-        if(drawSpeed/setting.env.frameSpeed > 2) base.canvas.countMax += 20;
-        else if(drawSpeed/setting.env.frameSpeed > 1.5) base.canvas.countMax += base.canvas.countMax*2<20?base.canvas.countMax*2:20;
-        else if(drawSpeed/setting.env.frameSpeed > 1.3) base.canvas.countMax += base.canvas.countMax*2<10?base.canvas.countMax*2:10;
-        else base.canvas.countMax += 1;
-      }
-      else if(drawSpeed < setting.env.frameSpeed*1.15 && base.canvas.countMax > 0 && --this.adjustDrawSpeed.balance <= -offset){
-        this.adjustDrawSpeed.balance = -offset;
-        base.canvas.countMax -= 1;
+        text = "FPS: "+ fps.toFixed(2);
+        base.canvas.insertText(0,0,text);
       }
     }
 };
-base.canvas.dev.adjustDrawSpeed.time = Date.now();
-base.canvas.dev.adjustDrawSpeed.count = 0;
-base.canvas.dev.adjustDrawSpeed.countMax = 10;
-base.canvas.dev.adjustDrawSpeed.balance = 3;
-base.canvas.dev.adjustDrawSpeed.balanceMaxOffset = 3;
+base.canvas.dev.showFps.time = Date.now();
+base.canvas.dev.showFps.count = 0;
+base.canvas.dev.showFps.countMax = 10;
 
 
 const KEY_UP = 38;

@@ -57,8 +57,8 @@ common.getFullwidthRegex = function(){
 common.Char = function(char,isFullwidth,color,backgroundColor){
   this.char = char;
   this.isFullwidth = isFullwidth;
-  this.color = color?color:setting.screen.defalutFontColor;
-  this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
+  this.color = color?color:setting.env.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:setting.env.backgroundColor;
   this.font = setting.font.fontFamily;
 };
 

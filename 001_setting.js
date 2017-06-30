@@ -5,9 +5,20 @@ var setting = {};
 
 setting.env={
   canvasId:"game",
-  fontSize:16,
-  frameSpeed:20,
-  devMode:true,
+  fontSize: 30,
+  frameSpeed: 10,
+  zoom: 0.5,
+  column: 70, //120,
+  row: 25, //40,
+  backgroundColor:"#000",
+  defalutFontColor:"#fff",
+};
+
+setting.devMode={
+  isActive: true,
+  outputDomId: "devOutput",
+  frameSpeed: 10,
+  zoom: 0.5,
 };
 
 setting.font={
@@ -25,8 +36,8 @@ setting.font={
       regex:"\u25a0\u25a1\u2605\u2606\u25b3\u25b7\u25bd\u25c1\u25a3",
       isFullwidth:true,
       sizeAdj:1.2,
-      xAdj:0,
-      yAdj:0,
+      xAdj:-0.05,
+      yAdj:0.03,
     },
     group3:{//[,],(,)
       regex:"\\[\\](){}",
@@ -36,13 +47,6 @@ setting.font={
       yAdj:0,
     },
   }
-};
-
-setting.screen={
-  column: 70, //120,
-  row: 25, //40,
-  backgroundColor:"#000",
-  defalutFontColor:"#fff",
 };
 
 setting.game={
