@@ -38,21 +38,21 @@ common.isNumber = function(num){
 };
 
 common.getCharGroup = function(char){
-for (var group in setting.font.adjustment){
+for(let group in setting.font.adjustment){
   var charset = setting.font.adjustment[group];
     var regex = new RegExp("^["+charset.regex+"]$");
     if(regex.test(char)) return charset;
   }
-}
+};
 
 common.getFullwidthRegex = function(){
-  var string = ""
-  for (var group in setting.font.adjustment){
+  var string = "";
+  for(let group in setting.font.adjustment){
     var charset = setting.font.adjustment[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
   if(string) return new RegExp("(["+string+"])","g");
-}
+};
 
 common.Char = function(char,isFullwidth,color,backgroundColor){
   this.char = char;

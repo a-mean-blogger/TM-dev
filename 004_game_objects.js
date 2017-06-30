@@ -105,10 +105,10 @@ Status.prototype.drawFrame = function(){
   base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
-  for(var i=1;i<3;i++){
-    for(var j=0;j<4;j++){
+  for(let i=1;i<3;i++){
+    for(let j=0;j<4;j++){
       var x = this.x+4+j*2;
-      var y = this.y+3+i
+      var y = this.y+3+i;
       if(BLOCKS[blockType][0][i][j]==1) {
         base.canvas.insertText(x,y,"■");
       }
@@ -255,23 +255,23 @@ Tetris.prototype.updateActiveBlock = function(){
 
   this.changeActiveBlockTo(EMPTY);
 
-  for(var i=0;i<4;i++){
-    for(var j=0;j<4;j++){
+  for(let i=0;i<4;i++){
+    for(let j=0;j<4;j++){
       if(BLOCKS[activeBlock.type][activeBlock.rotation][i][j]==1)
         this.data.dataArray[activeBlock.y+i][activeBlock.x+j]=ACTIVE_BLOCK;
     }
   }
 };
 Tetris.prototype.changeActiveBlockTo = function(to){
-  for(var i=0;i<this.rowNum;i++){
-    for(var j=0;j<this.colNum;j++){
+  for(let i=0;i<this.rowNum;i++){
+    for(let j=0;j<this.colNum;j++){
       if(this.data.dataArray[i][j]==ACTIVE_BLOCK)
         this.data.dataArray[i][j]=to;
     }
   }
 };
 Tetris.prototype.getInput = function () {
-  if(this.inputSpeedCount == 0){
+  if(this.inputSpeedCount === 0){
     this.inputSpeedCount = this.inputSpeed;
     if(base.inputs.keyboard.check(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
@@ -329,8 +329,8 @@ Tetris.prototype.rotateActiveBlock = function(){
 };
 Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
   var activeBlock = this.data.activeBlock;
-  for(var i=0;i<4;i++){
-    for(var j=0;j<4;j++){
+  for(let i=0;i<4;i++){
+    for(let j=0;j<4;j++){
       if(BLOCKS[type][rN][i][j]==1
       && this.data.dataArray[yN+i][xN+j] > 0){
         return false;

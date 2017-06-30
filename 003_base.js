@@ -40,10 +40,10 @@ base.canvas = {
 
     this.data = [];
     this.previousData = [];
-    for(var i = 0; i <setting.screen.row; i++){
+    for(let i = 0; i <setting.screen.row; i++){
       this.data[i]=[];
       this.previousData[i]=[];
-      for(var j = 0; j<setting.screen.column; j++){
+      for(let j = 0; j<setting.screen.column; j++){
         this.data[i][j]=new common.Char(" ");
         this.previousData[i][j]=new common.Char(" ");
       }
@@ -52,9 +52,9 @@ base.canvas = {
   fillChar: function(char){
     if(typeof char != "string") char = " ";
     this.data = [];
-    for(var i = 0; i <setting.screen.row; i++){
+    for(let i = 0; i <setting.screen.row; i++){
       this.data[i]=[];
-      for(var j = 0; j<setting.screen.column; j++){
+      for(let j = 0; j<setting.screen.column; j++){
         this.data[i][j]=new common.Char(char);
       }
     }
@@ -63,38 +63,38 @@ base.canvas = {
     this.fillChar(" ");
   },
   draw: function() {
-    var ctx = this.ctx;
+    let ctx = this.ctx;
     ctx.textBaseline = "buttom";
-    for(var i = 0; i <setting.screen.row; i++){
-      for(var j = 0; j<setting.screen.column; j++){
-        var x = this.font.width*j-1;
-        var y = this.font.height*i;
+    for(let i = 0; i <setting.screen.row; i++){
+      for(let j = 0; j<setting.screen.column; j++){
+        let x = this.font.width*j-1;
+        let y = this.font.height*i;
 
         if(this.previousData[i][j].isFullwidth
         && (!this.data[i][j].isFullwidth || this.data[i][j+1].char!=" ")){
-          var width = this.font.width*2+1;
-          var height = this.font.height+1;
+          let width = this.font.width*2+1;
+          let height = this.font.height+1;
           ctx.fillStyle = this.backgroundColor;
           ctx.fillRect(x,y,width,height);
         }
         else if(this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor
         || this.data[i][j].char != this.previousData[i][j].char){
-          var width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+1;
-          var height = this.font.height+1;
+          let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+1;
+          let height = this.font.height+1;
           ctx.fillStyle = this.data[i][j].backgroundColor;
           ctx.fillRect(x,y,width,height);
         }
       }
     }
-    for(var i = 0; i <setting.screen.row; i++){
-      for(var j = 0; j<setting.screen.column; j++){
+    for(let i = 0; i <setting.screen.row; i++){
+      for(let j = 0; j<setting.screen.column; j++){
         if(this.data[i][j].char != this.previousData[i][j].char
         || this.data[i][j].color != this.previousData[i][j].color
         || this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor){
-          var x = this.font.width*j;
-          var y = this.font.height*i+this.font.height*0.8; // y adjustment
+          let x = this.font.width*j;
+          let y = this.font.height*i+this.font.height*0.8; // y adjustment
 
-          var charset = common.getCharGroup(this.data[i][j].char);
+          let charset = common.getCharGroup(this.data[i][j].char);
           if(charset){
             ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
             x = x+this.font.width*charset.xAdj;
@@ -108,8 +108,8 @@ base.canvas = {
         }
       }
     }
-    for(var i = 0; i <setting.screen.row; i++){
-      for(var j = 0; j<setting.screen.column; j++){
+    for(let i = 0; i <setting.screen.row; i++){
+      for(let j = 0; j<setting.screen.column; j++){
         this.previousData[i][j].char = this.data[i][j].char;
         this.previousData[i][j].isFullwidth = this.data[i][j].isFullwidth;
         this.previousData[i][j].color = this.data[i][j].color;
@@ -136,7 +136,7 @@ base.canvas = {
     text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
     if(y<0 || y>=this.data.length) return;
-    for(var i = 0; i<text.length; i++){
+    for(let i = 0; i<text.length; i++){
       if(x+i>=0 && x+i <setting.screen.column)
       this.insertChar(x+i,y,text[i],color,backgroundColor);
     }
@@ -249,7 +249,7 @@ base.main = {
     });
   },
   loop: function(){}
-}
+};
 
 base.canvas.init();
 base.inputs.init();
