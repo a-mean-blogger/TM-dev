@@ -7,7 +7,7 @@ setting.env={
   canvasId:"game",
   fontSize: 30,
   frameSpeed: 10,
-  zoom: 0.5,
+  zoom: 0.6,
   column: 70, //120,
   row: 25, //40,
   backgroundColor:"#000",

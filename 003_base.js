@@ -16,10 +16,18 @@ base.canvas = {
   data: [],
   previousData: [],
   count: 0,
-  countMax: 1,
+  countMax: 3,
+  fontChecked: false,
+  fontCheck: function(){
+    if(document.fonts.check("1em "+setting.font.fontFamily)){
+      this.resetPreviousData();
+      this.fontChecked = true;
+    }
+  },
   loop: function(){
     if(--this.count<=0){
       this.count = this.countMax;
+      if(!this.fontChecked) this.fontCheck();
       this.draw();
     }
     this.dev.showFps();
@@ -40,13 +48,23 @@ base.canvas = {
     this.canvas.style.height = this.height*(setting.env.zoom?setting.env.zoom:1)+"px";
     this.ctx = this.canvas.getContext("2d");
 
+    this.resetData();
+    this.resetPreviousData();
+  },
+  resetData:function(){
     this.data = [];
-    this.previousData = [];
     for(let i = 0; i <setting.env.row; i++){
       this.data[i]=[];
-      this.previousData[i]=[];
       for(let j = 0; j<setting.env.column; j++){
         this.data[i][j]=new common.Char(" ");
+      }
+    }
+  },
+  resetPreviousData:function(){
+    this.previousData = [];
+    for(let i = 0; i <setting.env.row; i++){
+      this.previousData[i]=[];
+      for(let j = 0; j<setting.env.column; j++){
         this.previousData[i][j]=new common.Char(" ");
       }
     }
@@ -188,7 +206,7 @@ base.canvas.dev.showFps = function(){
       var drawSpeed = (now-this.showFps.time)/this.showFps.countMax;
       var fps = this.showFps.countMax/(now-this.showFps.time)/(base.canvas.countMax+1)*1000;
       base.canvas.dev.showFps.time=now;
-      
+
       var text = "";
       if(setting.devMode.isActive) {
         text = "FPS: "+ fps.toFixed(2)
