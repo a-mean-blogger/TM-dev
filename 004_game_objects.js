@@ -155,7 +155,7 @@ function Tetris(properties,status){
   this.parentObjects.status = status;
   this.x = properties.x;
   this.y = properties.y;
-  this.dropSpeed = 0;
+  this.dropSpeed = 80;
   this.dropSpeedCount = 0;
   this.inputSpeed = 10;
   this.inputSpeedCount = 0;
@@ -200,10 +200,10 @@ Tetris.prototype.draw = function () {
           blockChar="▣";
           break;
         case INACTIVE_BLOCK:
-          blockChar="□";
+          blockChar="■";
           break;
         case ACTIVE_BLOCK:
-          blockChar="■";
+          blockChar="□";
           break;
       }
       base.canvas.insertText(this.x+j*2,this.y+i,blockChar);
@@ -285,10 +285,25 @@ Tetris.prototype.getInput = function () {
     if(base.inputs.keyboard.check(this.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
+    if(base.inputs.keyboard.check(this.keyset.DROP)){
+      this.hardDrop();
+    }
   } else {
     this.inputSpeedCount--;
   }
 };
+Tetris.prototype.hardDrop = function(){
+  var activeBlock = this.data.activeBlock;
+
+  if(this.moveActiveBlock(0,1)){
+    this.hardDrop();
+  }
+  else{
+    this.inActivateBlock();
+    return;
+  }
+}
+
 Tetris.prototype.moveActiveBlock = function(x,y){
   var activeBlock = this.data.activeBlock;
   var xN = activeBlock.x+x;
