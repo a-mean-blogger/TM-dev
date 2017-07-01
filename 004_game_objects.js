@@ -331,6 +331,10 @@ Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
   var activeBlock = this.data.activeBlock;
   for(let i=0;i<4;i++){
     for(let j=0;j<4;j++){
+      if(!this.data.dataArray[yN+i]
+      ||this.data.dataArray[yN+i][xN+j] === undefined){
+        return false;
+      }
       if(BLOCKS[type][rN][i][j]==1
       && this.data.dataArray[yN+i][xN+j] > 0){
         return false;
