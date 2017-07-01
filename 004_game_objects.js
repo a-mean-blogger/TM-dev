@@ -186,27 +186,32 @@ Tetris.prototype.init = function(){
   this.createNewBlock();
 };
 Tetris.prototype.draw = function () {
+  var activeBlock = this.data.activeBlock;
+
   for(i=0;i<this.rowNum;i++){
     for(j=0;j<this.colNum;j++){
       var blockChar;
+      let color;
       switch(this.data.dataArray[i][j]){
-        case EMPTY:
-          blockChar="  ";
+        case ACTIVE_BLOCK: //-2
+          blockChar="□";
+          color = this.getBlockColor(activeBlock.type);
           break;
-        case CEILLING:
+        case CEILLING: // -1
           blockChar=". ";
           break;
-        case WALL:
+        case EMPTY: //0
+          blockChar="  ";
+          break;
+        case WALL: // 1
           blockChar="▣";
           break;
-        case INACTIVE_BLOCK:
+        default: // 2~
           blockChar="■";
-          break;
-        case ACTIVE_BLOCK:
-          blockChar="□";
+          color = this.getBlockColor(this.data.dataArray[i][j]-2);
           break;
       }
-      base.canvas.insertText(this.x+j*2,this.y+i,blockChar);
+      base.canvas.insertText(this.x+j*2,this.y+i,blockChar,color);
     }
   }
 };
@@ -217,6 +222,17 @@ Tetris.prototype.calculate = function () {
   if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
   this.getInput();
 };
+Tetris.prototype.getBlockColor = function (blockType) {
+  var color;
+  if(blockType == 0) color = "red";
+  else if(blockType == 1) color = "orange";
+  else if(blockType == 2) color = "blue";
+  else if(blockType == 3) color = "tomato";
+  else if(blockType == 4) color = "yellow";
+  else if(blockType == 5) color = "gray";
+  else if(blockType == 6) color = "green";
+  return color;
+}
 Tetris.prototype.resetDataArray = function () {
   this.data.dataArray=[];
   for(i=0;i<this.rowNum;i++){
@@ -372,7 +388,8 @@ Tetris.prototype.inActivateBlock = function(){
   if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1) && --activeBlock.inActivate.count < 0){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     this.updateActiveBlock();
-    this.changeActiveBlockTo(INACTIVE_BLOCK);
+    console.log(this.data.activeBlock.type+2);
+    this.changeActiveBlockTo(this.data.activeBlock.type+2);
     this.createNewBlock();
   }
 };
