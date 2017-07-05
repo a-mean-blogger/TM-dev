@@ -90,12 +90,12 @@ function Status(properties){
 Status.prototype.drawFrame = function(){
   base.canvas.insertText(this.x, this.y+0, " LEVEL :");
   base.canvas.insertText(this.x, this.y+1, " GOAL  :");
-  base.canvas.insertText(this.x, this.y+2, "+-  N E X T  -+ ");
-  base.canvas.insertText(this.x, this.y+3, "|             | ");
-  base.canvas.insertText(this.x, this.y+4, "|             | ");
-  base.canvas.insertText(this.x, this.y+5, "|             | ");
-  base.canvas.insertText(this.x, this.y+6, "|             | ");
-  base.canvas.insertText(this.x, this.y+7, "+-- -  -  - --+ ");
+  base.canvas.insertText(this.x, this.y+2, "+-  N E X T   -+ ");
+  base.canvas.insertText(this.x, this.y+3, "|              | ");
+  base.canvas.insertText(this.x, this.y+4, "|              | ");
+  base.canvas.insertText(this.x, this.y+5, "|              | ");
+  base.canvas.insertText(this.x, this.y+6, "|              | ");
+  base.canvas.insertText(this.x, this.y+7, "+-- -  --  - --+ ");
   base.canvas.insertText(this.x, this.y+8, " YOUR SCORE :");
   base.canvas.insertText(this.x, this.y+10," LAST SCORE :");
   base.canvas.insertText(this.x, this.y+12," BEST SCORE :");
@@ -105,12 +105,14 @@ Status.prototype.drawFrame = function(){
   base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
+  var xOffset = (blockType === 0 || blockType === 1)?-1:0;
+  var color = Tetris.prototype.getBlockColor(blockType);
   for(let i=1;i<3;i++){
     for(let j=0;j<4;j++){
-      var x = this.x+4+j*2;
+      var x = this.x+5+j*2+xOffset;
       var y = this.y+3+i;
       if(BLOCKS[blockType][0][i][j]==1) {
-        base.canvas.insertText(x,y,"■");
+        base.canvas.insertText(x,y,"■", color);
       }
       else {
         base.canvas.insertText(x,y,"  ");
@@ -258,7 +260,7 @@ Tetris.prototype.createNewBlock = function(){
   var newBlock = this.data.activeBlock;
   newBlock.rotation = 0;
   newBlock.type = this.data.nextBlockType?this.data.nextBlockType:Math.floor(Math.random()*7);
-  newBlock.x = Math.floor(this.colNum/2)-2;
+  newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
   newBlock.inActivate.flag = false;
   newBlock.inActivate.count = this.data.activeBlock.inActivate.countMax;
@@ -388,7 +390,6 @@ Tetris.prototype.inActivateBlock = function(){
   if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1) && --activeBlock.inActivate.count < 0){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     this.updateActiveBlock();
-    console.log(this.data.activeBlock.type+2);
     this.changeActiveBlockTo(this.data.activeBlock.type+2);
     this.createNewBlock();
   }
