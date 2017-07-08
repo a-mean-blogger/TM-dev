@@ -14,13 +14,11 @@ base.canvas = {
     height: common.getBlockHeight(setting.env.fontSize),
   },
   data: [],
-  previousData: [],
   count: 0,
   countMax: 3,
   fontChecked: false,
   fontCheck: function(){
     if(document.fonts.check("1em "+setting.font.fontFamily)){
-      this.resetPreviousData();
       this.fontChecked = true;
     }
   },
@@ -49,7 +47,6 @@ base.canvas = {
     this.ctx = this.canvas.getContext("2d");
 
     this.resetData();
-    this.resetPreviousData();
   },
   resetData:function(){
     this.data = [];
@@ -57,15 +54,6 @@ base.canvas = {
       this.data[i]=[];
       for(let j = 0; j<setting.env.column; j++){
         this.data[i][j]=new common.Char(" ");
-      }
-    }
-  },
-  resetPreviousData:function(){
-    this.previousData = [];
-    for(let i = 0; i <setting.env.row; i++){
-      this.previousData[i]=[];
-      for(let j = 0; j<setting.env.column; j++){
-        this.previousData[i][j]=new common.Char(" ");
       }
     }
   },
@@ -87,87 +75,58 @@ base.canvas = {
     ctx.textBaseline = "buttom";
     for(let i = 0; i <setting.env.row; i++){
       for(let j = 0; j<setting.env.column; j++){
-        let x = this.font.width*j-this.font.width*0.1;
-        let y = this.font.height*i;
-
-        // if(this.previousData[i][j].isFullwidth
-        // && (!this.data[i][j].isFullwidth || this.data[i][j+1].char!=" ")){
-        //   // let width = this.font.width*2+this.font.width*0.1;
-        //   // let height = this.font.height;
-        //   // ctx.fillStyle = this.backgroundColor;
-        //   // ctx.fillRect(x,y,width,height);
-        //   // if(this.data[i][j+1].char!=" ") this.data[i][j] = new common.Char(" ");
-        //   this.previousData[i][j].char = "$$";
-        //   this.previousData[i][j+1].char = "$$";
-        //
-        //
-        // }
-        if(this.previousData[i][j].isFullwidth && !this.data[i][j].isFullwidth){
-          this.previousData[i][j].char = "$$";
-          this.previousData[i][j+1].char = "$$";
-        }
-        if(this.data[i][j].isFullwidth && this.data[i][j+1].char!="$fullwidthFiller"){
-          this.data[i][j] = new common.Char(" ");
-        }
-        if(this.data[i][j].char == "$fullwidthFiller" && this.data[i][j-1].char == "$fullwidthFiller"){
-          this.data[i][j].char = " ";
-        }
-
-
-        if(this.data[i][j].char != "$fullwidthFiller"
-        && (this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor
-           || this.data[i][j].char != this.previousData[i][j].char)
+        if(this.data[i][j].char[0] != "$"
+          && this.data[i][j].draw === true
         ){
+          this.data[i][j].draw = false;
+          let bgX = this.font.width*j-this.font.width*0.1;
+          let bgY = this.font.height*i;
           let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
           let height = this.font.height;
           ctx.fillStyle = this.data[i][j].backgroundColor;
-          ctx.fillRect(x,y,width,height);
-          ctx.fillRect(x,y,width,height);
-          ctx.fillRect(x,y,width,height);
-        }
-      }
-    }
-    for(let i = 0; i <setting.env.row; i++){
-      for(let j = 0; j<setting.env.column; j++){
-        if(this.data[i][j].char != "$fullwidthFiller"
-        && (this.data[i][j].char != this.previousData[i][j].char
-            || this.data[i][j].color != this.previousData[i][j].color
-            || this.data[i][j].backgroundColor != this.previousData[i][j].backgroundColor)
-        ){
-          let x = this.font.width*j;
-          let y = this.font.height*i+this.font.height*0.8; // y adjustment
+          ctx.fillRect(bgX,bgY,width,height);
+
+
+          let chX = this.font.width*j;
+          let chY = this.font.height*i+this.font.height*0.8; // y adjustment
 
           let charset = common.getCharGroup(this.data[i][j].char);
           if(charset){
             ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
-            x = x+this.font.width*charset.xAdj;
-            y = y+this.font.height*charset.yAdj;
+            chX = chX+this.font.width*charset.xAdj;
+            chY = chY+this.font.height*charset.yAdj;
           }
           else {
             ctx.font = this.font.size+"px "+this.data[i][j].font;
           }
           ctx.fillStyle = this.data[i][j].color;
-          ctx.fillText(this.data[i][j].char,x,y);
+          ctx.fillText(this.data[i][j].char,chX,chY);
         }
       }
     }
-    for(let i = 0; i <setting.env.row; i++){
-      for(let j = 0; j<setting.env.column; j++){
-        this.previousData[i][j].char = this.data[i][j].char;
-        this.previousData[i][j].isFullwidth = this.data[i][j].isFullwidth;
-        this.previousData[i][j].color = this.data[i][j].color;
-        this.previousData[i][j].backgroundColor = this.data[i][j].backgroundColor;
-      }
-    }
   },
-  insertChar : function(x,y,char,color,backgroundColor){
+  isInCanvas: function(x,y){
+    if(x>=0 && y>=0 && y<this.data.length && x<this.data[y].length) return true;
+    else return false;
+  },
+  insertChar: function(x,y,char,color,backgroundColor){
     if(char.constructor != String) return console.error(char+" is invalid");
 
-    var regex = common.getFullwidthRegex();
-    var fullwidth = regex.test(char);
+    color = color?color:setting.env.defalutFontColor;
+    backgroundColor = backgroundColor?backgroundColor:setting.env.backgroundColor;
 
-    if(y<this.data.length && x<this.data[y].length){
+    if(this.isInCanvas(x,y)
+      && (this.data[y][x].char != char
+        || this.data[y][x].color != color
+        || this.data[y][x].backgroundColor != backgroundColor)){
+      var regex = common.getFullwidthRegex();
+      var fullwidth = regex.test(char);
+
       this.data[y][x] = new common.Char(char,fullwidth,color,backgroundColor);
+
+      // to clean background outliner
+      if(this.isInCanvas(x-1,y)) this.data[y][x-1].draw = true;
+      if(this.isInCanvas(x+(fullwidth?2:1),y)) this.data[y][x+(fullwidth?2:1)].draw = true;
     }
   },
   deleteChar : function(x,y){
