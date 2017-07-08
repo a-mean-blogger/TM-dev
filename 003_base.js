@@ -119,8 +119,8 @@ base.canvas = {
       && (this.data[y][x].char != char
         || this.data[y][x].color != color
         || this.data[y][x].backgroundColor != backgroundColor)){
-      var regex = common.getFullwidthRegex();
-      var fullwidth = regex.test(char);
+      let regex = common.getFullwidthRegex();
+      let fullwidth = regex.test(char);
 
       this.data[y][x] = new common.Char(char,fullwidth,color,backgroundColor);
 
@@ -159,20 +159,20 @@ base.canvas = {
 
 base.canvas.dev = {};
 base.canvas.dev.showFps = function(){
-    var now = Date.now();
+    let now = Date.now();
     if(--this.showFps.count<0){
       this.showFps.count = this.showFps.countMax;
-      var drawSpeed = (now-this.showFps.time)/this.showFps.countMax;
-      var fps = this.showFps.countMax/(now-this.showFps.time)/(base.canvas.countMax+1)*1000;
+      let drawSpeed = (now-this.showFps.time)/this.showFps.countMax;
+      let fps = this.showFps.countMax/(now-this.showFps.time)/(base.canvas.countMax+1)*1000;
       base.canvas.dev.showFps.time=now;
 
-      var text = "";
+      let text = "";
       if(setting.devMode.isActive) {
         text = "FPS: "+ fps.toFixed(2)
         + " Draw Speed: " + drawSpeed.toFixed(2)
         + "    ";
 
-        var dom_fps = document.querySelector("#fps");
+        let dom_fps = document.querySelector("#fps");
         if(!dom_fps){
           dom_fps = document.createElement("div");
           dom_fps.id="#fps";

@@ -10,7 +10,7 @@ game = {
   },
   destroy: function(){
     for(let i in this.programs){
-      var program = this.programs[i];
+      let program = this.programs[i];
       program.destroy();
     }
   }

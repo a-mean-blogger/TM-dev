@@ -10,7 +10,7 @@ BaseObject.prototype.calculate = function(){};
 BaseObject.prototype.draw = function(){};
 BaseObject.prototype.destroy = function(){
   if(Array.isArray(this.container)){
-    var i = container.indexOf(this);
+    let i = container.indexOf(this);
     if (i >= 0) container.splice(i,1);
   }
 };
@@ -105,12 +105,12 @@ Status.prototype.drawFrame = function(){
   base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
-  var xOffset = (blockType === 0 || blockType === 1)?-1:0;
-  var color = Tetris.prototype.getBlockColor(blockType);
+  let xOffset = (blockType === 0 || blockType === 1)?-1:0;
+  let color = Tetris.prototype.getBlockColor(blockType);
   for(let i=1;i<3;i++){
     for(let j=0;j<4;j++){
-      var x = this.x+5+j*2+xOffset;
-      var y = this.y+3+i;
+      let x = this.x+5+j*2+xOffset;
+      let y = this.y+3+i;
       if(BLOCKS[blockType][0][i][j]==1) {
         base.canvas.insertText(x,y,"■", color);
       }
@@ -121,10 +121,10 @@ Status.prototype.drawNextBlock = function(blockType){
   }
 };
 Status.prototype.convertScore = function(score){
-  var string = score.toString();
-  var formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
-  var offset = 10 - formatted.length;
-  var padding = "";
+  let string = score.toString();
+  let formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
+  let offset = 10 - formatted.length;
+  let padding = "";
   for(let i=offset;i>0;i--) padding+=" ";
   return padding+ formatted;
 };
@@ -188,11 +188,11 @@ Tetris.prototype.init = function(){
   this.createNewBlock();
 };
 Tetris.prototype.draw = function () {
-  var activeBlock = this.data.activeBlock;
+  let activeBlock = this.data.activeBlock;
 
   for(i=0;i<this.rowNum;i++){
     for(j=0;j<this.colNum;j++){
-      var blockChar;
+      let blockChar;
       let color;
       switch(this.data.dataArray[i][j]){
         case ACTIVE_BLOCK: //-2
@@ -225,16 +225,16 @@ Tetris.prototype.calculate = function () {
   this.getInput();
 };
 Tetris.prototype.getBlockColor = function (blockType) {
-  var color;
-  if(blockType == 0) color = "red";
-  else if(blockType == 1) color = "orange";
-  else if(blockType == 2) color = "blue";
-  else if(blockType == 3) color = "tomato";
-  else if(blockType == 4) color = "yellow";
-  else if(blockType == 5) color = "gray";
-  else if(blockType == 6) color = "green";
+  let color;
+  if(blockType === 0) color = "red";
+  else if(blockType === 1) color = "orange";
+  else if(blockType === 2) color = "blue";
+  else if(blockType === 3) color = "tomato";
+  else if(blockType === 4) color = "yellow";
+  else if(blockType === 5) color = "gray";
+  else if(blockType === 6) color = "green";
   return color;
-}
+};
 Tetris.prototype.resetDataArray = function () {
   this.data.dataArray=[];
   for(i=0;i<this.rowNum;i++){
@@ -257,7 +257,7 @@ Tetris.prototype.updateCeilling = function(){
   }
 };
 Tetris.prototype.createNewBlock = function(){
-  var newBlock = this.data.activeBlock;
+  let newBlock = this.data.activeBlock;
   newBlock.rotation = 0;
   newBlock.type = this.data.nextBlockType?this.data.nextBlockType:Math.floor(Math.random()*7);
   newBlock.x = Math.floor(this.colNum/2)-1;
@@ -269,7 +269,7 @@ Tetris.prototype.createNewBlock = function(){
   this.parentObjects.status.drawNextBlock(this.data.nextBlockType);
 };
 Tetris.prototype.updateActiveBlock = function(){
-  var activeBlock= this.data.activeBlock;
+  let activeBlock= this.data.activeBlock;
 
   this.changeActiveBlockTo(EMPTY);
 
@@ -311,7 +311,7 @@ Tetris.prototype.getInput = function () {
   }
 };
 Tetris.prototype.hardDrop = function(){
-  var activeBlock = this.data.activeBlock;
+  let activeBlock = this.data.activeBlock;
 
   if(this.moveActiveBlock(0,1)){
     this.hardDrop();
@@ -320,13 +320,13 @@ Tetris.prototype.hardDrop = function(){
     this.inActivateBlock();
     return;
   }
-}
+};
 
 Tetris.prototype.moveActiveBlock = function(x,y){
-  var activeBlock = this.data.activeBlock;
-  var xN = activeBlock.x+x;
-  var yN = activeBlock.y+y;
-  var moved = false;
+  let activeBlock = this.data.activeBlock;
+  let xN = activeBlock.x+x;
+  let yN = activeBlock.y+y;
+  let moved = false;
   if(this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,xN,yN)){
     activeBlock.x = xN;
     activeBlock.y = yN;
@@ -335,8 +335,8 @@ Tetris.prototype.moveActiveBlock = function(x,y){
   return moved;
 };
 Tetris.prototype.moveDownActiveBlock = function(){
-  var activeBlock = this.data.activeBlock;
-  var moved = this.moveActiveBlock(0,1);
+  let activeBlock = this.data.activeBlock;
+  let moved = this.moveActiveBlock(0,1);
 
   if(moved && this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
@@ -347,9 +347,9 @@ Tetris.prototype.moveDownActiveBlock = function(){
   }
 };
 Tetris.prototype.rotateActiveBlock = function(){
-  var activeBlock = this.data.activeBlock;
-  var rN = (activeBlock.rotation+1)%4;
-  var moved = false;
+  let activeBlock = this.data.activeBlock;
+  let rN = (activeBlock.rotation+1)%4;
+  let moved = false;
   if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y)){
     activeBlock.rotation = rN;
     moved = true;
@@ -361,7 +361,7 @@ Tetris.prototype.rotateActiveBlock = function(){
   return moved;
 };
 Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
-  var activeBlock = this.data.activeBlock;
+  let activeBlock = this.data.activeBlock;
   for(let i=0;i<4;i++){
     for(let j=0;j<4;j++){
       if(!this.data.dataArray[yN+i]
@@ -377,7 +377,7 @@ Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
   return true;
 };
 Tetris.prototype.autoDrop = function(){
-  var activeBlock= this.data.activeBlock;
+  let activeBlock= this.data.activeBlock;
   if(this.dropSpeedCount >= this.dropSpeed){
     this.dropSpeedCount = 0;
     this.moveDownActiveBlock();
@@ -386,7 +386,7 @@ Tetris.prototype.autoDrop = function(){
   }
 };
 Tetris.prototype.inActivateBlock = function(){
-  var activeBlock = this.data.activeBlock;
+  let activeBlock = this.data.activeBlock;
   if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1) && --activeBlock.inActivate.count < 0){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     this.updateActiveBlock();

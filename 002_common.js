@@ -8,16 +8,16 @@ common.getBlockWidth = function(fontSize){
 };
 
 common.getBlockHeight = function(fontSize){
-  var blockHeight;
+  let blockHeight;
   if(fontSize < 3){
     blockHeight = fontSize;
   } else {
-    var offsets = [6,7,7];
-    var index = 0;
-    var adjustment = 1;
-    var val = fontSize-3;
+    let offsets = [6,7,7];
+    let index = 0;
+    let adjustment = 1;
+    let val = fontSize-3;
 
-    var recursive = function(val){
+    let recursive = function(val){
       if(val-offsets[index] <= 0) return;
       else {
         val -= offsets[index];
@@ -39,16 +39,16 @@ common.isNumber = function(num){
 
 common.getCharGroup = function(char){
 for(let group in setting.font.adjustment){
-  var charset = setting.font.adjustment[group];
-    var regex = new RegExp("^["+charset.regex+"]$");
+  let charset = setting.font.adjustment[group];
+    let regex = new RegExp("^["+charset.regex+"]$");
     if(regex.test(char)) return charset;
   }
 };
 
 common.getFullwidthRegex = function(){
-  var string = "";
+  let string = "";
   for(let group in setting.font.adjustment){
-    var charset = setting.font.adjustment[group];
+    let charset = setting.font.adjustment[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
   if(string) return new RegExp("(["+string+"])","g");
