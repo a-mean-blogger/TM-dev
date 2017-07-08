@@ -78,18 +78,17 @@ base.canvas = {
         if(this.data[i][j].char[0] != "$"
           && this.data[i][j].draw === true
         ){
-          this.data[i][j].draw = false;
-          let bgX = this.font.width*j-this.font.width*0.1;
+          //draw backgroundColor
+          let bgX = this.font.width*j-this.font.width*0.05;
           let bgY = this.font.height*i;
           let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
           let height = this.font.height;
           ctx.fillStyle = this.data[i][j].backgroundColor;
           ctx.fillRect(bgX,bgY,width,height);
 
-
+          //draw char
           let chX = this.font.width*j;
           let chY = this.font.height*i+this.font.height*0.8; // y adjustment
-
           let charset = common.getCharGroup(this.data[i][j].char);
           if(charset){
             ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
@@ -101,6 +100,9 @@ base.canvas = {
           }
           ctx.fillStyle = this.data[i][j].color;
           ctx.fillText(this.data[i][j].char,chX,chY);
+
+          //do not draw once it already drew for the better performance
+          this.data[i][j].draw = false;
         }
       }
     }
