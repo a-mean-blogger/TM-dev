@@ -12,20 +12,39 @@ base.canvas = {
     size: setting.env.fontSize,
     width: common.getBlockWidth(setting.env.fontSize),
     height: common.getBlockHeight(setting.env.fontSize),
+    isLoaded: false,
+    checkLoaded: function(func){
+      if(document.fonts.check("1em "+setting.font.fontFamily)){
+        this.isLoaded = true;
+        func();
+      }
+    },
   },
-  data: [],
-  count: 0,
-  countMax: 3,
-  fontChecked: false,
-  fontCheck: function(){
-    if(document.fonts.check("1em "+setting.font.fontFamily)){
-      this.fontChecked = true;
-    }
+  screen: {
+    data: [],
+    count: 0,
+    countMax: 3,
+    init:function(){
+      this.data = [];
+      for(let i = 0; i <setting.env.row; i++){
+        this.data[i]=[];
+        for(let j = 0; j<setting.env.column; j++){
+          this.data[i][j]=new common.Char(" ");
+        }
+      }
+    },
+    refresh:function(){
+      for(let i = 0; i <this.data.length; i++){
+        for(let j = 0; j<this.data[i].length; j++){
+          this.data[i][j].draw = true;
+        }
+      }
+    },
   },
   loop: function(){
-    if(--this.count<=0){
-      this.count = this.countMax;
-      if(!this.fontChecked) this.fontCheck();
+    if(--this.screen.count<=0){
+      this.screen.count = this.screen.countMax;
+      if(!this.font.isLoaded) this.font.checkLoaded(_=>this.screen.refresh());
       this.draw();
     }
     this.dev.showFps();
@@ -46,24 +65,15 @@ base.canvas = {
     this.canvas.style.height = this.height*(setting.env.zoom?setting.env.zoom:1)+"px";
     this.ctx = this.canvas.getContext("2d");
 
-    this.resetData();
-  },
-  resetData:function(){
-    this.data = [];
-    for(let i = 0; i <setting.env.row; i++){
-      this.data[i]=[];
-      for(let j = 0; j<setting.env.column; j++){
-        this.data[i][j]=new common.Char(" ");
-      }
-    }
+    this.screen.init();
   },
   fillChar: function(char){
     if(typeof char != "string") char = " ";
-    this.data = [];
+    this.screen.data = [];
     for(let i = 0; i <setting.env.row; i++){
-      this.data[i]=[];
+      this.screen.data[i]=[];
       for(let j = 0; j<setting.env.column; j++){
-        this.data[i][j]=new common.Char(char);
+        this.screen.data[i][j]=new common.Char(char);
       }
     }
   },
@@ -75,40 +85,40 @@ base.canvas = {
     ctx.textBaseline = "buttom";
     for(let i = 0; i <setting.env.row; i++){
       for(let j = 0; j<setting.env.column; j++){
-        if(this.data[i][j].char[0] != "$"
-          && this.data[i][j].draw === true
+        if(this.screen.data[i][j].char[0] != "$"
+          && this.screen.data[i][j].draw === true
         ){
           //draw backgroundColor
           let bgX = this.font.width*j-this.font.width*0.05;
           let bgY = this.font.height*i;
-          let width = (this.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
+          let width = (this.screen.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
           let height = this.font.height;
-          ctx.fillStyle = this.data[i][j].backgroundColor;
+          ctx.fillStyle = this.screen.data[i][j].backgroundColor;
           ctx.fillRect(bgX,bgY,width,height);
 
           //draw char
           let chX = this.font.width*j;
           let chY = this.font.height*i+this.font.height*0.8; // y adjustment
-          let charset = common.getCharGroup(this.data[i][j].char);
+          let charset = common.getCharGroup(this.screen.data[i][j].char);
           if(charset){
-            ctx.font = this.font.size*charset.sizeAdj+"px "+this.data[i][j].font;
+            ctx.font = this.font.size*charset.sizeAdj+"px "+this.screen.data[i][j].font;
             chX = chX+this.font.width*charset.xAdj;
             chY = chY+this.font.height*charset.yAdj;
           }
           else {
-            ctx.font = this.font.size+"px "+this.data[i][j].font;
+            ctx.font = this.font.size+"px "+this.screen.data[i][j].font;
           }
-          ctx.fillStyle = this.data[i][j].color;
-          ctx.fillText(this.data[i][j].char,chX,chY);
+          ctx.fillStyle = this.screen.data[i][j].color;
+          ctx.fillText(this.screen.data[i][j].char,chX,chY);
 
           //do not draw once it already drew for the better performance
-          this.data[i][j].draw = false;
+          this.screen.data[i][j].draw = false;
         }
       }
     }
   },
   isInCanvas: function(x,y){
-    if(x>=0 && y>=0 && y<this.data.length && x<this.data[y].length) return true;
+    if(x>=0 && y>=0 && y<this.screen.data.length && x<this.screen.data[y].length) return true;
     else return false;
   },
   insertChar: function(x,y,char,color,backgroundColor){
@@ -118,17 +128,17 @@ base.canvas = {
     backgroundColor = backgroundColor?backgroundColor:setting.env.backgroundColor;
 
     if(this.isInCanvas(x,y)
-      && (this.data[y][x].char != char
-        || this.data[y][x].color != color
-        || this.data[y][x].backgroundColor != backgroundColor)){
+      && (this.screen.data[y][x].char != char
+        || this.screen.data[y][x].color != color
+        || this.screen.data[y][x].backgroundColor != backgroundColor)){
       let regex = common.getFullwidthRegex();
       let fullwidth = regex.test(char);
 
-      this.data[y][x] = new common.Char(char,fullwidth,color,backgroundColor);
+      this.screen.data[y][x] = new common.Char(char,fullwidth,color,backgroundColor);
 
       // to clean background outliner
-      if(this.isInCanvas(x-1,y)) this.data[y][x-1].draw = true;
-      if(this.isInCanvas(x+(fullwidth?2:1),y)) this.data[y][x+(fullwidth?2:1)].draw = true;
+      if(this.isInCanvas(x-1,y)) this.screen.data[y][x-1].draw = true;
+      if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screen.data[y][x+(fullwidth?2:1)].draw = true;
     }
   },
   deleteChar : function(x,y){
@@ -139,7 +149,7 @@ base.canvas = {
     let regex = common.getFullwidthRegex();
     text = text.replace(regex,"$1 ");
     if(text.constructor != String) return console.error(text+" is invalid");
-    if(y<0 || y>=this.data.length) return;
+    if(y<0 || y>=this.screen.data.length) return;
     for(let i = 0; i<text.length; i++){
       if(x+i>=0 && x+i <setting.env.column){
         this.insertChar(x+i,y,text[i],color,backgroundColor);
