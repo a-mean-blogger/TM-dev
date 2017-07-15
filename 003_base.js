@@ -47,7 +47,6 @@ base.canvas = {
       if(!this.font.isLoaded) this.font.checkLoaded(_=>this.screen.refresh());
       this.draw();
     }
-    this.dev.showFps();
   },
   init: function(){
     var link = document.createElement('link');
@@ -169,39 +168,6 @@ base.canvas = {
   },
 };
 
-base.canvas.dev = {};
-base.canvas.dev.showFps = function(){
-    let now = Date.now();
-    if(--this.showFps.count<0){
-      this.showFps.count = this.showFps.countMax;
-      let drawSpeed = (now-this.showFps.time)/this.showFps.countMax;
-      let fps = this.showFps.countMax/(now-this.showFps.time)/(base.canvas.countMax+1)*1000;
-      base.canvas.dev.showFps.time=now;
-
-      let text = "";
-      if(setting.devMode.isActive) {
-        text = "FPS: "+ fps.toFixed(2)
-        + " Draw Speed: " + drawSpeed.toFixed(2)
-        + "    ";
-
-        let dom_fps = document.querySelector("#fps");
-        if(!dom_fps){
-          dom_fps = document.createElement("div");
-          dom_fps.id="#fps";
-          document.querySelector("#"+setting.devMode.outputDomId);
-        }
-        dom_fps.innerText=text;
-      }
-      else {
-        text = "FPS: "+ fps.toFixed(2);
-        base.canvas.insertText(0,0,text);
-      }
-    }
-};
-base.canvas.dev.showFps.time = Date.now();
-base.canvas.dev.showFps.count = 0;
-base.canvas.dev.showFps.countMax = 10;
-
 
 const KEY_UP = 38;
 const KEY_DOWN = 40;
@@ -257,10 +223,54 @@ base.main = {
     this.interval.init(setting.env.frameSpeed, _=> {
       this.loop();
       base.canvas.loop();
+      if(setting.devMode.isActive) base.devMode.loop();
     });
   },
-  loop: function(){}
+  loop: function(){},
 };
+
+base.devMode = {
+  dom: document.querySelector("#"+setting.devMode.outputDomId),
+  tasks:{},
+  loop:function(){
+    for(let key in this.tasks){
+      this.tasks[key].loop();
+    }
+  }
+};
+
+base.devMode.tasks.showFps = {
+  output: '',
+  domId: 'showFps',
+  data:{
+    time: Date.now(),
+    count: 0,
+    countMax: 10,
+  },
+  loop: function(){
+    let now = Date.now();
+    if(--this.data.count<0){
+      this.data.count = this.data.countMax;
+      let drawSpeed = (now-this.data.time)/this.data.countMax;
+      let fps = (this.data.countMax/(now-this.data.time))*1000;
+      this.data.time = now;
+
+      this.output = `FPS: ${fps.toFixed(2)} `
+      + `Screen Refresh Speed(actual/setting): ${drawSpeed.toFixed(2)}/${setting.env.frameSpeed} `;
+      this.display();
+    }
+  },
+  display: function(){
+    let dom = document.querySelector("#"+this.domId);
+    if(!dom){
+      dom = document.createElement("div");
+      dom.id = this.domId;
+      base.devMode.dom.appendChild(dom);
+    }
+    dom.innerText = this.output;
+  }
+};
+
 
 base.canvas.init();
 base.inputs.init();
