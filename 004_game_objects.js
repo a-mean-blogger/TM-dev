@@ -10,8 +10,8 @@ BaseObject.prototype.calculate = function(){};
 BaseObject.prototype.draw = function(){};
 BaseObject.prototype.destroy = function(){
   if(Array.isArray(this.container)){
-    let i = container.indexOf(this);
-    if (i >= 0) container.splice(i,1);
+    let i = this.container.indexOf(this);
+    if (i >= 0) this.container.splice(i,1);
   }
 };
 BaseObject.prototype.loop = function(){
