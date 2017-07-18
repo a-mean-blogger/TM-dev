@@ -230,46 +230,47 @@ base.main = {
 };
 
 base.devMode = {
-  dom: document.querySelector("#"+setting.devMode.outputDomId),
-  tasks:{},
+  tasks:[],
   loop:function(){
-    for(let key in this.tasks){
-      this.tasks[key].loop();
-    }
-  }
-};
-
-base.devMode.tasks.showFps = {
-  output: '',
-  domId: 'showFps',
-  data:{
-    time: Date.now(),
-    count: 0,
-    countMax: 10,
-  },
-  loop: function(){
-    let now = Date.now();
-    if(--this.data.count<0){
-      this.data.count = this.data.countMax;
-      let drawSpeed = (now-this.data.time)/this.data.countMax;
-      let fps = (this.data.countMax/(now-this.data.time))*1000;
-      this.data.time = now;
-
-      this.output = `FPS: ${fps.toFixed(2)} `
-      + `Screen Refresh Speed(actual/setting): ${drawSpeed.toFixed(2)}/${setting.env.frameSpeed} `;
-      this.display();
+    for(let i=0;i<this.tasks.length;i++){
+      if(this.tasks[i].isActive){
+        this.tasks[i].loop();
+        this.tasks[i].display();
+      }
     }
   },
-  display: function(){
-    let dom = document.querySelector("#"+this.domId);
-    if(!dom){
-      dom = document.createElement("div");
-      dom.id = this.domId;
-      base.devMode.dom.appendChild(dom);
+  stopAll:function(){
+    for(let i=0;i<this.tasks.length;i++){
+      this.tasks[i].stop();
     }
-    dom.innerText = this.output;
-  }
+  },
+  restartAll:function(){
+    for(let i=0;i<this.tasks.length;i++){
+      this.tasks[i].restart();
+    }
+  },
 };
+
+base.devMode.showFps = new common.DevTask(base.devMode.tasks,
+  'showFps',
+{
+  time: Date.now(),
+  count: 0,
+  countMax: 10,
+},
+function(){
+  let now = Date.now();
+  if(--this.data.count<0){
+    this.data.count = this.data.countMax;
+    let drawSpeed = (now-this.data.time)/this.data.countMax;
+    let fps = (this.data.countMax/(now-this.data.time))*1000;
+    this.data.time = now;
+
+    this.output = `FPS: ${fps.toFixed(2)} `
+    + `Screen Refresh Speed(actual/setting): ${drawSpeed.toFixed(2)}/${setting.env.frameSpeed} `;
+  }
+});
+base.devMode.showFps.init();
 
 
 base.canvas.init();

@@ -86,3 +86,44 @@ common.Interval.prototype.init = function (speed,func) {
   this.func = func;
   this.start();
 };
+
+common.DevTask = function(devTaskContainer, domId, data, loop){
+  this.outputDom = document.querySelector("#"+setting.devMode.outputDomId);
+  this.output = '';
+  this.isActive = true;
+  this.container = devTaskContainer;
+  this.domId = domId;
+  this.data = data;
+  this.loop = loop;
+};
+common.DevTask.prototype.init = function(){
+  this.container.push(this);
+};
+common.DevTask.prototype.loop = function(){
+  // get this from constructor
+};
+common.DevTask.prototype.display = function(){
+  let dom = document.querySelector("#"+this.domId);
+  if(!dom){
+    dom = document.createElement("div");
+    dom.id = this.domId;
+    this.outputDom.appendChild(dom);
+  }
+  dom.innerText = this.output;
+};
+common.DevTask.prototype.stop = function(){
+  let dom = document.querySelector("#"+this.domId);
+  dom.remove();
+  this.isActive = false;
+};
+common.DevTask.prototype.restart = function(){
+  this.isActive = true;
+};
+common.DevTask.prototype.destroy = function(){
+  if(Array.isArray(this.container)){
+    let i = this.container.indexOf(this);
+    if (i >= 0) this.container.splice(i,1);
+  }
+  let dom = document.querySelector("#"+this.domId);
+  dom.remove();
+};
