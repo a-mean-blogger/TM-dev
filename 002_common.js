@@ -102,7 +102,7 @@ common.DevTask.prototype.init = function(){
 common.DevTask.prototype.loop = function(){
   // get this from constructor
 };
-common.DevTask.prototype.display = function(){
+common.DevTask.prototype.draw = function(){
   let dom = document.querySelector("#"+this.domId);
   if(!dom){
     dom = document.createElement("div");

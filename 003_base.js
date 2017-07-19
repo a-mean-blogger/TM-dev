@@ -235,7 +235,7 @@ base.devMode = {
     for(let i=0;i<this.tasks.length;i++){
       if(this.tasks[i].isActive){
         this.tasks[i].loop();
-        this.tasks[i].display();
+        this.tasks[i].draw();
       }
     }
   },
