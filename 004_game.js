@@ -13,42 +13,57 @@ game = {
       let program = this.programs[i];
       program.destroy();
     }
+  },
+  changeProgram: function(program){
+    this.destroy();
+    program.init();
   }
 };
 
-function Program(properties){
-  this.x = properties.x;
-  this.y = properties.y;
-  this.speed = properties.speed;
+function Program(speed,properties){
+  if(properties){
+    this.x = properties.x;
+    this.y = properties.y;
+  }
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
+  base.LoopObject.call(this, speed);
 }
+Program.prototype = Object.create(base.LoopObject.prototype);
+Program.prototype.constructor = Program;
+
 Program.prototype.timeline = function(){};
-Program.prototype.calculate = function(){};
 Program.prototype.getInput = function(){};
-Program.prototype.uniqueObjectsLoop = function(){};
-Program.prototype.loop = function(){
-  this.timeline();
+Program.prototype.calculate = function(){
   this.count++;
-  this.objects.forEach(object => object.loop());
-  this.uniqueObjectsLoop();
-  this.calculate();
+  this.timeline();
   this.getInput();
 };
 Program.prototype.init = function(){
   this.objects = [];
+  this.uniqueObjects = {};
   this.count = 0;
   base.canvas.clear();
-  base.main.loop = _=>this.loop();
+  this.initInterval();
 };
 Program.prototype.destroy = function(){
+  base.LoopObject.prototype.destroy.call(this);
   this.count = 0;
-  this.objects = [];
+  for(let i = this.objects.length-1;i>=0;i--){
+    this.objects[i].destroy();
+  }
+  for(let key in this.uniqueObjects){
+    if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
+  }
+};
+Program.prototype.addToObjects = function(object){
+  this.objects = game.programs.intro.objects.filter(object => object.isActive);
+  this.objects.push(object);
 };
 
 
-game.programs.intro = new Program({x:5,y:3,speed:10});
+game.programs.intro = new Program(10,{x:5,y:3});
 game.programs.intro.timeline = function(){
   if(this.count ==  10) base.canvas.insertText(this.x,this.y+0, "■□□□■■■□□■■□□■■");
   if(this.count ==  20) base.canvas.insertText(this.x,this.y+1, "■■■□  ■□□    ■■□□■");
@@ -58,8 +73,8 @@ game.programs.intro.timeline = function(){
   if(this.count ==  60) base.canvas.insertText(this.x,this.y+5, "           www.A-MEAN-Blog.com");
   if(this.count ==  70) base.canvas.insertText(this.x+10,this.y+2, "T E T R I S");
   if(this.count ==  70){
-    this.objects.push(new Star(this.objects,{x:this.x+8,y:this.y+1,speed:60}));
-    this.objects.push(new Star(this.objects,{x:this.x+26,y:this.y+2,speed:90}));
+    this.addToObjects(new Star(500,{x:this.x+8,y:this.y+1}));
+    this.addToObjects(new Star(700,{x:this.x+26,y:this.y+2}));
     base.canvas.insertText(this.x,this.y+7, "Please Enter Any Key to Start..");
     base.canvas.insertText(this.x,this.y+9, "  △   : Shift");
     base.canvas.insertText(this.x,this.y+10,"◁  ▷ : Left / Right");
@@ -71,30 +86,25 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(!base.inputs.keyboard.check(KEY_ESC) &&  base.inputs.keyboard.checkAny()){
-    this.destroy();
-    game.programs.tetris.init();
+  if(!base.inputs.keyboard.check(setting.game.keyset.QUIT) &&  base.inputs.keyboard.checkAny()){
+    game.changeProgram(game.programs.tetris);
   }
 };
 
-game.programs.tetris = new Program({speed:10});
+game.programs.tetris = new Program(10,{x:0,y:0});
 game.programs.tetris.uniqueObjects = {
-  tatus : undefined,
+  status : undefined,
   player1Game : undefined
 };
 game.programs.tetris.init = function(){
   Program.prototype.init.call(this);
   this.uniqueObjects.status = new Status({x:28,y:3});
-  this.uniqueObjects.status.drawFrame();
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:setting.game.tetris1.keyset},this.uniqueObjects.status);
-};
-game.programs.tetris.uniqueObjectsLoop = function(){
-  if(this.uniqueObjects.player1Game)this.uniqueObjects.player1Game.loop();
+  this.initInterval();
 };
 game.programs.tetris.getInput = function(){
-  if(base.inputs.keyboard.check(KEY_ESC)){
-    this.destroy();
-    game.programs.intro.init();
+  if(base.inputs.keyboard.check(setting.game.keyset.QUIT)){
+    game.changeProgram(game.programs.intro);
   }
 };
 

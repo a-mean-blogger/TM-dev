@@ -3,7 +3,7 @@ console.log("setting.js loaded");
 var setting = {};
 
 
-setting.env={
+setting.screen={
   canvasId:"game",
   fontSize: 30,
   frameSpeed: 10,
@@ -50,13 +50,17 @@ setting.font={
 };
 
 setting.game={
+  keyset:{
+    QUIT:27, // esc key
+    PAUSE:80, // "p";
+  },
   tetris1:{
     keyset:{
       RIGHT:39,
       LEFT:37,
       ROTATE:38,
       DOWN:40,
-      DROP:32
+      DROP:32, //space key
     }
   }
 };

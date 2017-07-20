@@ -1,92 +1,80 @@
 console.log("game_object.js loaded");
 
+// function TextObject(container,properties,patternFunc){
+//   this.text=properties.text;
+//   this.length=properties.text.length;
+//   this.speed=common.isNumber(properties.speed)?properties.speed:null;
+//   this.speedCount=0;
+//   this.xN=this.x=common.isNumber(properties.x)?properties.x:0;
+//   this.yN=this.y=common.isNumber(properties.y)?properties.y:0;
+//   this.xD=common.isNumber(properties.xD)?properties.xD:0;
+//   this.yD=common.isNumber(properties.yD)?properties.yD:0;
+//   this.patternFunc=patternFunc;
+//   BaseObject.call(this, container);
+// }
+// TextObject.prototype = Object.create(BaseObject.prototype);
+// TextObject.prototype.constructor = TextObject;
+// TextObject.prototype.draw = function(){
+//   base.canvas.deleteText(this.x,this.y,this.text);
+//   this.x = this.xN;
+//   this.y = this.yN;
+//   base.canvas.insertText(this.x,this.y,this.text);
+// };
+// TextObject.prototype.calculate = function(){
+//   if(this.speed){
+//     if(this.speedCount >= this.speed){
+//       this.patternFunc();
+//       this.speedCount = 0;
+//     } else {
+//       this.speedCount++;
+//     }
+//   }
+// };
+// TextObject.prototype.setSpeed = function(speed){
+//   this.speed=speed;
+// };
 
-function BaseObject(container){
-  this.container = container;
-  this.init();
-}
-BaseObject.prototype.init = function(){};
-BaseObject.prototype.calculate = function(){};
-BaseObject.prototype.draw = function(){};
-BaseObject.prototype.destroy = function(){
-  if(Array.isArray(this.container)){
-    let i = this.container.indexOf(this);
-    if (i >= 0) this.container.splice(i,1);
-  }
-};
-BaseObject.prototype.loop = function(){
-  this.calculate();
-  this.draw();
-};
+const BLOCKS = [
+  [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]]],
+  [[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]]],
+  [[[0,0,0,0],[1,1,0,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[1,1,0,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,0],[0,1,1,0],[0,1,0,0]]],
+  [[[0,0,0,0],[0,1,1,0],[1,1,0,0],[0,0,0,0]],[[0,0,0,0],[1,0,0,0],[1,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,1,1,0],[1,1,0,0],[0,0,0,0]],[[0,0,0,0],[1,0,0,0],[1,1,0,0],[0,1,0,0]]],
+  [[[0,0,0,0],[0,0,1,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[1,1,0,0],[0,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[1,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,0,0],[0,1,1,0]]],
+  [[[0,0,0,0],[1,0,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,0,0],[1,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,0,1,0]],[[0,0,0,0],[0,1,1,0],[0,1,0,0],[0,1,0,0]]],
+  [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
+];
 
-function TextObject(container,properties,patternFunc){
-  this.text=properties.text;
-  this.length=properties.text.length;
-  this.speed=common.isNumber(properties.speed)?properties.speed:null;
-  this.speedCount=0;
-  this.xN=this.x=common.isNumber(properties.x)?properties.x:0;
-  this.yN=this.y=common.isNumber(properties.y)?properties.y:0;
-  this.xD=common.isNumber(properties.xD)?properties.xD:0;
-  this.yD=common.isNumber(properties.yD)?properties.yD:0;
-  this.patternFunc=patternFunc;
-  BaseObject.call(this, container);
-}
-TextObject.prototype = Object.create(BaseObject.prototype);
-TextObject.prototype.constructor = TextObject;
-TextObject.prototype.draw = function(){
-  base.canvas.deleteText(this.x,this.y,this.text);
-  this.x = this.xN;
-  this.y = this.yN;
-  base.canvas.insertText(this.x,this.y,this.text);
-};
-TextObject.prototype.calculate = function(){
-  if(this.speed){
-    if(this.speedCount >= this.speed){
-      this.patternFunc();
-      this.speedCount = 0;
-    } else {
-      this.speedCount++;
-    }
-  }
-};
-TextObject.prototype.setSpeed = function(speed){
-  this.speed=speed;
-};
-
-function Star(container,properties){
+function Star(speed,properties){
   this.x = properties.x;
   this.y = properties.y;
-  this.speed = properties.speed;
-  this.speedCount = 0;
-  this.data= {
-    blank:0
-  };
-  BaseObject.call(this, container);
+  this.blank = 0;
+  base.LoopObject.call(this, speed);
 }
-Star.prototype = Object.create(BaseObject.prototype);
+Star.prototype = Object.create(base.LoopObject.prototype);
 Star.prototype.constructor = Star;
+
+Star.prototype.calculate = function () {
+  this.blank = (this.blank+1)%2;
+};
 Star.prototype.draw = function () {
-  if(this.data.blank%2===0) base.canvas.insertText(this.x,this.y,"★");
+  if(this.blank%2===0) base.canvas.insertText(this.x,this.y,"★");
   else base.canvas.insertText(this.x,this.y,"☆");
 };
-Star.prototype.calculate = function () {
-  if(this.speed){
-    if(this.speedCount >= this.speed){
-      this.patternFunc();
-      this.speedCount = 0;
-    } else {
-      this.speedCount++;
-    }
-  }
-};
-Star.prototype.patternFunc = function () {
-  this.data.blank = (this.data.blank+1)%2;
+Star.prototype.erase = function () {
+  base.canvas.insertText(this.x,this.y,"  ");
 };
 
 function Status(properties){
   this.x = properties.x;
   this.y = properties.y;
+  base.LoopObject.call(this);
 }
+Status.prototype = Object.create(base.LoopObject.prototype);
+Status.prototype.constructor = Status;
+
+Status.prototype.init = function(){
+  this.drawFrame();
+};
 Status.prototype.drawFrame = function(){
   base.canvas.insertText(this.x, this.y+0, " LEVEL :");
   base.canvas.insertText(this.x, this.y+1, " GOAL  :");
@@ -107,15 +95,21 @@ Status.prototype.drawFrame = function(){
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
   let color = Tetris.prototype.getBlockColor(blockType);
+  let xAdj = this.x+5;
+  let yAdj = this.y+3;
+  for(let i=1;i<3;i++){
+    for(let j=0;j<5;j++){
+      let x = xAdj-2+j*2;
+      let y = yAdj+i;
+      base.canvas.insertText(x,y,"  ");
+    }
+  }
   for(let i=1;i<3;i++){
     for(let j=0;j<4;j++){
-      let x = this.x+5+j*2+xOffset;
-      let y = this.y+3+i;
+      let x = xAdj+j*2+xOffset;
+      let y = yAdj+i;
       if(BLOCKS[blockType][0][i][j]==1) {
         base.canvas.insertText(x,y,"■", color);
-      }
-      else {
-        base.canvas.insertText(x,y,"  ");
       }
     }
   }
@@ -138,21 +132,11 @@ Status.prototype.drawBestScore = function(score){
   base.canvas.insertText(this.x+7, this.y+13, this.convertScore(score));
 };
 
-const ACTIVE_BLOCK = -2;
-const CEILLING = -1;
-const EMPTY = 0;
-const WALL = 1;
-const INACTIVE_BLOCK = 2;
-const BLOCKS = [
-  [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]]],
-  [[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]]],
-  [[[0,0,0,0],[1,1,0,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[1,1,0,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,0,1,0],[0,1,1,0],[0,1,0,0]]],
-  [[[0,0,0,0],[0,1,1,0],[1,1,0,0],[0,0,0,0]],[[0,0,0,0],[1,0,0,0],[1,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,1,1,0],[1,1,0,0],[0,0,0,0]],[[0,0,0,0],[1,0,0,0],[1,1,0,0],[0,1,0,0]]],
-  [[[0,0,0,0],[0,0,1,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[1,1,0,0],[0,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[1,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,0,0],[0,1,1,0]]],
-  [[[0,0,0,0],[1,0,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,0,0],[1,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,0,1,0]],[[0,0,0,0],[0,1,1,0],[0,1,0,0],[0,1,0,0]]],
-  [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
-];
 function Tetris(properties,status){
+  this.ACTIVE_BLOCK = -2;
+  this.CEILLING = -1;
+  this.EMPTY = 0;
+  this.WALL = 1;
   this.parentObjects = {};
   this.parentObjects.status = status;
   this.x = properties.x;
@@ -179,14 +163,24 @@ function Tetris(properties,status){
     },
     nextBlockType:undefined,
   };
-  BaseObject.call(this);
-}
-Tetris.prototype = Object.create(BaseObject.prototype);
-Tetris.prototype.constructor = Tetris;
-Tetris.prototype.init = function(){
   this.resetDataArray();
   this.createNewBlock();
-};
+  base.LoopObject.call(this, 10);
+  this.test = new base.DevTask('test',
+  this.data,
+  function(){
+    let activeBlock = this.data.activeBlock;
+    this.output = `
+    activeBlock.type: ${activeBlock.type}
+    activeBlock.rotation: ${activeBlock.rotation}
+    activeBlock.x: ${activeBlock.x}
+    activeBlock.y: ${activeBlock.y}
+    `;
+  });
+}
+Tetris.prototype = Object.create(base.LoopObject.prototype);
+Tetris.prototype.constructor = Tetris;
+
 Tetris.prototype.draw = function () {
   let activeBlock = this.data.activeBlock;
 
@@ -195,17 +189,17 @@ Tetris.prototype.draw = function () {
       let blockChar;
       let color;
       switch(this.data.dataArray[i][j]){
-        case ACTIVE_BLOCK: //-2
+        case this.ACTIVE_BLOCK: //-2
           blockChar="□";
           color = this.getBlockColor(activeBlock.type);
           break;
-        case CEILLING: // -1
+        case this.CEILLING: // -1
           blockChar=". ";
           break;
-        case EMPTY: //0
+        case this.EMPTY: //0
           blockChar="  ";
           break;
-        case WALL: // 1
+        case this.WALL: // 1
           blockChar="▣";
           break;
         default: // 2~
@@ -244,16 +238,16 @@ Tetris.prototype.resetDataArray = function () {
     }
   }
   for(i=1;i<this.rowNum-1;i++){
-    this.data.dataArray[i][0]=WALL;
-    this.data.dataArray[i][this.colNum-1]=WALL;
+    this.data.dataArray[i][0]=this.WALL;
+    this.data.dataArray[i][this.colNum-1]=this.WALL;
   }
   for(j=0;j<this.colNum;j++){
-    this.data.dataArray[this.rowNum-1][j]=WALL;
+    this.data.dataArray[this.rowNum-1][j]=this.WALL;
   }
 };
 Tetris.prototype.updateCeilling = function(){
   for(j=1;j<this.colNum-1;j++){
-    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=CEILLING;
+    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=this.CEILLING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
@@ -271,19 +265,19 @@ Tetris.prototype.createNewBlock = function(){
 Tetris.prototype.updateActiveBlock = function(){
   let activeBlock= this.data.activeBlock;
 
-  this.changeActiveBlockTo(EMPTY);
+  this.changeActiveBlockTo(this.EMPTY);
 
   for(let i=0;i<4;i++){
     for(let j=0;j<4;j++){
       if(BLOCKS[activeBlock.type][activeBlock.rotation][i][j]==1)
-        this.data.dataArray[activeBlock.y+i][activeBlock.x+j]=ACTIVE_BLOCK;
+        this.data.dataArray[activeBlock.y+i][activeBlock.x+j]=this.ACTIVE_BLOCK;
     }
   }
 };
 Tetris.prototype.changeActiveBlockTo = function(to){
   for(let i=0;i<this.rowNum;i++){
     for(let j=0;j<this.colNum;j++){
-      if(this.data.dataArray[i][j]==ACTIVE_BLOCK)
+      if(this.data.dataArray[i][j]==this.ACTIVE_BLOCK)
         this.data.dataArray[i][j]=to;
     }
   }
@@ -364,10 +358,6 @@ Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
   let activeBlock = this.data.activeBlock;
   for(let i=0;i<4;i++){
     for(let j=0;j<4;j++){
-      if(!this.data.dataArray[yN+i]
-      ||this.data.dataArray[yN+i][xN+j] === undefined){
-        return false;
-      }
       if(BLOCKS[type][rN][i][j]==1
       && this.data.dataArray[yN+i][xN+j] > 0){
         return false;
