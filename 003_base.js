@@ -3,16 +3,6 @@ console.log("base.js loaded");
 var base = {};
 
 
-base.Char = function(char,isFullwidth,color,backgroundColor){
-  this.char = char;
-  this.isFullwidth = isFullwidth;
-  this.color = color?color:setting.screen.defalutFontColor;
-  this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
-  this.font = setting.font.fontFamily;
-  this.draw = true;
-};
-
-
 base.Interval = function(){
   this.id = undefined;
   this.func = undefined;
@@ -64,6 +54,16 @@ base.LoopObject.prototype.draw = function(){};
 base.LoopObject.prototype.erase = function(){};
 
 
+base.Canvas_Char = function(char,isFullwidth,color,backgroundColor){
+  this.char = char;
+  this.isFullwidth = isFullwidth;
+  this.color = color?color:setting.screen.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
+  this.font = setting.font.fontFamily;
+  this.draw = true;
+};
+
+
 base.Canvas = function(settingScreen,settingFont){
   var width = common.getBlockWidth(settingScreen.fontSize) * settingScreen.column;
   var height = common.getBlockHeight(settingScreen.fontSize) * settingScreen.row;
@@ -100,7 +100,7 @@ base.Canvas = function(settingScreen,settingFont){
       for(let i = 0; i <settingScreen.row; i++){
         this.data[i]=[];
         for(let j = 0; j<settingScreen.column; j++){
-          this.data[i][j]=new base.Char(" ");
+          this.data[i][j]=new base.Canvas_Char(" ");
         }
       }
     },
@@ -174,7 +174,7 @@ base.Canvas.prototype.fillChar = function(char){
   for(let i = 0; i <this.screen.row; i++){
     this.screen.data[i]=[];
     for(let j = 0; j<this.screen.column; j++){
-      this.screen.data[i][j]=new base.Char(char);
+      this.screen.data[i][j]=new base.Canvas_Char(char);
     }
   }
 };
@@ -198,7 +198,7 @@ base.Canvas.prototype.insertChar = function(x,y,char,color,backgroundColor){
     let regex = common.getFullwidthRegex();
     let fullwidth = regex.test(char);
 
-    this.screen.data[y][x] = new base.Char(char,fullwidth,color,backgroundColor);
+    this.screen.data[y][x] = new base.Canvas_Char(char,fullwidth,color,backgroundColor);
 
     // to clean background outliner
     if(this.isInCanvas(x-1,y)) this.screen.data[y][x-1].draw = true;

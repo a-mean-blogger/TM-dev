@@ -170,12 +170,12 @@ function Tetris(properties,status){
   this.data,
   function(){
     let activeBlock = this.data.activeBlock;
-    this.output = `
-    activeBlock.type: ${activeBlock.type}
+    this.output =
+    `activeBlock.type: ${activeBlock.type}
     activeBlock.rotation: ${activeBlock.rotation}
     activeBlock.x: ${activeBlock.x}
     activeBlock.y: ${activeBlock.y}
-    `;
+    nextBlockType: ${this.data.nextBlockType}`;
   });
 }
 Tetris.prototype = Object.create(base.LoopObject.prototype);
@@ -253,7 +253,7 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   let newBlock = this.data.activeBlock;
   newBlock.rotation = 0;
-  newBlock.type = this.data.nextBlockType?this.data.nextBlockType:Math.floor(Math.random()*7);
+  newBlock.type = common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
   newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
   newBlock.inActivate.flag = false;
@@ -315,7 +315,6 @@ Tetris.prototype.hardDrop = function(){
     return;
   }
 };
-
 Tetris.prototype.moveActiveBlock = function(x,y){
   let activeBlock = this.data.activeBlock;
   let xN = activeBlock.x+x;
@@ -381,6 +380,19 @@ Tetris.prototype.inActivateBlock = function(){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     this.updateActiveBlock();
     this.changeActiveBlockTo(this.data.activeBlock.type+2);
+    this.checkLines();
     this.createNewBlock();
+  }
+};
+Tetris.prototype.checkLines = function(){
+  for(let i=0;i<this.rowNum;i++){
+    let occupiedCount = 0;
+    let wallCount = 0;
+    for(let j=0;j<this.colNum;j++){
+      if(this.data.dataArray[i][j] == this.WALL) wallCount++;
+      else if(this.data.dataArray[i][j]>0) occupiedCount++;
+    }
+    let validSpaceCount = this.colNum - wallCount;
+    if(validSpaceCount && occupiedCount == validSpaceCount) console.log(i);
   }
 };
