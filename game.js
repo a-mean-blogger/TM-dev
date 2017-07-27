@@ -75,9 +75,9 @@ game.programs.tetris.uniqueObjects = {
   player1Game : undefined
 };
 game.programs.tetris.init = function(){
+  this.initProgram();
   this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset},this.uniqueObjects.status);
-  this.initProgram();
 };
 game.programs.tetris.getInput = function(){
   if(tbCanvas.inputs.keyboard.check(gameSetting.keyset.QUIT)){

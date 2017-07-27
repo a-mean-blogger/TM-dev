@@ -45,10 +45,12 @@ tbCanvas.LoopObject.prototype.initInterval = function(){
 tbCanvas.LoopObject.prototype.calculate = function(){};
 tbCanvas.LoopObject.prototype.draw = function(){};
 tbCanvas.LoopObject.prototype.destroy = function(){
+  this.beforeDestroy();
   this.interval.stop();
   this.isActive = false;
   this.erase();
 };
+tbCanvas.LoopObject.prototype.beforeDestroy = function(){};
 tbCanvas.LoopObject.prototype.erase = function(){};
 
 
@@ -303,13 +305,13 @@ tbCanvas.DevTask.prototype.stop = function(){
 tbCanvas.DevTask.prototype.restart = function(){
   this.isActive = true;
 };
-tbCanvas.DevTask.prototype.destroy = function(){
+tbCanvas.DevTask.prototype.beforeDestroy = function(){
   if(Array.isArray(this.container)){
     let i = this.container.indexOf(this);
     if (i >= 0) this.container.splice(i,1);
   }
   let dom = document.querySelector("#"+this.domId);
-  dom.remove();
+  if(dom) dom.remove();
 };
 
 

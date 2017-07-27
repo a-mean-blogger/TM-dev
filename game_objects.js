@@ -190,8 +190,8 @@ Tetris.prototype.init = function () {
 Tetris.prototype.draw = function () {
   let activeBlock = this.data.activeBlock;
 
-  for(i=0;i<this.rowNum;i++){
-    for(j=0;j<this.colNum;j++){
+  for(let i=0;i<this.rowNum;i++){
+    for(let j=0;j<this.colNum;j++){
       let blockChar;
       let color;
       switch(this.data.dataArray[i][j]){
@@ -224,6 +224,9 @@ Tetris.prototype.calculate = function () {
   if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
   this.getInput();
 };
+Tetris.prototype.beforeDestroy = function (blockType) {
+  this.test.destroy();
+};
 Tetris.prototype.getBlockColor = function (blockType) {
   let color;
   if(blockType === 0) color = "red";
@@ -237,22 +240,22 @@ Tetris.prototype.getBlockColor = function (blockType) {
 };
 Tetris.prototype.resetDataArray = function () {
   this.data.dataArray=[];
-  for(i=0;i<this.rowNum;i++){
+  for(let i=0;i<this.rowNum;i++){
     this.data.dataArray[i]=[];
-    for(j=0;j<this.colNum;j++){
+    for(let j=0;j<this.colNum;j++){
       this.data.dataArray[i][j]=0;
     }
   }
-  for(i=1;i<this.rowNum-1;i++){
+  for(let i=1;i<this.rowNum-1;i++){
     this.data.dataArray[i][0]=this.WALL;
     this.data.dataArray[i][this.colNum-1]=this.WALL;
   }
-  for(j=0;j<this.colNum;j++){
+  for(let j=0;j<this.colNum;j++){
     this.data.dataArray[this.rowNum-1][j]=this.WALL;
   }
 };
 Tetris.prototype.updateCeilling = function(){
-  for(j=1;j<this.colNum-1;j++){
+  for(let j=1;j<this.colNum-1;j++){
     if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=this.CEILLING;
   }
 };
@@ -399,6 +402,16 @@ Tetris.prototype.checkLines = function(){
       else if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
     let validSpaceCount = this.colNum - wallCount;
-    if(validSpaceCount && occupiedCount == validSpaceCount) console.log(i);
+    if(validSpaceCount && occupiedCount == validSpaceCount){
+      this.removeLine(i);
+    }
+  }
+};
+Tetris.prototype.removeLine = function(lineNum){
+  for(let i=lineNum;i>=0;i--){
+    for(let j=1;j<this.colNum-1;j++){
+      if(i === 0 || this.data.dataArray[i-1][j] == this.CEILLING) this.data.dataArray[i][j] = this.EMPTY;
+      else this.data.dataArray[i][j] = this.data.dataArray[i-1][j];
+    }
   }
 };
