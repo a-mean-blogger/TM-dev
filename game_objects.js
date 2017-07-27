@@ -3,22 +3,22 @@ console.log("game_object.js loaded");
 // function TextObject(container,properties,patternFunc){
 //   this.text=properties.text;
 //   this.length=properties.text.length;
-//   this.speed=common.isNumber(properties.speed)?properties.speed:null;
+//   this.speed=tbCanvas.common.isNumber(properties.speed)?properties.speed:null;
 //   this.speedCount=0;
-//   this.xN=this.x=common.isNumber(properties.x)?properties.x:0;
-//   this.yN=this.y=common.isNumber(properties.y)?properties.y:0;
-//   this.xD=common.isNumber(properties.xD)?properties.xD:0;
-//   this.yD=common.isNumber(properties.yD)?properties.yD:0;
+//   this.xN=this.x=tbCanvas.common.isNumber(properties.x)?properties.x:0;
+//   this.yN=this.y=tbCanvas.common.isNumber(properties.y)?properties.y:0;
+//   this.xD=tbCanvas.common.isNumber(properties.xD)?properties.xD:0;
+//   this.yD=tbCanvas.common.isNumber(properties.yD)?properties.yD:0;
 //   this.patternFunc=patternFunc;
 //   BaseObject.call(this, container);
 // }
 // TextObject.prototype = Object.create(BaseObject.prototype);
 // TextObject.prototype.constructor = TextObject;
 // TextObject.prototype.draw = function(){
-//   base.canvas.deleteText(this.x,this.y,this.text);
+//   game.tbScreen.deleteText(this.x,this.y,this.text);
 //   this.x = this.xN;
 //   this.y = this.yN;
-//   base.canvas.insertText(this.x,this.y,this.text);
+//   game.tbScreen.insertText(this.x,this.y,this.text);
 // };
 // TextObject.prototype.calculate = function(){
 //   if(this.speed){
@@ -48,9 +48,9 @@ function Star(speed,properties){
   this.x = properties.x;
   this.y = properties.y;
   this.blank = 0;
-  base.LoopObject.call(this, speed);
+  tbCanvas.LoopObject.call(this, speed);
 }
-Star.prototype = Object.create(base.LoopObject.prototype);
+Star.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Star.prototype.constructor = Star;
 
 Star.prototype.init = function () {
@@ -60,40 +60,40 @@ Star.prototype.calculate = function () {
   this.blank = (this.blank+1)%2;
 };
 Star.prototype.draw = function () {
-  if(this.blank%2===0) base.canvas.insertText(this.x,this.y,"★");
-  else base.canvas.insertText(this.x,this.y,"☆");
+  if(this.blank%2===0) game.tbScreen.insertText(this.x,this.y,"★");
+  else game.tbScreen.insertText(this.x,this.y,"☆");
 };
 Star.prototype.erase = function () {
-  base.canvas.insertText(this.x,this.y,"  ");
+  game.tbScreen.insertText(this.x,this.y,"  ");
 };
 
 function Status(properties){
   this.x = properties.x;
   this.y = properties.y;
-  base.LoopObject.call(this);
+  tbCanvas.LoopObject.call(this);
 }
-Status.prototype = Object.create(base.LoopObject.prototype);
+Status.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Status.prototype.constructor = Status;
 
 Status.prototype.init = function(){
   this.drawFrame();
 };
 Status.prototype.drawFrame = function(){
-  base.canvas.insertText(this.x, this.y+0, " LEVEL :");
-  base.canvas.insertText(this.x, this.y+1, " GOAL  :");
-  base.canvas.insertText(this.x, this.y+2, "+-  N E X T   -+ ");
-  base.canvas.insertText(this.x, this.y+3, "|              | ");
-  base.canvas.insertText(this.x, this.y+4, "|              | ");
-  base.canvas.insertText(this.x, this.y+5, "|              | ");
-  base.canvas.insertText(this.x, this.y+6, "|              | ");
-  base.canvas.insertText(this.x, this.y+7, "+-- -  --  - --+ ");
-  base.canvas.insertText(this.x, this.y+8, " YOUR SCORE :");
-  base.canvas.insertText(this.x, this.y+10," LAST SCORE :");
-  base.canvas.insertText(this.x, this.y+12," BEST SCORE :");
-  base.canvas.insertText(this.x, this.y+15,"  △   : Shift        SPACE : Hard Drop");
-  base.canvas.insertText(this.x, this.y+16,"◁  ▷ : Left / Right   P   : Pause");
-  base.canvas.insertText(this.x, this.y+17,"  ▽   : Soft Drop     ESC  : Quit");
-  base.canvas.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
+  game.tbScreen.insertText(this.x, this.y+0, " LEVEL :");
+  game.tbScreen.insertText(this.x, this.y+1, " GOAL  :");
+  game.tbScreen.insertText(this.x, this.y+2, "+-  N E X T   -+ ");
+  game.tbScreen.insertText(this.x, this.y+3, "|              | ");
+  game.tbScreen.insertText(this.x, this.y+4, "|              | ");
+  game.tbScreen.insertText(this.x, this.y+5, "|              | ");
+  game.tbScreen.insertText(this.x, this.y+6, "|              | ");
+  game.tbScreen.insertText(this.x, this.y+7, "+-- -  --  - --+ ");
+  game.tbScreen.insertText(this.x, this.y+8, " YOUR SCORE :");
+  game.tbScreen.insertText(this.x, this.y+10," LAST SCORE :");
+  game.tbScreen.insertText(this.x, this.y+12," BEST SCORE :");
+  game.tbScreen.insertText(this.x, this.y+15,"  △   : Shift        SPACE : Hard Drop");
+  game.tbScreen.insertText(this.x, this.y+16,"◁  ▷ : Left / Right   P   : Pause");
+  game.tbScreen.insertText(this.x, this.y+17,"  ▽   : Soft Drop     ESC  : Quit");
+  game.tbScreen.insertText(this.x, this.y+20,"www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
@@ -104,7 +104,7 @@ Status.prototype.drawNextBlock = function(blockType){
     for(let j=0;j<5;j++){
       let x = xAdj-2+j*2;
       let y = yAdj+i;
-      base.canvas.insertText(x,y,"  ");
+      game.tbScreen.insertText(x,y,"  ");
     }
   }
   for(let i=1;i<3;i++){
@@ -112,7 +112,7 @@ Status.prototype.drawNextBlock = function(blockType){
       let x = xAdj+j*2+xOffset;
       let y = yAdj+i;
       if(BLOCKS[blockType][0][i][j]==1) {
-        base.canvas.insertText(x,y,"■", color);
+        game.tbScreen.insertText(x,y,"■", color);
       }
     }
   }
@@ -126,13 +126,13 @@ Status.prototype.convertScore = function(score){
   return padding+ formatted;
 };
 Status.prototype.drawScore = function(score){
-  base.canvas.insertText(this.x+7, this.y+9, this.convertScore(score));
+  game.tbScreen.insertText(this.x+7, this.y+9, this.convertScore(score));
 };
 Status.prototype.drawLastScore = function(score){
-  base.canvas.insertText(this.x+7, this.y+11, this.convertScore(score));
+  game.tbScreen.insertText(this.x+7, this.y+11, this.convertScore(score));
 };
 Status.prototype.drawBestScore = function(score){
-  base.canvas.insertText(this.x+7, this.y+13, this.convertScore(score));
+  game.tbScreen.insertText(this.x+7, this.y+13, this.convertScore(score));
 };
 
 function Tetris(properties, status){
@@ -166,15 +166,15 @@ function Tetris(properties, status){
     },
     nextBlockType:undefined,
   };
-  base.LoopObject.call(this, 10);
+  tbCanvas.LoopObject.call(this, 10);
 }
-Tetris.prototype = Object.create(base.LoopObject.prototype);
+Tetris.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
 Tetris.prototype.init = function () {
   this.resetDataArray();
   this.createNewBlock();
-  this.test = new base.DevTask('test',
+  this.test = new tbCanvas.DevTask('test',
     this.data,
     function(){
       let activeBlock = this.data.activeBlock;
@@ -213,7 +213,7 @@ Tetris.prototype.draw = function () {
           color = this.getBlockColor(this.data.dataArray[i][j]-2);
           break;
       }
-      base.canvas.insertText(this.x+j*2,this.y+i,blockChar,color);
+      game.tbScreen.insertText(this.x+j*2,this.y+i,blockChar,color);
     }
   }
 };
@@ -259,7 +259,7 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   let newBlock = this.data.activeBlock;
   newBlock.rotation = 0;
-  newBlock.type = common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
+  newBlock.type = tbCanvas.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
   newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
   newBlock.inActivate.flag = false;
@@ -291,19 +291,19 @@ Tetris.prototype.changeActiveBlockTo = function(to){
 Tetris.prototype.getInput = function () {
   if(this.inputSpeedCount === 0){
     this.inputSpeedCount = this.inputSpeed;
-    if(base.inputs.keyboard.check(this.keyset.RIGHT)){
+    if(tbCanvas.inputs.keyboard.check(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(base.inputs.keyboard.check(this.keyset.LEFT)){
+    if(tbCanvas.inputs.keyboard.check(this.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(base.inputs.keyboard.check(this.keyset.DOWN)){
+    if(tbCanvas.inputs.keyboard.check(this.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(base.inputs.keyboard.check(this.keyset.ROTATE)){
+    if(tbCanvas.inputs.keyboard.check(this.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(base.inputs.keyboard.check(this.keyset.DROP)){
+    if(tbCanvas.inputs.keyboard.check(this.keyset.DROP)){
       this.hardDrop();
     }
   } else {

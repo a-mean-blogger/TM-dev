@@ -1,13 +1,13 @@
-console.log("common.js loaded");
-
-var common = {};
+console.log("tb-canvas-2.js loaded");
 
 
-common.getBlockWidth = function(fontSize){
+tbCanvas.common = {};
+
+tbCanvas.common.getBlockWidth = function(fontSize){
   return fontSize*0.6;
 };
 
-common.getBlockHeight = function(fontSize){
+tbCanvas.common.getBlockHeight = function(fontSize){
   let blockHeight;
   if(fontSize < 3){
     blockHeight = fontSize;
@@ -32,23 +32,23 @@ common.getBlockHeight = function(fontSize){
   }
   return blockHeight;
 };
-common.isNumber = function(num){
+tbCanvas.common.isNumber = function(num){
   if(num === 0|| (num && num.constructor == Number)) return true;
   else return false;
 };
 
-common.getCharGroup = function(char){
-for(let group in setting.charGroups){
-  let charset = setting.charGroups[group];
+tbCanvas.common.getCharGroup = function(char){
+for(let group in tbCanvas.setting.charGroups){
+  let charset = tbCanvas.setting.charGroups[group];
     let regex = new RegExp("^["+charset.regex+"]$");
     if(regex.test(char)) return charset;
   }
 };
 
-common.getFullwidthRegex = function(){
+tbCanvas.common.getFullwidthRegex = function(){
   let string = "";
-  for(let group in setting.charGroups){
-    let charset = setting.charGroups[group];
+  for(let group in tbCanvas.setting.charGroups){
+    let charset = tbCanvas.setting.charGroups[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
   if(string) return new RegExp("(["+string+"])","g");

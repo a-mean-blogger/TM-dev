@@ -1,9 +1,10 @@
-console.log("setting.js loaded");
-
-var setting = {};
+console.log("tb-canvas-1.js loaded");
 
 
-setting.screen={
+var tbCanvas = {};
+
+tbCanvas.setting = {};
+tbCanvas.setting.screen={
   canvasId:"tb-canvas",
   fontSize: 30,
   frameSpeed: 10,
@@ -16,14 +17,13 @@ setting.screen={
   fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
 };
 
-setting.devMode={
+tbCanvas.setting.devMode={
   isActive: true,
   outputDomId: "devOutput",
   frameSpeed: 10,
-  zoom: 0.5,
 };
 
-setting.charGroups={
+tbCanvas.setting.charGroups={
   group1:{//ㄱ     -힝
     regex:"\u3131-\uD79D",
     isFullwidth:true,
@@ -45,20 +45,4 @@ setting.charGroups={
     xAdj:0,
     yAdj:0,
   },
-};
-
-setting.game={
-  keyset:{
-    QUIT:27, // esc key
-    PAUSE:80, // "p";
-  },
-  tetris1:{
-    keyset:{
-      RIGHT:39,
-      LEFT:37,
-      ROTATE:38,
-      DOWN:40,
-      DROP:32, //space key
-    }
-  }
 };

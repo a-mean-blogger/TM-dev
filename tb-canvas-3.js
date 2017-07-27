@@ -1,60 +1,58 @@
-console.log("base.js loaded");
-
-var base = {};
+console.log("tb-canvas-3.js loaded");
 
 
-base.Interval = function(){
+tbCanvas.Interval = function(){
   this.id = undefined;
   this.func = undefined;
   this.speed = undefined;
 };
-base.Interval.prototype.stop = function () {
+tbCanvas.Interval.prototype.stop = function () {
   window.clearInterval(this.id);
   this.id = null;
 };
-base.Interval.prototype.start = function () {
+tbCanvas.Interval.prototype.start = function () {
   this.stop();
   this.func();
   this.id = window.setInterval(_=>this.func(), this.speed);
 };
-base.Interval.prototype.setSpeed = function (speed) {
+tbCanvas.Interval.prototype.setSpeed = function (speed) {
   this.speed = speed;
   this.start();
 };
-base.Interval.prototype.init = function (speed,func) {
+tbCanvas.Interval.prototype.init = function (speed,func) {
   this.speed = speed;
   this.func = func;
   this.start();
 };
 
 
-base.LoopObject = function(speed){
+tbCanvas.LoopObject = function(speed){
   this.isActive = true;
   this.speed = speed;
-  this.interval = new base.Interval();
+  this.interval = new tbCanvas.Interval();
   this.init();
 };
-base.LoopObject.prototype.init = function (){
+tbCanvas.LoopObject.prototype.init = function (){
   // if(this.speed) this.initInterval();
 };
-base.LoopObject.prototype.initInterval = function(){
+tbCanvas.LoopObject.prototype.initInterval = function(){
   this.isActive = true;
   this.interval.init(this.speed, _=> {
     if(this.isActive) this.calculate();
     if(this.isActive) this.draw();
   });
 };
-base.LoopObject.prototype.calculate = function(){};
-base.LoopObject.prototype.draw = function(){};
-base.LoopObject.prototype.destroy = function(){
+tbCanvas.LoopObject.prototype.calculate = function(){};
+tbCanvas.LoopObject.prototype.draw = function(){};
+tbCanvas.LoopObject.prototype.destroy = function(){
   this.interval.stop();
   this.isActive = false;
   this.erase();
 };
-base.LoopObject.prototype.erase = function(){};
+tbCanvas.LoopObject.prototype.erase = function(){};
 
 
-base.Program = function(speed,properties){
+tbCanvas.Program = function(speed,properties){
   if(properties){
     this.x = properties.x;
     this.y = properties.y;
@@ -62,26 +60,26 @@ base.Program = function(speed,properties){
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  base.LoopObject.call(this, speed);
+  tbCanvas.LoopObject.call(this, speed);
 };
-base.Program.prototype = Object.create(base.LoopObject.prototype);
-base.Program.prototype.constructor = base.Program;
+tbCanvas.Program.prototype = Object.create(tbCanvas.LoopObject.prototype);
+tbCanvas.Program.prototype.constructor = tbCanvas.Program;
 
-base.Program.prototype.timeline = function(){};
-base.Program.prototype.getInput = function(){};
-base.Program.prototype.calculate = function(){
+tbCanvas.Program.prototype.timeline = function(){};
+tbCanvas.Program.prototype.getInput = function(){};
+tbCanvas.Program.prototype.calculate = function(){
   this.count++;
   this.timeline();
   this.getInput();
 };
-base.Program.prototype.init = function(){
+tbCanvas.Program.prototype.initProgram = function(){
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
   this.initInterval();
 };
-base.Program.prototype.destroy = function(){
-  base.LoopObject.prototype.destroy.call(this);
+tbCanvas.Program.prototype.destroy = function(){
+  tbCanvas.LoopObject.prototype.destroy.call(this);
   this.count = 0;
   for(let i = this.objects.length-1;i>=0;i--){
     this.objects[i].destroy();
@@ -90,13 +88,13 @@ base.Program.prototype.destroy = function(){
     if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
   }
 };
-base.Program.prototype.addToObjects = function(object){
+tbCanvas.Program.prototype.addToObjects = function(object){
   this.objects = game.programs.intro.objects.filter(object => object.isActive);
   this.objects.push(object);
 };
 
 
-base.Canvas_Char = function(screen, char, isFullwidth, color, backgroundColor){
+tbCanvas.Screen_Char = function(screen, char, isFullwidth, color, backgroundColor){
   this.char = char;
   this.isFullwidth = isFullwidth;
   this.color = color?color:screen.defalutFontColor;
@@ -106,8 +104,8 @@ base.Canvas_Char = function(screen, char, isFullwidth, color, backgroundColor){
 };
 
 
-base.Canvas = function(screenInput){
-  this.screen = setting.screen;
+tbCanvas.Screen = function(screenInput){
+  this.screen = tbCanvas.setting.screen;
   if(screenInput){
     for(let p in this.screen){
       if(screenInput[p]!==undefined) this.screen[p] = screenInput[p];
@@ -116,8 +114,8 @@ base.Canvas = function(screenInput){
 
   this.isFontLoaded = false;
   this.screenData = [];
-  this.blockWidth = common.getBlockWidth(this.screen.fontSize);
-  this.blockHeight = common.getBlockHeight(this.screen.fontSize);
+  this.blockWidth = tbCanvas.common.getBlockWidth(this.screen.fontSize);
+  this.blockHeight = tbCanvas.common.getBlockHeight(this.screen.fontSize);
 
   this.canvas = document.querySelector("#"+this.screen.canvasId);
   this.canvas.width = this.blockWidth * this.screen.column;
@@ -129,12 +127,12 @@ base.Canvas = function(screenInput){
   this.canvas.style.height = this.canvas.height * this.screen.zoom + "px";
   this.ctx = this.canvas.getContext("2d");
 
-  base.LoopObject.call(this, this.screen.frameSpeed);
+  tbCanvas.LoopObject.call(this, this.screen.frameSpeed);
 };
-base.Canvas.prototype = Object.create(base.LoopObject.prototype);
-base.Canvas.prototype.constructor = base.Canvas;
+tbCanvas.Screen.prototype = Object.create(tbCanvas.LoopObject.prototype);
+tbCanvas.Screen.prototype.constructor = tbCanvas.Screen;
 
-base.Canvas.prototype.init = function () {
+tbCanvas.Screen.prototype.init = function () {
   this.initScreenData();
   if(!document.querySelector(`link[href='${this.screen.fontSource}'][rel='stylesheet']`)){
     var link = document.createElement('link');
@@ -144,10 +142,10 @@ base.Canvas.prototype.init = function () {
   }
   this.initInterval();
 };
-base.Canvas.prototype.calculate = function() {
+tbCanvas.Screen.prototype.calculate = function() {
   if(!this.isFontLoaded) this.checkFontLoaded();
 };
-base.Canvas.prototype.draw = function() {
+tbCanvas.Screen.prototype.draw = function() {
   let ctx = this.ctx;
   ctx.textBaseline = "buttom";
   for(let i = 0; i <this.screen.row; i++){
@@ -166,7 +164,7 @@ base.Canvas.prototype.draw = function() {
         //draw char
         let chX = this.blockWidth*j;
         let chY = this.blockHeight*i+this.blockHeight*0.8; // y adjustment
-        let charset = common.getCharGroup(this.screenData[i][j].char);
+        let charset = tbCanvas.common.getCharGroup(this.screenData[i][j].char);
         if(charset){
           ctx.font = this.screen.fontSize*charset.sizeAdj+"px "+this.screenData[i][j].font;
           chX = chX+this.blockWidth*charset.xAdj;
@@ -184,68 +182,70 @@ base.Canvas.prototype.draw = function() {
     }
   }
 };
-base.Canvas.prototype.checkFontLoaded= function(){
+tbCanvas.Screen.prototype.checkFontLoaded= function(){
   if(document.fonts.check("1em "+this.screen.fontFamily)){
     this.isFontLoaded = true;
     this.refreshScreen();
   }
 };
-base.Canvas.prototype.isInCanvas = function(x,y){
+tbCanvas.Screen.prototype.isInCanvas = function(x,y){
   if(x>=0 && y>=0 && y<this.screenData.length && x<this.screenData[y].length) return true;
   else return false;
 };
-base.Canvas.prototype.initScreenData = function(){
+tbCanvas.Screen.prototype.initScreenData = function(){
   this.screenData = [];
   for(let i = 0; i <this.screen.row; i++){
     this.screenData[i]=[];
     for(let j = 0; j<this.screen.column; j++){
-      this.screenData[i][j]=new base.Canvas_Char(this.screen, " ");
+      this.screenData[i][j]=new tbCanvas.Screen_Char(this.screen, " ");
     }
   }
 };
-base.Canvas.prototype.refreshScreen = function(){
+tbCanvas.Screen.prototype.refreshScreen = function(){
   for(let i = 0; i <this.screenData.length; i++){
     for(let j = 0; j<this.screenData[i].length; j++){
       this.screenData[i][j].isNew = true;
     }
   }
 };
-base.Canvas.prototype.fillScreen = function(char){
+tbCanvas.Screen.prototype.fillScreen = function(char){
   if(typeof char != "string") char = " ";
   this.screenData = [];
   for(let i = 0; i <this.screen.row; i++){
     this.screenData[i]=[];
     for(let j = 0; j<this.screen.column; j++){
-      this.screenData[i][j]=new base.Canvas_Char(this.screen, char);
+      this.screenData[i][j]=new tbCanvas.Screen_Char(this.screen, char);
     }
   }
 };
-base.Canvas.prototype.clearScreen = function(){
+tbCanvas.Screen.prototype.clearScreen = function(){
   this.fillScreen(" ");
 };
-base.Canvas.prototype.insertChar = function(x,y,char,color,backgroundColor){
+tbCanvas.Screen.prototype.insertChar = function(x,y,char,color,backgroundColor){
   if(char.constructor != String) return console.error(char+" is invalid");
 
   if(this.isInCanvas(x,y)
-    && (this.screenData[y][x].char != char
-      || this.screenData[y][x].color != color
-      || this.screenData[y][x].backgroundColor != backgroundColor)){
-    let regex = common.getFullwidthRegex();
+  && (this.screenData[y][x].char != char
+    || this.screenData[y][x].color != (color?color:this.screen.defalutFontColor)
+    || this.screenData[y][x].backgroundColor != (backgroundColor?backgroundColor:this.screen.backgroundColor)
+    )
+  ){
+    let regex = tbCanvas.common.getFullwidthRegex();
     let fullwidth = regex.test(char);
 
-    this.screenData[y][x] = new base.Canvas_Char(this.screen, char,fullwidth,color,backgroundColor);
+    this.screenData[y][x] = new tbCanvas.Screen_Char(this.screen, char,fullwidth,color,backgroundColor);
 
     // to clean background outliner
     if(this.isInCanvas(x-1,y)) this.screenData[y][x-1].draw = true;
     if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screenData[y][x+(fullwidth?2:1)].draw = true;
   }
 };
-base.Canvas.prototype.deleteChar = function(x,y){
+tbCanvas.Screen.prototype.deleteChar = function(x,y){
   if(char.constructor != String) return console.error(char+" is invalid");
   this.insertChar(x,y," ");
 };
-base.Canvas.prototype.insertText = function(x,y,text,color,backgroundColor){
-  let regex = common.getFullwidthRegex();
+tbCanvas.Screen.prototype.insertText = function(x,y,text,color,backgroundColor){
+  let regex = tbCanvas.common.getFullwidthRegex();
   text = text.replace(regex,"$1 ");
   if(text.constructor != String) return console.error(text+" is invalid");
   if(y<0 || y>=this.screenData.length) return;
@@ -253,7 +253,7 @@ base.Canvas.prototype.insertText = function(x,y,text,color,backgroundColor){
     if(x+i>=0 && x+i <this.screen.column){
       this.insertChar(x+i,y,text[i],color,backgroundColor);
 
-      let regex = common.getFullwidthRegex();
+      let regex = tbCanvas.common.getFullwidthRegex();
       let fullwidth = regex.test(text[i]);
       if(fullwidth){
         i++;
@@ -262,28 +262,31 @@ base.Canvas.prototype.insertText = function(x,y,text,color,backgroundColor){
     }
   }
 };
-base.Canvas.prototype.deleteText = function(x,y,text){
+tbCanvas.Screen.prototype.deleteText = function(x,y,text){
   if(text.constructor != String) return console.error(text+" is invalid");
   this.insertText(x,y,text.replace(/./g," "));
 };
 
 
 
-base.DevTask = function(domId, data, calculate){
-  this.outputDom = document.querySelector("#"+setting.devMode.outputDomId);
+tbCanvas.DevTask = function(domId, data, calculate){
+  this.outputDom = document.querySelector("#"+tbCanvas.setting.devMode.outputDomId);
   this.output = '';
   this.domId = domId;
   this.data = data;
   this.calculate = calculate;
-  base.LoopObject.call(this, 10);
+  tbCanvas.LoopObject.call(this, 10);
 };
-base.DevTask.prototype = Object.create(base.LoopObject.prototype);
-base.DevTask.prototype.constructor = base.DevTask;
+tbCanvas.DevTask.prototype = Object.create(tbCanvas.LoopObject.prototype);
+tbCanvas.DevTask.prototype.constructor = tbCanvas.DevTask;
 
-base.DevTask.prototype.calculate = function(){
+tbCanvas.DevTask.prototype.init = function(){
+  this.initInterval();
+};
+tbCanvas.DevTask.prototype.calculate = function(){
   // get this from constructor
 };
-base.DevTask.prototype.draw = function(){
+tbCanvas.DevTask.prototype.draw = function(){
   let dom = document.querySelector("#"+this.domId);
   if(!dom){
     dom = document.createElement("div");
@@ -292,15 +295,15 @@ base.DevTask.prototype.draw = function(){
   }
   dom.innerText = this.output;
 };
-base.DevTask.prototype.stop = function(){
+tbCanvas.DevTask.prototype.stop = function(){
   let dom = document.querySelector("#"+this.domId);
   dom.remove();
   this.isActive = false;
 };
-base.DevTask.prototype.restart = function(){
+tbCanvas.DevTask.prototype.restart = function(){
   this.isActive = true;
 };
-base.DevTask.prototype.destroy = function(){
+tbCanvas.DevTask.prototype.destroy = function(){
   if(Array.isArray(this.container)){
     let i = this.container.indexOf(this);
     if (i >= 0) this.container.splice(i,1);
@@ -310,7 +313,7 @@ base.DevTask.prototype.destroy = function(){
 };
 
 
-base.inputs = {
+tbCanvas.inputs = {
   isAllowed: true,
   keyboard:{
     isAllowed: true,
@@ -318,14 +321,14 @@ base.inputs = {
     eventHandlers:{
       keydown: function(e){
         e.preventDefault();
-        if(base.inputs.isAllowed && base.inputs.keyboard.isAllowed){
-          base.inputs.keyboard.keystate[e.keyCode] = true;
+        if(tbCanvas.inputs.isAllowed && tbCanvas.inputs.keyboard.isAllowed){
+          tbCanvas.inputs.keyboard.keystate[e.keyCode] = true;
           // console.log("e.keyCode: ", e.keyCode);
         }
       },
       keyup: function(e){
         e.preventDefault();
-        delete base.inputs.keyboard.keystate[e.keyCode];
+        delete tbCanvas.inputs.keyboard.keystate[e.keyCode];
       },
     },
     init: function(){
@@ -336,7 +339,7 @@ base.inputs = {
       // console.log("keyCode: ", keyCode);
       // console.log("this.keystate: ", this.keystate);
       if(this.keystate[keyCode]) {
-        // delete base.inputs.keyboard.keystate[keyCode];
+        // delete tbCanvas.inputs.keyboard.keystate[keyCode];
         return true;
       }
       else return false;
@@ -351,8 +354,4 @@ base.inputs = {
   }
 };
 
-base.inputs.init();
-
-
-
-base.canvas = new base.Canvas();
+tbCanvas.inputs.init();
