@@ -54,6 +54,48 @@ base.LoopObject.prototype.destroy = function(){
 base.LoopObject.prototype.erase = function(){};
 
 
+base.Program = function(speed,properties){
+  if(properties){
+    this.x = properties.x;
+    this.y = properties.y;
+  }
+  this.objects = [];
+  this.uniqueObjects = {};
+  this.count = 0;
+  base.LoopObject.call(this, speed);
+};
+base.Program.prototype = Object.create(base.LoopObject.prototype);
+base.Program.prototype.constructor = base.Program;
+
+base.Program.prototype.timeline = function(){};
+base.Program.prototype.getInput = function(){};
+base.Program.prototype.calculate = function(){
+  this.count++;
+  this.timeline();
+  this.getInput();
+};
+base.Program.prototype.init = function(){
+  this.objects = [];
+  this.uniqueObjects = {};
+  this.count = 0;
+  this.initInterval();
+};
+base.Program.prototype.destroy = function(){
+  base.LoopObject.prototype.destroy.call(this);
+  this.count = 0;
+  for(let i = this.objects.length-1;i>=0;i--){
+    this.objects[i].destroy();
+  }
+  for(let key in this.uniqueObjects){
+    if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
+  }
+};
+base.Program.prototype.addToObjects = function(object){
+  this.objects = game.programs.intro.objects.filter(object => object.isActive);
+  this.objects.push(object);
+};
+
+
 base.Canvas_Char = function(screen, char, isFullwidth, color, backgroundColor){
   this.char = char;
   this.isFullwidth = isFullwidth;
@@ -268,8 +310,6 @@ base.DevTask.prototype.destroy = function(){
 };
 
 
-base.canvas = new base.Canvas();
-
 base.inputs = {
   isAllowed: true,
   keyboard:{
@@ -312,3 +352,7 @@ base.inputs = {
 };
 
 base.inputs.init();
+
+
+
+base.canvas = new base.Canvas();

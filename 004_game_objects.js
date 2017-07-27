@@ -135,7 +135,7 @@ Status.prototype.drawBestScore = function(score){
   base.canvas.insertText(this.x+7, this.y+13, this.convertScore(score));
 };
 
-function Tetris(properties,status){
+function Tetris(properties, status){
   this.ACTIVE_BLOCK = -2;
   this.CEILLING = -1;
   this.EMPTY = 0;
@@ -166,25 +166,25 @@ function Tetris(properties,status){
     },
     nextBlockType:undefined,
   };
-  this.resetDataArray();
-  this.createNewBlock();
   base.LoopObject.call(this, 10);
-  this.test = new base.DevTask('test',
-  this.data,
-  function(){
-    let activeBlock = this.data.activeBlock;
-    this.output =
-    `activeBlock.type: ${activeBlock.type}
-    activeBlock.rotation: ${activeBlock.rotation}
-    activeBlock.x: ${activeBlock.x}
-    activeBlock.y: ${activeBlock.y}
-    nextBlockType: ${this.data.nextBlockType}`;
-  });
 }
 Tetris.prototype = Object.create(base.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
 Tetris.prototype.init = function () {
+  this.resetDataArray();
+  this.createNewBlock();
+  this.test = new base.DevTask('test',
+    this.data,
+    function(){
+      let activeBlock = this.data.activeBlock;
+      this.output =
+      `activeBlock.type: ${activeBlock.type}
+      activeBlock.rotation: ${activeBlock.rotation}
+      activeBlock.x: ${activeBlock.x}
+      activeBlock.y: ${activeBlock.y}
+      nextBlockType: ${this.data.nextBlockType}`;
+    });
   this.initInterval();
 };
 Tetris.prototype.draw = function () {
