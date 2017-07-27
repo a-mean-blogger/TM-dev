@@ -38,8 +38,8 @@ common.isNumber = function(num){
 };
 
 common.getCharGroup = function(char){
-for(let group in setting.font.adjustment){
-  let charset = setting.font.adjustment[group];
+for(let group in setting.charGroups){
+  let charset = setting.charGroups[group];
     let regex = new RegExp("^["+charset.regex+"]$");
     if(regex.test(char)) return charset;
   }
@@ -47,8 +47,8 @@ for(let group in setting.font.adjustment){
 
 common.getFullwidthRegex = function(){
   let string = "";
-  for(let group in setting.font.adjustment){
-    let charset = setting.font.adjustment[group];
+  for(let group in setting.charGroups){
+    let charset = setting.charGroups[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
   if(string) return new RegExp("(["+string+"])","g");

@@ -53,6 +53,9 @@ function Star(speed,properties){
 Star.prototype = Object.create(base.LoopObject.prototype);
 Star.prototype.constructor = Star;
 
+Star.prototype.init = function () {
+  this.initInterval();
+};
 Star.prototype.calculate = function () {
   this.blank = (this.blank+1)%2;
 };
@@ -181,6 +184,9 @@ function Tetris(properties,status){
 Tetris.prototype = Object.create(base.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
+Tetris.prototype.init = function () {
+  this.initInterval();
+};
 Tetris.prototype.draw = function () {
   let activeBlock = this.data.activeBlock;
 

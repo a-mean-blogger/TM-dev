@@ -35,7 +35,7 @@ base.LoopObject = function(speed){
   this.init();
 };
 base.LoopObject.prototype.init = function (){
-  if(this.speed) this.initInterval();
+  // if(this.speed) this.initInterval();
 };
 base.LoopObject.prototype.initInterval = function(){
   this.isActive = true;
@@ -44,165 +44,158 @@ base.LoopObject.prototype.initInterval = function(){
     if(this.isActive) this.draw();
   });
 };
+base.LoopObject.prototype.calculate = function(){};
+base.LoopObject.prototype.draw = function(){};
 base.LoopObject.prototype.destroy = function(){
   this.interval.stop();
   this.isActive = false;
   this.erase();
 };
-base.LoopObject.prototype.calculate = function(){};
-base.LoopObject.prototype.draw = function(){};
 base.LoopObject.prototype.erase = function(){};
 
 
-base.Canvas_Char = function(char,isFullwidth,color,backgroundColor){
+base.Canvas_Char = function(screen, char, isFullwidth, color, backgroundColor){
   this.char = char;
   this.isFullwidth = isFullwidth;
-  this.color = color?color:setting.screen.defalutFontColor;
-  this.backgroundColor = backgroundColor?backgroundColor:setting.screen.backgroundColor;
-  this.font = setting.font.fontFamily;
-  this.draw = true;
+  this.color = color?color:screen.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:screen.backgroundColor;
+  this.font = screen.fontFamily;
+  this.isNew = true;
 };
 
 
-base.Canvas = function(settingScreen,settingFont){
-  var width = common.getBlockWidth(settingScreen.fontSize) * settingScreen.column;
-  var height = common.getBlockHeight(settingScreen.fontSize) * settingScreen.row;
-
-  this.backgroundColor = settingScreen.backgroundColor;
-  this.canvas = document.querySelector("#"+settingScreen.canvasId);
-  this.canvas.width = width;
-  this.canvas.height = height;
-  this.canvas.style.border = this.backgroundColor+" 1px solid";
-  this.canvas.style.borderRadius = "5px";
-  this.canvas.style.backgroundColor = this.backgroundColor;
-  this.canvas.style.width = width*(settingScreen.zoom?settingScreen.zoom:1)+"px";
-  this.canvas.style.height = height*(settingScreen.zoom?settingScreen.zoom:1)+"px";
-  this.ctx = this.canvas.getContext("2d");
-  this.font = {
-    defaultColor: settingScreen.defalutFontColor,
-    size: settingScreen.fontSize,
-    width: common.getBlockWidth(settingScreen.fontSize),
-    height: common.getBlockHeight(settingScreen.fontSize),
-    isLoaded: false,
-    checkLoaded: function(func){
-      if(document.fonts.check("1em "+settingFont.fontFamily)){
-        this.isLoaded = true;
-        func();
-      }
-    },
-  };
-  this.screen = {
-    data: [],
-    row: settingScreen.row,
-    column: settingScreen.column,
-    init:function(){
-      this.data = [];
-      for(let i = 0; i <settingScreen.row; i++){
-        this.data[i]=[];
-        for(let j = 0; j<settingScreen.column; j++){
-          this.data[i][j]=new base.Canvas_Char(" ");
-        }
-      }
-    },
-    refresh:function(){
-      for(let i = 0; i <this.data.length; i++){
-        for(let j = 0; j<this.data[i].length; j++){
-          this.data[i][j].draw = true;
-        }
-      }
-    },
-  };
-
-  this.screen.init();
-
-  if(!document.querySelector(`link[href='${settingFont.source}'][rel='stylesheet']`)){
-    var link = document.createElement('link');
-    link.href = settingFont.source;
-    link.rel = "stylesheet";
-    document.getElementsByTagName('head')[0].appendChild(link);
+base.Canvas = function(screenInput){
+  this.screen = setting.screen;
+  if(screenInput){
+    for(let p in this.screen){
+      if(screenInput[p]!==undefined) this.screen[p] = screenInput[p];
+    }
   }
-  base.LoopObject.call(this, settingScreen.frameSpeed);
+
+  this.isFontLoaded = false;
+  this.screenData = [];
+  this.blockWidth = common.getBlockWidth(this.screen.fontSize);
+  this.blockHeight = common.getBlockHeight(this.screen.fontSize);
+
+  this.canvas = document.querySelector("#"+this.screen.canvasId);
+  this.canvas.width = this.blockWidth * this.screen.column;
+  this.canvas.height = this.blockHeight * this.screen.row;
+  this.canvas.style.border = this.screen.backgroundColor+" 1px solid";
+  this.canvas.style.borderRadius = "5px";
+  this.canvas.style.backgroundColor = this.screen.backgroundColor;
+  this.canvas.style.width = this.canvas.width * this.screen.zoom + "px";
+  this.canvas.style.height = this.canvas.height * this.screen.zoom + "px";
+  this.ctx = this.canvas.getContext("2d");
+
+  base.LoopObject.call(this, this.screen.frameSpeed);
 };
 base.Canvas.prototype = Object.create(base.LoopObject.prototype);
 base.Canvas.prototype.constructor = base.Canvas;
 
+base.Canvas.prototype.init = function () {
+  this.initScreenData();
+  if(!document.querySelector(`link[href='${this.screen.fontSource}'][rel='stylesheet']`)){
+    var link = document.createElement('link');
+    link.href = this.screen.fontSource;
+    link.rel = "stylesheet";
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+  this.initInterval();
+};
 base.Canvas.prototype.calculate = function() {
-  if(!this.font.isLoaded) this.font.checkLoaded(_=>{
-    this.screen.refresh();
-  });
+  if(!this.isFontLoaded) this.checkFontLoaded();
 };
 base.Canvas.prototype.draw = function() {
   let ctx = this.ctx;
   ctx.textBaseline = "buttom";
   for(let i = 0; i <this.screen.row; i++){
     for(let j = 0; j<this.screen.column; j++){
-      if(this.screen.data[i][j].char[0] != "$"
-        && this.screen.data[i][j].draw === true
+      if(this.screenData[i][j].char[0] != "$"
+        && this.screenData[i][j].isNew === true
       ){
         //draw backgroundColor
-        let bgX = this.font.width*j-this.font.width*0.05;
-        let bgY = this.font.height*i;
-        let width = (this.screen.data[i][j].isFullwidth?this.font.width*2:this.font.width)+this.font.width*0.05;
-        let height = this.font.height;
-        ctx.fillStyle = this.screen.data[i][j].backgroundColor;
+        let bgX = this.blockWidth*j-this.blockWidth*0.05;
+        let bgY = this.blockHeight*i;
+        let width = (this.screenData[i][j].isFullwidth?this.blockWidth*2:this.blockWidth)+this.blockWidth*0.05;
+        let height = this.blockHeight;
+        ctx.fillStyle = this.screenData[i][j].backgroundColor;
         ctx.fillRect(bgX,bgY,width,height);
 
         //draw char
-        let chX = this.font.width*j;
-        let chY = this.font.height*i+this.font.height*0.8; // y adjustment
-        let charset = common.getCharGroup(this.screen.data[i][j].char);
+        let chX = this.blockWidth*j;
+        let chY = this.blockHeight*i+this.blockHeight*0.8; // y adjustment
+        let charset = common.getCharGroup(this.screenData[i][j].char);
         if(charset){
-          ctx.font = this.font.size*charset.sizeAdj+"px "+this.screen.data[i][j].font;
-          chX = chX+this.font.width*charset.xAdj;
-          chY = chY+this.font.height*charset.yAdj;
+          ctx.font = this.screen.fontSize*charset.sizeAdj+"px "+this.screenData[i][j].font;
+          chX = chX+this.blockWidth*charset.xAdj;
+          chY = chY+this.blockHeight*charset.yAdj;
         }
         else {
-          ctx.font = this.font.size+"px "+this.screen.data[i][j].font;
+          ctx.font = this.screen.fontSize+"px "+this.screenData[i][j].font;
         }
-        ctx.fillStyle = this.screen.data[i][j].color;
-        ctx.fillText(this.screen.data[i][j].char,chX,chY);
+        ctx.fillStyle = this.screenData[i][j].color;
+        ctx.fillText(this.screenData[i][j].char,chX,chY);
 
         //do not draw once it already drew for the better performance
-        this.screen.data[i][j].draw = false;
+        this.screenData[i][j].isNew = false;
       }
     }
   }
 };
-base.Canvas.prototype.fillChar = function(char){
-  if(typeof char != "string") char = " ";
-  this.screen.data = [];
+base.Canvas.prototype.checkFontLoaded= function(){
+  if(document.fonts.check("1em "+this.screen.fontFamily)){
+    this.isFontLoaded = true;
+    this.refreshScreen();
+  }
+};
+base.Canvas.prototype.isInCanvas = function(x,y){
+  if(x>=0 && y>=0 && y<this.screenData.length && x<this.screenData[y].length) return true;
+  else return false;
+};
+base.Canvas.prototype.initScreenData = function(){
+  this.screenData = [];
   for(let i = 0; i <this.screen.row; i++){
-    this.screen.data[i]=[];
+    this.screenData[i]=[];
     for(let j = 0; j<this.screen.column; j++){
-      this.screen.data[i][j]=new base.Canvas_Char(char);
+      this.screenData[i][j]=new base.Canvas_Char(this.screen, " ");
     }
   }
 };
-base.Canvas.prototype.clear = function(){
-  this.fillChar(" ");
+base.Canvas.prototype.refreshScreen = function(){
+  for(let i = 0; i <this.screenData.length; i++){
+    for(let j = 0; j<this.screenData[i].length; j++){
+      this.screenData[i][j].isNew = true;
+    }
+  }
 };
-base.Canvas.prototype.isInCanvas = function(x,y){
-  if(x>=0 && y>=0 && y<this.screen.data.length && x<this.screen.data[y].length) return true;
-  else return false;
+base.Canvas.prototype.fillScreen = function(char){
+  if(typeof char != "string") char = " ";
+  this.screenData = [];
+  for(let i = 0; i <this.screen.row; i++){
+    this.screenData[i]=[];
+    for(let j = 0; j<this.screen.column; j++){
+      this.screenData[i][j]=new base.Canvas_Char(this.screen, char);
+    }
+  }
+};
+base.Canvas.prototype.clearScreen = function(){
+  this.fillScreen(" ");
 };
 base.Canvas.prototype.insertChar = function(x,y,char,color,backgroundColor){
   if(char.constructor != String) return console.error(char+" is invalid");
 
-  color = color?color:this.font.defaultColor;
-  backgroundColor = backgroundColor?backgroundColor:this.backgroundColor;
-
   if(this.isInCanvas(x,y)
-    && (this.screen.data[y][x].char != char
-      || this.screen.data[y][x].color != color
-      || this.screen.data[y][x].backgroundColor != backgroundColor)){
+    && (this.screenData[y][x].char != char
+      || this.screenData[y][x].color != color
+      || this.screenData[y][x].backgroundColor != backgroundColor)){
     let regex = common.getFullwidthRegex();
     let fullwidth = regex.test(char);
 
-    this.screen.data[y][x] = new base.Canvas_Char(char,fullwidth,color,backgroundColor);
+    this.screenData[y][x] = new base.Canvas_Char(this.screen, char,fullwidth,color,backgroundColor);
 
     // to clean background outliner
-    if(this.isInCanvas(x-1,y)) this.screen.data[y][x-1].draw = true;
-    if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screen.data[y][x+(fullwidth?2:1)].draw = true;
+    if(this.isInCanvas(x-1,y)) this.screenData[y][x-1].draw = true;
+    if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screenData[y][x+(fullwidth?2:1)].draw = true;
   }
 };
 base.Canvas.prototype.deleteChar = function(x,y){
@@ -213,7 +206,7 @@ base.Canvas.prototype.insertText = function(x,y,text,color,backgroundColor){
   let regex = common.getFullwidthRegex();
   text = text.replace(regex,"$1 ");
   if(text.constructor != String) return console.error(text+" is invalid");
-  if(y<0 || y>=this.screen.data.length) return;
+  if(y<0 || y>=this.screenData.length) return;
   for(let i = 0; i<text.length; i++){
     if(x+i>=0 && x+i <this.screen.column){
       this.insertChar(x+i,y,text[i],color,backgroundColor);
@@ -240,7 +233,7 @@ base.DevTask = function(domId, data, calculate){
   this.domId = domId;
   this.data = data;
   this.calculate = calculate;
-  base.LoopObject.call(this, setting.screen.frameSpeed);
+  base.LoopObject.call(this, 10);
 };
 base.DevTask.prototype = Object.create(base.LoopObject.prototype);
 base.DevTask.prototype.constructor = base.DevTask;
@@ -275,7 +268,7 @@ base.DevTask.prototype.destroy = function(){
 };
 
 
-base.canvas = new base.Canvas(setting.screen, setting.font);
+base.canvas = new base.Canvas();
 
 base.inputs = {
   isAllowed: true,

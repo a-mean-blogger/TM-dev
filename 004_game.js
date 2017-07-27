@@ -44,7 +44,7 @@ Program.prototype.init = function(){
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  base.canvas.clear();
+  base.canvas.clearScreen();
   this.initInterval();
 };
 Program.prototype.destroy = function(){
@@ -108,4 +108,4 @@ game.programs.tetris.getInput = function(){
   }
 };
 
-game.init();
+// game.init();
