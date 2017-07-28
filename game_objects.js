@@ -394,16 +394,20 @@ Tetris.prototype.inActivateBlock = function(){
   }
 };
 Tetris.prototype.checkLines = function(){
-  for(let i=0;i<this.rowNum;i++){
+  let removedLineNum = 0;
+  for(let i=this.rowNum-2;i>=0;i--){
     let occupiedCount = 0;
-    let wallCount = 0;
-    for(let j=0;j<this.colNum;j++){
-      if(this.data.dataArray[i][j] == this.WALL) wallCount++;
-      else if(this.data.dataArray[i][j]>0) occupiedCount++;
+    for(let j=1;j<this.colNum-1;j++){
+      if(removedLineNum){
+        if(i<removedLineNum) this.data.dataArray[i][j] = 0;
+        else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == this.CEILLING) this.data.dataArray[i][j] = this.EMPTY;
+        else this.data.dataArray[i][j] = this.data.dataArray[i-removedLineNum][j];
+      }
+      if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
-    let validSpaceCount = this.colNum - wallCount;
-    if(validSpaceCount && occupiedCount == validSpaceCount){
-      this.removeLine(i);
+    if(occupiedCount == this.colNum-2){
+      i++;
+      removedLineNum++;
     }
   }
 };
