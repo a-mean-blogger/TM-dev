@@ -87,11 +87,14 @@ game.programs.tetris.getInput = function(){
     tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
+    this.data.pausedScreen = game.tbScreen.copyScreen();
+    game.tbScreen.fillScreen(" ", null, "rgba(255,255,255,0.4)");
   }
   if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.PAUSE)){
     tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
+    game.tbScreen.pasteScreen(this.data.pausedScreen);
   }
 };
 game.programs.tetris.erase = function(){

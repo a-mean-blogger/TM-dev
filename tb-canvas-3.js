@@ -144,38 +144,58 @@ tbCanvas.Screen.prototype.init = function () {
 tbCanvas.Screen.prototype.calculate = function() {
   if(!this.isFontLoaded) this.checkFontLoaded();
 };
+tbCanvas.Screen.prototype.getBackgroundWidthRecursive = function(i,j){
+  if(j+1<this.screen.column
+  && this.screenData[i][j+1].isNew
+  && this.screenData[i][j].backgroundColor == this.screenData[i][j+1].backgroundColor){
+    return this.getBackgroundWidthRecursive(i,j+1) + this.blockWidth;
+  } else {
+    return this.blockWidth;
+  }
+};
 tbCanvas.Screen.prototype.draw = function() {
   let ctx = this.ctx;
   ctx.textBaseline = "buttom";
+
   for(let i = 0; i <this.screen.row; i++){
     for(let j = 0; j<this.screen.column; j++){
-      if(this.screenData[i][j].char[0] != "$"
-        && this.screenData[i][j].isNew === true
-      ){
+      if(this.screenData[i][j].isNew === true){
+
         //draw backgroundColor
-        let bgX = this.blockWidth*j-this.blockWidth*0.05;
-        let bgY = this.blockHeight*i;
-        let width = (this.screenData[i][j].isFullwidth?this.blockWidth*2:this.blockWidth)+this.blockWidth*0.05;
-        let height = this.blockHeight;
-        ctx.fillStyle = this.screenData[i][j].backgroundColor;
-        ctx.fillRect(bgX,bgY,width,height);
+        if(j===0 || this.screenData[i][j-1].isNew != "$modified"){
+          let bgX = this.blockWidth*j;
+          let bgY = this.blockHeight*i;
+          let width = this.getBackgroundWidthRecursive(i,j);
+          let height = this.blockHeight;
+          ctx.fillStyle = this.screenData[i][j].backgroundColor;
+          ctx.fillRect(bgX,bgY,width,height);
+        }
 
         //draw char
-        let chX = this.blockWidth*j;
-        let chY = this.blockHeight*i+this.blockHeight*0.8; // y adjustment
-        let charset = tbCanvas.common.getCharGroup(this.screenData[i][j].char);
-        if(charset){
-          ctx.font = this.screen.fontSize*charset.sizeAdj+"px "+this.screenData[i][j].font;
-          chX = chX+this.blockWidth*charset.xAdj;
-          chY = chY+this.blockHeight*charset.yAdj;
+        if(this.screenData[i][j].char && this.screenData[i][j].char.length==1){
+          let chX = this.blockWidth*j;
+          let chY = this.blockHeight*i+this.blockHeight*0.8; // y adjustment
+          let charset = tbCanvas.common.getCharGroup(this.screenData[i][j].char);
+          if(charset){
+            ctx.font = this.screen.fontSize*charset.sizeAdj+"px "+this.screenData[i][j].font;
+            chX = chX+this.blockWidth*charset.xAdj;
+            chY = chY+this.blockHeight*charset.yAdj;
+          }
+          else {
+            ctx.font = this.screen.fontSize+"px "+this.screenData[i][j].font;
+          }
+          ctx.fillStyle = this.screenData[i][j].color;
+          ctx.fillText(this.screenData[i][j].char,chX,chY);
         }
-        else {
-          ctx.font = this.screen.fontSize+"px "+this.screenData[i][j].font;
-        }
-        ctx.fillStyle = this.screenData[i][j].color;
-        ctx.fillText(this.screenData[i][j].char,chX,chY);
 
         //do not draw once it already drew for the better performance
+        this.screenData[i][j].isNew = "$modified";
+      }
+    }
+  }
+  for(let i = 0; i <this.screen.row; i++){
+    for(let j = 0; j<this.screen.column; j++){
+      if(this.screenData[i][j].isNew == "$modified"){
         this.screenData[i][j].isNew = false;
       }
     }
@@ -207,13 +227,13 @@ tbCanvas.Screen.prototype.refreshScreen = function(){
     }
   }
 };
-tbCanvas.Screen.prototype.fillScreen = function(char){
+tbCanvas.Screen.prototype.fillScreen = function(char, color, backgroundColor){
   if(typeof char != "string") char = " ";
   this.screenData = [];
   for(let i = 0; i <this.screen.row; i++){
     this.screenData[i]=[];
     for(let j = 0; j<this.screen.column; j++){
-      this.screenData[i][j]=new tbCanvas.Screen_Char(this.screen, char);
+      this.screenData[i][j]=new tbCanvas.Screen_Char(this.screen, char, false, color, backgroundColor);
     }
   }
 };
@@ -227,6 +247,7 @@ tbCanvas.Screen.prototype.insertChar = function(x,y,char,color,backgroundColor){
   && (this.screenData[y][x].char != char
     || this.screenData[y][x].color != (color?color:this.screen.defalutFontColor)
     || this.screenData[y][x].backgroundColor != (backgroundColor?backgroundColor:this.screen.backgroundColor)
+    || (this.screenData[y][x].char[0] == "$" && this.screenData[y][x-1].isNew)
     )
   ){
     let regex = tbCanvas.common.getFullwidthRegex();
@@ -254,7 +275,7 @@ tbCanvas.Screen.prototype.insertText = function(x,y,text,color,backgroundColor){
       let fullwidth = regex.test(text[i]);
       if(fullwidth){
         i++;
-        this.insertChar(x+i,y,"$fullwidthFiller");
+        this.insertChar(x+i,y,"$fullwidthFiller",color,backgroundColor);
       }
     }
   }
@@ -263,6 +284,26 @@ tbCanvas.Screen.prototype.deleteText = function(x,y,text){
   let regex = tbCanvas.common.getFullwidthRegex();
   text = text.toString().replace(regex,"$1 ");
   this.insertText(x,y,text.replace(/./g," "));
+};
+tbCanvas.Screen.prototype.copyScreen = function(){
+  let copyToCanvas = document.createElement("canvas");
+  let ctx = copyToCanvas.getContext("2d");
+  copyToCanvas.width = this.canvas.width;
+  copyToCanvas.height = this.canvas.height;
+  ctx.drawImage(this.canvas, 0, 0);
+  return copyToCanvas;
+};
+tbCanvas.Screen.prototype.pasteScreen = function(canvas){
+  this.ctx.drawImage(canvas, 0, 0);
+};
+tbCanvas.Screen.prototype.consoleScreenData = function(canvas){
+  for(let i = 0; i <this.screen.row; i++){
+    var row = "";
+    for(let j = 0; j<this.screen.column; j++){
+      row += this.screenData[i][j].char[0]+(this.screenData[i][j].isNew?"!":" ");
+    }
+    console.log(row);
+  }
 };
 
 
