@@ -40,24 +40,24 @@ game.programs.intro.init = function(){
   this.initProgram();
 };
 game.programs.intro.timeline = function(){
-  if(this.count ==  10) game.tbScreen.insertText(this.x,this.y+0, "■□□□■■■□□■■□□■■");
-  if(this.count ==  20) game.tbScreen.insertText(this.x,this.y+1, "■■■□  ■□□    ■■□□■");
-  if(this.count ==  30) game.tbScreen.insertText(this.x,this.y+2, "□□□■              □■  ■");
-  if(this.count ==  40) game.tbScreen.insertText(this.x,this.y+3, "■■□■■  □  ■  □□■□□");
-  if(this.count ==  50) game.tbScreen.insertText(this.x,this.y+4, "■■  ■□□□■■■□■■□□");
-  if(this.count ==  60) game.tbScreen.insertText(this.x,this.y+5, "           www.A-MEAN-Blog.com");
-  if(this.count ==  70) game.tbScreen.insertText(this.x+10,this.y+2, "T E T R I S");
+  if(this.count ==  10) game.tbScreen.insertText(this.data.x,this.data.y+0, "■□□□■■■□□■■□□■■");
+  if(this.count ==  20) game.tbScreen.insertText(this.data.x,this.data.y+1, "■■■□  ■□□    ■■□□■");
+  if(this.count ==  30) game.tbScreen.insertText(this.data.x,this.data.y+2, "□□□■              □■  ■");
+  if(this.count ==  40) game.tbScreen.insertText(this.data.x,this.data.y+3, "■■□■■  □  ■  □□■□□");
+  if(this.count ==  50) game.tbScreen.insertText(this.data.x,this.data.y+4, "■■  ■□□□■■■□■■□□");
+  if(this.count ==  60) game.tbScreen.insertText(this.data.x,this.data.y+5, "           www.A-MEAN-Blog.com");
+  if(this.count ==  70) game.tbScreen.insertText(this.data.x+10,this.data.y+2, "T E T R I S");
   if(this.count ==  70){
-    this.addToObjects(new Star(500,{x:this.x+8,y:this.y+1}));
-    this.addToObjects(new Star(700,{x:this.x+26,y:this.y+2}));
-    game.tbScreen.insertText(this.x,this.y+7, "Please Enter Any Key to Start..");
-    game.tbScreen.insertText(this.x,this.y+9, "  △   : Shift");
-    game.tbScreen.insertText(this.x,this.y+10,"◁  ▷ : Left / Right");
-    game.tbScreen.insertText(this.x,this.y+11,"  ▽   : Soft Drop");
-    game.tbScreen.insertText(this.x,this.y+12," SPACE : Hard Drop");
-    game.tbScreen.insertText(this.x,this.y+13,"   P   : Pause");
-    game.tbScreen.insertText(this.x,this.y+14,"  ESC  : Quit");
-    game.tbScreen.insertText(this.x,this.y+16,"BONUS FOR HARD DROPS / COMBOS");
+    this.addToObjects(new Star(500,{x:this.data.x+8,y:this.data.y+1}));
+    this.addToObjects(new Star(700,{x:this.data.x+26,y:this.data.y+2}));
+    game.tbScreen.insertText(this.data.x,this.data.y+7, "Please Enter Any Key to Start..");
+    game.tbScreen.insertText(this.data.x,this.data.y+9, "  △   : Shift");
+    game.tbScreen.insertText(this.data.x,this.data.y+10,"◁  ▷ : Left / Right");
+    game.tbScreen.insertText(this.data.x,this.data.y+11,"  ▽   : Soft Drop");
+    game.tbScreen.insertText(this.data.x,this.data.y+12," SPACE : Hard Drop");
+    game.tbScreen.insertText(this.data.x,this.data.y+13,"   P   : Pause");
+    game.tbScreen.insertText(this.data.x,this.data.y+14,"  ESC  : Quit");
+    game.tbScreen.insertText(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS");
   }
 };
 game.programs.intro.getInput = function(){
@@ -69,19 +69,29 @@ game.programs.intro.erase = function(){
   game.tbScreen.clearScreen();
 };
 
-game.programs.tetris = new tbCanvas.Program(10,{x:0,y:0});
+game.programs.tetris = new tbCanvas.Program(10,{isPaused:false});
 game.programs.tetris.uniqueObjects = {
   status : undefined,
   player1Game : undefined
 };
 game.programs.tetris.init = function(){
   this.initProgram();
-  this.uniqueObjects.status = new Status({x:28,y:3});
+  if(!this.uniqueObjects.status) this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
   if(tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
+  }
+  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.PAUSE)){
+    tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
+    this.uniqueObjects.player1Game.interval.stop();
+    this.data.isPaused = true;
+  }
+  if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.PAUSE)){
+    tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
+    this.uniqueObjects.player1Game.interval.start();
+    this.data.isPaused = false;
   }
 };
 game.programs.tetris.erase = function(){

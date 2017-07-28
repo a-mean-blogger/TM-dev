@@ -54,11 +54,8 @@ tbCanvas.LoopObject.prototype.beforeDestroy = function(){};
 tbCanvas.LoopObject.prototype.erase = function(){};
 
 
-tbCanvas.Program = function(speed,properties){
-  if(properties){
-    this.x = properties.x;
-    this.y = properties.y;
-  }
+tbCanvas.Program = function(speed,data){
+  this.data = data;
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
@@ -243,13 +240,11 @@ tbCanvas.Screen.prototype.insertChar = function(x,y,char,color,backgroundColor){
   }
 };
 tbCanvas.Screen.prototype.deleteChar = function(x,y){
-  if(char.constructor != String) return console.error(char+" is invalid");
   this.insertChar(x,y," ");
 };
 tbCanvas.Screen.prototype.insertText = function(x,y,text,color,backgroundColor){
   let regex = tbCanvas.common.getFullwidthRegex();
-  text = text.replace(regex,"$1 ");
-  if(text.constructor != String) return console.error(text+" is invalid");
+  text = text.toString().replace(regex,"$1 ");
   if(y<0 || y>=this.screenData.length) return;
   for(let i = 0; i<text.length; i++){
     if(x+i>=0 && x+i <this.screen.column){
@@ -265,7 +260,8 @@ tbCanvas.Screen.prototype.insertText = function(x,y,text,color,backgroundColor){
   }
 };
 tbCanvas.Screen.prototype.deleteText = function(x,y,text){
-  if(text.constructor != String) return console.error(text+" is invalid");
+  let regex = tbCanvas.common.getFullwidthRegex();
+  text = text.toString().replace(regex,"$1 ");
   this.insertText(x,y,text.replace(/./g," "));
 };
 
