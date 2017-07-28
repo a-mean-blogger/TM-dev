@@ -144,24 +144,24 @@ function Tetris(properties, status){
   this.parentObjects.status = status;
   this.x = properties.x;
   this.y = properties.y;
-  this.dropSpeed = 80;
-  this.dropSpeedCount = 0;
-  this.inputSpeed = 10;
-  this.inputSpeedCount = 0;
   this.keyset = properties.keyset;
   this.colNum = 11;
   this.rowNum = 23;
   this.data = {
-    dataArray:undefined,
-    activeBlock:{
-      type:undefined,
-      rotation:undefined,
-      x:undefined,
-      y:undefined,
-      inActivate:{
-        flag:false,
-        countMax:50,
-        count:0
+    inputSpeedCountMax: 10,
+    inputSpeedCount: 0,
+    autoDropCountMax: 80,
+    autoDropCount: 0,
+    dataArray: undefined,
+    activeBlock: {
+      type: undefined,
+      rotation: undefined,
+      x: undefined,
+      y: undefined,
+      inActivate: {
+        flag: false,
+        countMax: 50,
+        count: 0,
       },
     },
     nextBlockType:undefined,
@@ -174,6 +174,10 @@ Tetris.prototype.constructor = Tetris;
 Tetris.prototype.init = function () {
   this.resetDataArray();
   this.createNewBlock();
+  this.data.autoDropCount = this.data.autoDropCountMax;
+  tbCanvas.inputs.keyboard.unpressKey(this.keyset.DROP);
+  this.initInterval();
+
   this.test = new tbCanvas.DevTask('test',
     this.data,
     function(){
@@ -183,9 +187,11 @@ Tetris.prototype.init = function () {
       activeBlock.rotation: ${activeBlock.rotation}
       activeBlock.x: ${activeBlock.x}
       activeBlock.y: ${activeBlock.y}
-      nextBlockType: ${this.data.nextBlockType}`;
+      nextBlockType: ${this.data.nextBlockType}
+      inActivate.flag: ${activeBlock.inActivate.flag}
+      inActivate.count: ${activeBlock.inActivate.count}
+      `;
     });
-  this.initInterval();
 };
 Tetris.prototype.draw = function () {
   let activeBlock = this.data.activeBlock;
@@ -292,25 +298,23 @@ Tetris.prototype.changeActiveBlockTo = function(to){
   }
 };
 Tetris.prototype.getInput = function () {
-  if(this.inputSpeedCount === 0){
-    this.inputSpeedCount = this.inputSpeed;
-    if(tbCanvas.inputs.keyboard.check(this.keyset.RIGHT)){
+  if(this.data.inputSpeedCount-- < 0){
+    this.data.inputSpeedCount = this.data.inputSpeedCountMax;
+    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(tbCanvas.inputs.keyboard.check(this.keyset.LEFT)){
+    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(tbCanvas.inputs.keyboard.check(this.keyset.DOWN)){
+    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.check(this.keyset.ROTATE)){
+    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.check(this.keyset.DROP)){
+    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.DROP)){
       this.hardDrop();
     }
-  } else {
-    this.inputSpeedCount--;
   }
 };
 Tetris.prototype.hardDrop = function(){
@@ -340,9 +344,11 @@ Tetris.prototype.moveDownActiveBlock = function(){
   let activeBlock = this.data.activeBlock;
   let moved = this.moveActiveBlock(0,1);
 
-  if(moved && this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
+  if(moved){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
-    activeBlock.inActivate.flag = false;
+    if(this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
+      activeBlock.inActivate.flag = false;
+    }
   }
   else {
     activeBlock.inActivate.flag = true;
@@ -375,25 +381,23 @@ Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
   return true;
 };
 Tetris.prototype.autoDrop = function(){
-  let activeBlock= this.data.activeBlock;
-  if(this.dropSpeedCount >= this.dropSpeed){
-    this.dropSpeedCount = 0;
+  if(this.data.autoDropCount-- < 0){
+    this.data.autoDropCount = this.data.autoDropCountMax;
     this.moveDownActiveBlock();
-  } else {
-    this.dropSpeedCount++;
   }
 };
 Tetris.prototype.inActivateBlock = function(){
   let activeBlock = this.data.activeBlock;
-  if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1) && --activeBlock.inActivate.count < 0){
+  if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)
+  && activeBlock.inActivate.count-- < 0){
     activeBlock.inActivate.count = activeBlock.inActivate.countMax;
     this.updateActiveBlock();
     this.changeActiveBlockTo(this.data.activeBlock.type+2);
-    this.checkLines();
+    this.removeFullLines();
     this.createNewBlock();
   }
 };
-Tetris.prototype.checkLines = function(){
+Tetris.prototype.removeFullLines = function(){
   let removedLineNum = 0;
   for(let i=this.rowNum-2;i>=0;i--){
     let occupiedCount = 0;
@@ -408,14 +412,6 @@ Tetris.prototype.checkLines = function(){
     if(occupiedCount == this.colNum-2){
       i++;
       removedLineNum++;
-    }
-  }
-};
-Tetris.prototype.removeLine = function(lineNum){
-  for(let i=lineNum;i>=0;i--){
-    for(let j=1;j<this.colNum-1;j++){
-      if(i === 0 || this.data.dataArray[i-1][j] == this.CEILLING) this.data.dataArray[i][j] = this.EMPTY;
-      else this.data.dataArray[i][j] = this.data.dataArray[i-1][j];
     }
   }
 };

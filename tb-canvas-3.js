@@ -337,7 +337,7 @@ tbCanvas.inputs = {
       document.addEventListener("keydown", this.eventHandlers.keydown);
       document.addEventListener("keyup", this.eventHandlers.keyup);
     },
-    check: function(keyCode){
+    checkKeyPress: function(keyCode){
       // console.log("keyCode: ", keyCode);
       // console.log("this.keystate: ", this.keystate);
       if(this.keystate[keyCode]) {
@@ -346,7 +346,10 @@ tbCanvas.inputs = {
       }
       else return false;
     },
-    checkAny: function(){
+    unpressKey: function(keyCode){
+      delete tbCanvas.inputs.keyboard.keystate[keyCode];
+    },
+    checkKeyPressAny: function(){
       if(Object.keys(this.keystate).length) return true;
       else return false;
     },

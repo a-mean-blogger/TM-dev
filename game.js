@@ -61,7 +61,7 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(!tbCanvas.inputs.keyboard.check(gameSetting.keyset.QUIT) &&  tbCanvas.inputs.keyboard.checkAny()){
+  if(!tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.QUIT) &&  tbCanvas.inputs.keyboard.checkKeyPressAny()){
     game.changeProgram(game.programs.tetris);
   }
 };
@@ -80,7 +80,7 @@ game.programs.tetris.init = function(){
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
-  if(tbCanvas.inputs.keyboard.check(gameSetting.keyset.QUIT)){
+  if(tbCanvas.inputs.keyboard.checkKeyPress(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
   }
 };
