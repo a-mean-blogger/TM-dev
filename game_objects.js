@@ -63,7 +63,7 @@ Star.prototype.draw = function () {
   if(this.blank%2===0) game.tbScreen.insertText(this.x,this.y,"★");
   else game.tbScreen.insertText(this.x,this.y,"☆");
 };
-Star.prototype.erase = function () {
+Star.prototype._destroy = function () {
   game.tbScreen.insertText(this.x,this.y,"  ");
 };
 
@@ -256,7 +256,7 @@ Tetris.prototype.calculate = function () {
   if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
   this.getInput();
 };
-Tetris.prototype.beforeDestroy = function (blockType) {
+Tetris.prototype._destroy = function (blockType) {
   this.test.destroy();
 };
 Tetris.prototype.getBlockColor = function (blockType) {

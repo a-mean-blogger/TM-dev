@@ -32,9 +32,7 @@ tbCanvas.LoopObject = function(speed){
   this.interval = new tbCanvas.Interval();
   this.init();
 };
-tbCanvas.LoopObject.prototype.init = function (){
-  // if(this.speed) this.initInterval();
-};
+tbCanvas.LoopObject.prototype.init = function (){};
 tbCanvas.LoopObject.prototype.initInterval = function(){
   this.isActive = true;
   this.interval.init(this.speed, _=> {
@@ -45,13 +43,11 @@ tbCanvas.LoopObject.prototype.initInterval = function(){
 tbCanvas.LoopObject.prototype.calculate = function(){};
 tbCanvas.LoopObject.prototype.draw = function(){};
 tbCanvas.LoopObject.prototype.destroy = function(){
-  this.beforeDestroy();
+  this._destroy();
   this.interval.stop();
   this.isActive = false;
-  this.erase();
 };
-tbCanvas.LoopObject.prototype.beforeDestroy = function(){};
-tbCanvas.LoopObject.prototype.erase = function(){};
+tbCanvas.LoopObject.prototype._destroy = function(){};
 
 
 tbCanvas.Program = function(speed,data){
@@ -71,12 +67,14 @@ tbCanvas.Program.prototype.calculate = function(){
   this.timeline();
   this.getInput();
 };
-tbCanvas.Program.prototype.initProgram = function(){
+tbCanvas.Program.prototype.init = function(){
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
   this.initInterval();
+  this._init();
 };
+tbCanvas.Program.prototype._init = function(){};
 tbCanvas.Program.prototype.destroy = function(){
   tbCanvas.LoopObject.prototype.destroy.call(this);
   this.count = 0;

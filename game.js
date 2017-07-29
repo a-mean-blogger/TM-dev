@@ -36,9 +36,6 @@ var game = {
 };
 
 game.programs.intro = new tbCanvas.Program(10,{x:5,y:3});
-game.programs.intro.init = function(){
-  this.initProgram();
-};
 game.programs.intro.timeline = function(){
   if(this.count ==  10) game.tbScreen.insertText(this.data.x,this.data.y+0, "■□□□■■■□□■■□□■■");
   if(this.count ==  20) game.tbScreen.insertText(this.data.x,this.data.y+1, "■■■□  ■□□    ■■□□■");
@@ -65,7 +62,7 @@ game.programs.intro.getInput = function(){
     game.changeProgram(game.programs.tetris);
   }
 };
-game.programs.intro.erase = function(){
+game.programs.intro._destroy = function(){
   game.tbScreen.clearScreen();
 };
 
@@ -74,8 +71,7 @@ game.programs.tetris.uniqueObjects = {
   status : undefined,
   player1Game : undefined
 };
-game.programs.tetris.init = function(){
-  this.initProgram();
+game.programs.tetris._init = function(){
   if(!this.uniqueObjects.status) this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset},this.uniqueObjects.status);
 };
@@ -84,21 +80,20 @@ game.programs.tetris.getInput = function(){
     game.changeProgram(game.programs.intro);
   }
   if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.PAUSE)){
-    tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
     this.data.pausedScreen = game.tbScreen.copyScreen();
     game.tbScreen.fillScreen(" ", null, "rgba(255,255,255,0.4)");
   }
   if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.PAUSE)){
-    tbCanvas.inputs.keyboard.unpressKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
     game.tbScreen.pasteScreen(this.data.pausedScreen);
   }
 };
-game.programs.tetris.erase = function(){
+game.programs.tetris._destroy = function(){
   game.tbScreen.clearScreen();
+  tbCanvas.inputs.keyboard.clearKeyPressed();
 };
 
 game.init();
