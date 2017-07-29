@@ -194,7 +194,6 @@ Tetris.prototype.init = function () {
   this.resetDataArray();
   this.createNewBlock();
   this.data.autoDropCount = this.data.autoDropCountMax;
-  tbCanvas.inputs.keyboard.unpressKey(this.keyset.DROP);
   this.initInterval();
   this.data.level = 1;
   this.data.score = 0;
@@ -327,19 +326,19 @@ Tetris.prototype.changeActiveBlockTo = function(to){
 Tetris.prototype.getInput = function () {
   if(this.data.inputSpeedCount-- < 0){
     this.data.inputSpeedCount = this.data.inputSpeedCountMax;
-    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.RIGHT)){
+    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.LEFT)){
+    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.DOWN)){
+    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.ROTATE)){
+    if(tbCanvas.inputs.keyboard.checkKeyPressed(this.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPress(this.keyset.DROP)){
+    if(tbCanvas.inputs.keyboard.checkKeyPressed(this.keyset.DROP)){
       this.hardDrop();
     }
   }
@@ -442,7 +441,7 @@ Tetris.prototype.removeFullLines = function(){
       this.addScore(100 * this.data.level);
 
       if(--this.data.goalCount === 0) this.levelUp();
-      else this.parentObjects.drawGoal(this.data.goalCount);
+      else this.parentObjects.status.drawGoal(this.data.goalCount);
     }
   }
 };

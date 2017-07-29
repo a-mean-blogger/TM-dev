@@ -88,7 +88,7 @@ tbCanvas.Program.prototype.destroy = function(){
   }
 };
 tbCanvas.Program.prototype.addToObjects = function(object){
-  this.objects = game.programs.intro.objects.filter(object => object.isActive);
+  this.objects = this.objects.filter(object => object.isActive);
   this.objects.push(object);
 };
 
@@ -356,38 +356,55 @@ tbCanvas.inputs = {
   isAllowed: true,
   keyboard:{
     isAllowed: true,
-    keystate:{},
+    keyState:{},
+    keyPressed:{},
     eventHandlers:{
       keydown: function(e){
         e.preventDefault();
         if(tbCanvas.inputs.isAllowed && tbCanvas.inputs.keyboard.isAllowed){
-          tbCanvas.inputs.keyboard.keystate[e.keyCode] = true;
+          tbCanvas.inputs.keyboard.keyState[e.keyCode] = true;
+          tbCanvas.inputs.keyboard.keyPressed[e.keyCode] = true;
           // console.log("e.keyCode: ", e.keyCode);
         }
       },
       keyup: function(e){
         e.preventDefault();
-        delete tbCanvas.inputs.keyboard.keystate[e.keyCode];
+        delete tbCanvas.inputs.keyboard.keyState[e.keyCode];
       },
     },
     init: function(){
       document.addEventListener("keydown", this.eventHandlers.keydown);
       document.addEventListener("keyup", this.eventHandlers.keyup);
     },
-    checkKeyPress: function(keyCode){
+    checkKeyState: function(keyCode){
       // console.log("keyCode: ", keyCode);
-      // console.log("this.keystate: ", this.keystate);
-      if(this.keystate[keyCode]) {
-        // delete tbCanvas.inputs.keyboard.keystate[keyCode];
+      // console.log("this.keyState: ", this.keyState);
+      if(this.keyState[keyCode]) {
+        // delete tbCanvas.inputs.keyboard.keyState[keyCode];
         return true;
       }
       else return false;
     },
-    unpressKey: function(keyCode){
-      delete tbCanvas.inputs.keyboard.keystate[keyCode];
+    checkKeyPressed: function(keyCode){
+      // console.log("keyCode: ", keyCode);
+      if(this.keyPressed[keyCode]) {
+      // console.log("this.keyPressed: ", this.keyPressed);
+        delete this.keyPressed[keyCode];
+        return true;
+      }
+      else return false;
     },
-    checkKeyPressAny: function(){
-      if(Object.keys(this.keystate).length) return true;
+    removeKeyPressed: function(keyCode){
+      delete this.keyPressed[keyCode];
+    },
+    clearKeyPressed: function(){
+      this.keyPressed = {};
+    },
+    checkKeyPressedAny: function(){
+      if(Object.keys(this.keyPressed).length){
+        this.keyPressed = {};
+        return true;
+      }
       else return false;
     },
   },
