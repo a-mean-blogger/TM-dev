@@ -12,7 +12,6 @@ tbCanvas.Interval.prototype.stop = function () {
 };
 tbCanvas.Interval.prototype.start = function () {
   this.stop();
-  this.func();
   this.id = window.setInterval(_=>this.func(), this.speed);
 };
 tbCanvas.Interval.prototype.setSpeed = function (speed) {
@@ -26,15 +25,34 @@ tbCanvas.Interval.prototype.init = function (speed,func) {
 };
 
 
-tbCanvas.LoopObject = function(speed){
+tbCanvas.Object = function(data){
   this.isActive = true;
-  this.speed = speed;
-  this.interval = new tbCanvas.Interval();
+  this.data = tbCanvas.common.mergeObjects(this.data, data);
   this.init();
 };
-tbCanvas.LoopObject.prototype.init = function (){};
+tbCanvas.Object.prototype.init = function (){};
+tbCanvas.Object.prototype.destroy = function(){
+  this._destroy();
+  this.isActive = false;
+};
+tbCanvas.Object.prototype._destroy = function(){};
+
+
+tbCanvas.LoopObject = function(speed, data, autoStart){
+  this.autoStart = autoStart;
+  this.speed = speed;
+  this.interval = new tbCanvas.Interval();
+  tbCanvas.Object.call(this, data);
+};
+tbCanvas.LoopObject.prototype = Object.create(tbCanvas.Object.prototype);
+tbCanvas.LoopObject.prototype.constructor = tbCanvas.LoopObject;
+
+tbCanvas.LoopObject.prototype.init = function (){
+  if(this.autoStart) this.initInterval();
+};
 tbCanvas.LoopObject.prototype.initInterval = function(){
   this.isActive = true;
+  this.draw();
   this.interval.init(this.speed, _=> {
     if(this.isActive) this.calculate();
     if(this.isActive) this.draw();
@@ -43,19 +61,18 @@ tbCanvas.LoopObject.prototype.initInterval = function(){
 tbCanvas.LoopObject.prototype.calculate = function(){};
 tbCanvas.LoopObject.prototype.draw = function(){};
 tbCanvas.LoopObject.prototype.destroy = function(){
-  this._destroy();
   this.interval.stop();
-  this.isActive = false;
+  tbCanvas.Object.prototype.destroy.call(this);
 };
 tbCanvas.LoopObject.prototype._destroy = function(){};
 
 
-tbCanvas.Program = function(speed,data){
-  this.data = data;
+tbCanvas.Program = function(speed, data){
+  this.autoStart = false;
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  tbCanvas.LoopObject.call(this, speed);
+  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
 };
 tbCanvas.Program.prototype = Object.create(tbCanvas.LoopObject.prototype);
 tbCanvas.Program.prototype.constructor = tbCanvas.Program;

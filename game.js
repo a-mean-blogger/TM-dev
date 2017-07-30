@@ -70,7 +70,8 @@ game.programs.intro._destroy = function(){
 game.programs.tetris = new tbCanvas.Program(10,{isPaused:false});
 game.programs.tetris.uniqueObjects = {
   status : undefined,
-  player1Game : undefined
+  player1Game : undefined,
+  pause: undefined,
 };
 game.programs.tetris._init = function(){
   if(!this.uniqueObjects.status) this.uniqueObjects.status = new Status({x:28,y:3});

@@ -53,3 +53,15 @@ tbCanvas.common.getFullwidthRegex = function(){
   }
   if(string) return new RegExp("(["+string+"])","g");
 };
+
+// tbCanvas.common.merge(object1, object2):
+// Create an object with object1 and object2's properties and return it. object2 will overwrite object1 if there are same properties.
+tbCanvas.common.mergeObjects = function(...objects){
+  var object = {};
+  for(let i = 0; i<objects.length; i++){
+    for(let p in objects[i]){
+      object[p] = objects[i][p];
+    }
+  }
+  return object;
+};
