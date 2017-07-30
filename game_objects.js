@@ -232,7 +232,8 @@ Tetris.prototype.draw = function () {
           color = this.getBlockColor(activeBlock.type);
           break;
         case this.CEILLING: // -1
-          blockChar="..";
+          blockChar="•";
+          color = "gray";
           break;
         case this.EMPTY: //0
           blockChar="  ";
@@ -326,19 +327,19 @@ Tetris.prototype.changeActiveBlockTo = function(to){
 Tetris.prototype.getInput = function () {
   if(this.data.inputSpeedCount-- < 0){
     this.data.inputSpeedCount = this.data.inputSpeedCountMax;
-    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.RIGHT)){
+    if(tbCanvas.inputs.keyboard.checkKey(this.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.LEFT)){
+    if(tbCanvas.inputs.keyboard.checkKey(this.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKeyState(this.keyset.DOWN)){
+    if(tbCanvas.inputs.keyboard.checkKey(this.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPressed(this.keyset.ROTATE)){
+    if(tbCanvas.inputs.keyboard.checkKey(this.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKeyPressed(this.keyset.DROP)){
+    if(tbCanvas.inputs.keyboard.checkKey(this.keyset.DROP)){
       this.hardDrop();
     }
   }

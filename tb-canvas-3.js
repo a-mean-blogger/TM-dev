@@ -170,7 +170,7 @@ tbCanvas.Screen.prototype.draw = function() {
         }
 
         //draw char
-        if(this.screenData[i][j].char && this.screenData[i][j].char.length==1){
+        if(this.screenData[i][j].char && this.screenData[i][j].char[0] != "$"){
           let chX = this.blockWidth*j;
           let chY = this.blockHeight*i+this.blockHeight*0.8; // y adjustment
           let charset = tbCanvas.common.getCharGroup(this.screenData[i][j].char);
@@ -183,7 +183,7 @@ tbCanvas.Screen.prototype.draw = function() {
             ctx.font = this.screen.fontSize+"px "+this.screenData[i][j].font;
           }
           ctx.fillStyle = this.screenData[i][j].color;
-          ctx.fillText(this.screenData[i][j].char,chX,chY);
+          ctx.fillText(this.screenData[i][j].char[0],chX,chY);
         }
 
         //do not draw once it already drew for the better performance
@@ -378,16 +378,35 @@ tbCanvas.inputs = {
       // console.log("keyCode: ", keyCode);
       // console.log("this.keyState: ", this.keyState);
       if(this.keyState[keyCode]) {
-        // delete tbCanvas.inputs.keyboard.keyState[keyCode];
         return true;
       }
       else return false;
     },
+    checkKeyStateAny: function(){
+      if(Object.keys(this.keyState).length){
+        // console.log("this.keyState: ", this.keyState);
+        return true;
+      }
+      else return false;
+    },
+    removeKeyState: function(keyCode){
+      delete this.keyState[e.keyCode];
+    },
+    clearKeyState: function(){
+      this.keyState = {};
+    },
     checkKeyPressed: function(keyCode){
       // console.log("keyCode: ", keyCode);
-      if(this.keyPressed[keyCode]) {
       // console.log("this.keyPressed: ", this.keyPressed);
+      if(this.keyPressed[keyCode]) {
         delete this.keyPressed[keyCode];
+        return true;
+      }
+      else return false;
+    },
+    checkKeyPressedAny: function(){
+      if(Object.keys(this.keyPressed).length){
+        this.keyPressed = {};
         return true;
       }
       else return false;
@@ -398,12 +417,19 @@ tbCanvas.inputs = {
     clearKeyPressed: function(){
       this.keyPressed = {};
     },
-    checkKeyPressedAny: function(){
-      if(Object.keys(this.keyPressed).length){
-        this.keyPressed = {};
-        return true;
-      }
-      else return false;
+    checkKey: function(keyCode){
+      return this.checkKeyPressed(keyCode) || this.checkKeyState(keyCode);
+    },
+    checkKeyAny: function(){
+      return this.checkKeyPressedAny() || this.checkKeyStateAny();
+    },
+    removeKey: function(keyCode){
+      this.removeKeyPressed(keyCode);
+      this.removeKeyState(keyCode);
+    },
+    clearKey: function(){
+      this.clearKeyPressed();
+      this.clearKeyState();
     },
   },
   init: function(){

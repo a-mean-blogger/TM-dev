@@ -58,12 +58,13 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(!tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.QUIT) &&  tbCanvas.inputs.keyboard.checkKeyPressedAny()){
+  if(!tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.QUIT) &&  tbCanvas.inputs.keyboard.checkKeyAny()){
     game.changeProgram(game.programs.tetris);
   }
 };
 game.programs.intro._destroy = function(){
   game.tbScreen.clearScreen();
+  tbCanvas.inputs.keyboard.clearKey();
 };
 
 game.programs.tetris = new tbCanvas.Program(10,{isPaused:false});
@@ -76,16 +77,16 @@ game.programs.tetris._init = function(){
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
-  if(tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.QUIT)){
+  if(tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
   }
-  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.PAUSE)){
+  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
     this.data.pausedScreen = game.tbScreen.copyScreen();
     game.tbScreen.fillScreen(" ", null, "rgba(255,255,255,0.4)");
   }
-  if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKeyPressed(gameSetting.keyset.PAUSE)){
+  if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
     game.tbScreen.pasteScreen(this.data.pausedScreen);
@@ -93,7 +94,7 @@ game.programs.tetris.getInput = function(){
 };
 game.programs.tetris._destroy = function(){
   game.tbScreen.clearScreen();
-  tbCanvas.inputs.keyboard.clearKeyPressed();
+  tbCanvas.inputs.keyboard.clearKey();
 };
 
 game.init();
