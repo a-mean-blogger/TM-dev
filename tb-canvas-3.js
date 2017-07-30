@@ -159,11 +159,12 @@ tbCanvas.Screen.prototype.init = function () {
 tbCanvas.Screen.prototype.calculate = function() {
   if(!this.isFontLoaded) this.checkFontLoaded();
 };
-tbCanvas.Screen.prototype.getBackgroundWidthRecursive = function(i,j){
+tbCanvas.Screen.prototype.getBackgroundWidthRecursive = function(i,j,bgUpdated){
+  bgUpdated[i][j] = true;
   if(j+1<this.screen.column
   && this.screenData[i][j+1].isNew
   && this.screenData[i][j].backgroundColor == this.screenData[i][j+1].backgroundColor){
-    return this.getBackgroundWidthRecursive(i,j+1) + this.blockWidth;
+    return this.getBackgroundWidthRecursive(i,j+1,bgUpdated) + this.blockWidth;
   } else {
     return this.blockWidth;
   }
@@ -172,15 +173,23 @@ tbCanvas.Screen.prototype.draw = function() {
   let ctx = this.ctx;
   ctx.textBaseline = "buttom";
 
+  let bgUpdated = [];
+  for(let i = 0; i <this.screen.row; i++){
+    bgUpdated[i] = [];
+    for(let j = 0; j<this.screen.column; j++){
+      bgUpdated[i][j] = false;
+    }
+  }
+
   for(let i = 0; i <this.screen.row; i++){
     for(let j = 0; j<this.screen.column; j++){
       if(this.screenData[i][j].isNew === true){
 
         //draw backgroundColor
-        if(j===0 || this.screenData[i][j-1].isNew != "$modified"){
+        if(!bgUpdated[i][j]){
           let bgX = this.blockWidth*j;
           let bgY = this.blockHeight*i;
-          let width = this.getBackgroundWidthRecursive(i,j);
+          let width = this.getBackgroundWidthRecursive(i,j,bgUpdated);
           let height = this.blockHeight;
           ctx.fillStyle = this.screenData[i][j].backgroundColor;
           ctx.fillRect(bgX,bgY,width,height);
@@ -204,13 +213,6 @@ tbCanvas.Screen.prototype.draw = function() {
         }
 
         //do not draw once it already drew for the better performance
-        this.screenData[i][j].isNew = "$modified";
-      }
-    }
-  }
-  for(let i = 0; i <this.screen.row; i++){
-    for(let j = 0; j<this.screen.column; j++){
-      if(this.screenData[i][j].isNew == "$modified"){
         this.screenData[i][j].isNew = false;
       }
     }

@@ -32,7 +32,7 @@ tbCanvas.setting.charGroups={
     yAdj:0,
   },
   group2:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣    •
-    regex:"\u25a0\u25a1\u2605\u2606\u25b3\u25b7\u25bd\u25c1\u25a3\u2022",
+    regex:"\u2500-\u2BFF\u2022\u2008",
     isFullwidth:true,
     sizeAdj:1.2,
     xAdj:-0.05,

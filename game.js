@@ -81,16 +81,20 @@ game.programs.tetris.getInput = function(){
   if(tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
   }
-  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
-    this.uniqueObjects.player1Game.interval.stop();
-    this.data.isPaused = true;
-    this.data.pausedScreen = game.tbScreen.copyScreen();
-    game.tbScreen.fillScreen(" ", null, "rgba(255,255,255,0.4)");
-  }
   if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    tbCanvas.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
     game.tbScreen.pasteScreen(this.data.pausedScreen);
+    this.uniqueObjects.pause.destroy();
+  }
+  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    tbCanvas.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
+    this.uniqueObjects.player1Game.interval.stop();
+    this.data.isPaused = true;
+    this.data.pausedScreen = game.tbScreen.copyScreen();
+    game.tbScreen.fillScreen(" ", null, "rgba(0,0,0,0.4)");
+    this.uniqueObjects.pause = new Pause(800,{x:15,y:11,bgColor:"#444"});
   }
 };
 game.programs.tetris._destroy = function(){

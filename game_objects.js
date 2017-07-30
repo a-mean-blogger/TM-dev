@@ -45,23 +45,57 @@ function Star(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
-    blank: 0,
+    blink: 0,
   };
   tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
 }
 Star.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Star.prototype.constructor = Star;
 
-Star.prototype.calculate = function () {
-  this.data.blank = (this.data.blank+1)%2;
+Star.prototype.calculate = function(){
+  this.data.blink = (this.data.blink+1)%2;
 };
-Star.prototype.draw = function () {
-  if(this.data.blank%2===0) game.tbScreen.insertText(this.data.x,this.data.y,"★");
-  else game.tbScreen.insertText(this.data.x,this.data.y,"☆");
+Star.prototype.draw = function(){
+  let text = this.data.blink%2===0?"★":"☆";
+  game.tbScreen.insertText(this.data.x,this.data.y,text);
 };
-Star.prototype.destroy = function () {
+Star.prototype.destroy = function(){
   game.tbScreen.insertText(this.data.x,this.data.y,"  ");
   tbCanvas.LoopObject.prototype.destroy.call(this);
+};
+
+function Pause(speed, data){
+  this.autoStart = true;
+  this.data = {
+    x: undefined,
+    y: undefined,
+    bgColor: undefined,
+    blink: 0,
+    text: "Please press <P> to return to game",
+  };
+  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+}
+Pause.prototype = Object.create(tbCanvas.LoopObject.prototype);
+Pause.prototype.constructor = Pause;
+
+Pause.prototype.init = function(){
+  this.drawFrame();
+  tbCanvas.LoopObject.prototype.init.call(this);
+};
+Pause.prototype.drawFrame = function(){
+  game.tbScreen.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+1,"┃                  ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+2,"┃                  ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+3,"┗━━━━━━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x+14,this.data.y+1,"[ PAUSED ]","#fff",this.data.bgColor);
+};
+
+Pause.prototype.calculate = function(){
+  this.data.blink = (this.data.blink+1)%2;
+};
+Pause.prototype.draw = function(){
+  let color = this.data.blink%2===0?"#fff":"gray";
+  game.tbScreen.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 function Status(data){
@@ -82,21 +116,22 @@ Status.prototype.init = function(){
   this.drawBestScore(this.data.bestScore);
 };
 Status.prototype.drawFrame = function(){
-  game.tbScreen.insertText(this.data.x, this.data.y+0, " LEVEL :");
-  game.tbScreen.insertText(this.data.x, this.data.y+1, " GOAL  :");
-  game.tbScreen.insertText(this.data.x, this.data.y+2, "+-  N E X T   -+ ");
-  game.tbScreen.insertText(this.data.x, this.data.y+3, "|              | ");
-  game.tbScreen.insertText(this.data.x, this.data.y+4, "|              | ");
-  game.tbScreen.insertText(this.data.x, this.data.y+5, "|              | ");
-  game.tbScreen.insertText(this.data.x, this.data.y+6, "|              | ");
-  game.tbScreen.insertText(this.data.x, this.data.y+7, "+-- -  --  - --+ ");
-  game.tbScreen.insertText(this.data.x, this.data.y+8, " YOUR SCORE :");
-  game.tbScreen.insertText(this.data.x, this.data.y+10," LAST SCORE :");
-  game.tbScreen.insertText(this.data.x, this.data.y+12," BEST SCORE :");
-  game.tbScreen.insertText(this.data.x, this.data.y+15,"  △   : Shift        SPACE : Hard Drop");
-  game.tbScreen.insertText(this.data.x, this.data.y+16,"◁  ▷ : Left / Right   P   : Pause");
-  game.tbScreen.insertText(this.data.x, this.data.y+17,"  ▽   : Soft Drop     ESC  : Quit");
-  game.tbScreen.insertText(this.data.x, this.data.y+20,"www.A-MEAN-Blog.com");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 0, " LEVEL :");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 1, " GOAL  :");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 2, "┍      ┑");
+  game.tbScreen.insertText(this.data.x+4, this.data.y+ 2, "N E X T");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 3, "│      │");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 4, "│      │");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 5, "│      │");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 6, "│      │");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 7, "┕━━━━━━┙");
+  game.tbScreen.insertText(this.data.x,   this.data.y+ 8, " YOUR SCORE :");
+  game.tbScreen.insertText(this.data.x,   this.data.y+10, " LAST SCORE :");
+  game.tbScreen.insertText(this.data.x,   this.data.y+12, " BEST SCORE :");
+  game.tbScreen.insertText(this.data.x,   this.data.y+15, "  △   : Shift        SPACE : Hard Drop");
+  game.tbScreen.insertText(this.data.x,   this.data.y+16, "◁  ▷ : Left / Right   P   : Pause");
+  game.tbScreen.insertText(this.data.x,   this.data.y+17, "  ▽   : Soft Drop     ESC  : Quit");
+  game.tbScreen.insertText(this.data.x,   this.data.y+20, "www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
@@ -186,7 +221,7 @@ function Tetris(data, status){
 Tetris.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
-Tetris.prototype.init = function () {
+Tetris.prototype.init = function(){
   this.resetDataArray();
   this.createNewBlock();
   this.setSpeed(this.data.level);
@@ -212,7 +247,7 @@ Tetris.prototype.init = function () {
       `;
     });
 };
-Tetris.prototype.draw = function () {
+Tetris.prototype.draw = function(){
   let activeBlock = this.data.activeBlock;
 
   for(let i=0;i<this.rowNum;i++){
@@ -243,7 +278,7 @@ Tetris.prototype.draw = function () {
     }
   }
 };
-Tetris.prototype.calculate = function () {
+Tetris.prototype.calculate = function(){
   this.updateCeilling();
   this.autoDrop();
   this.updateActiveBlock();
@@ -265,7 +300,7 @@ Tetris.prototype.getBlockColor = function (blockType) {
   else if(blockType === 6) color = "green";
   return color;
 };
-Tetris.prototype.resetDataArray = function () {
+Tetris.prototype.resetDataArray = function(){
   this.data.dataArray=[];
   for(let i=0;i<this.rowNum;i++){
     this.data.dataArray[i]=[];
@@ -318,7 +353,7 @@ Tetris.prototype.changeActiveBlockTo = function(to){
     }
   }
 };
-Tetris.prototype.getInput = function () {
+Tetris.prototype.getInput = function(){
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
     if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.RIGHT)){
