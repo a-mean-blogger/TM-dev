@@ -369,6 +369,7 @@ Tetris.prototype.getInput = function(){
       this.rotateActiveBlock();
     }
     if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.DROP)){
+      tbCanvas.inputs.keyboard.removeKey(this.data.keyset.DROP);
       this.hardDrop();
     }
   }
@@ -377,11 +378,12 @@ Tetris.prototype.hardDrop = function(){
   let activeBlock = this.data.activeBlock;
 
   if(this.moveActiveBlock(0,1)){
+    this.data.score += this.data.level;
     this.hardDrop();
   }
   else{
-    this.inActivateBlock();
-    return;
+    this.refStatus.drawScore(this.data.score);
+    this.inActivateBlock(true);
   }
 };
 Tetris.prototype.moveActiveBlock = function(x,y){
@@ -442,10 +444,10 @@ Tetris.prototype.autoDrop = function(){
     this.moveDownActiveBlock();
   }
 };
-Tetris.prototype.inActivateBlock = function(){
+Tetris.prototype.inActivateBlock = function(force){
   let activeBlock = this.data.activeBlock;
   if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)
-  && ++activeBlock.inActivate.count > activeBlock.inActivate.countMax){
+  && (++activeBlock.inActivate.count > activeBlock.inActivate.countMax) || force){
     activeBlock.inActivate.count = 0;
     this.updateActiveBlock();
     this.changeActiveBlockTo(this.data.activeBlock.type+2);

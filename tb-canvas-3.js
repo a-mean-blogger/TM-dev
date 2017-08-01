@@ -409,7 +409,7 @@ tbCanvas.inputs = {
       else return false;
     },
     removeKeyState: function(keyCode){
-      delete this.keyState[e.keyCode];
+      delete this.keyState[keyCode];
     },
     clearKeyState: function(){
       this.keyState = {};
