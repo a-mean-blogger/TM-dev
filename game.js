@@ -9,6 +9,7 @@ var gameSetting={
     wall: "#F5F7FA",
     ceiling: "#656D78",
     block: ["#48CFAD","#FFCE54","#FC6E51","#EC87C0","#AC92EC","#4FC1E9","#A0D468"],
+    grayBlock: "#AAB2BD",
     star: "#FFCE54",
   },
   tetris1:{
@@ -25,6 +26,12 @@ var gameSetting={
 var game = {
   tbScreen: new tbCanvas.Screen(),
   programs: {},
+  data: {
+    scores:{
+      lastScore: 0,
+      bestScore: 0,
+    },
+  },
   init: function(){
     this.destroy();
     this.programs.intro.init();
@@ -80,7 +87,7 @@ game.programs.tetris.uniqueObjects = {
   pause: undefined,
 };
 game.programs.tetris._init = function(){
-  if(!this.uniqueObjects.status) this.uniqueObjects.status = new Status({x:28,y:3,colorset:gameSetting.colorset});
+  if(!this.uniqueObjects.status) this.uniqueObjects.status = new Status({x:28,y:3,colorset:gameSetting.colorset,scores:game.data.scores});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset,colorset:gameSetting.colorset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
