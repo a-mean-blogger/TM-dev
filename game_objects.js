@@ -208,15 +208,23 @@ function Tetris(data, status){
       rotation: null,
       x: null,
       y: null,
-      inActivate: {
+      inActivate1: {
         flag: false,
-        countMax: 50,
-        isDelayed: false,
-        delayCount: 10,
         count: 0,
+        countMax: 50,
+      },
+      inActivate2: {
+        flag: false,
+        count: 0,
+        countMax: 10,
       },
     },
     nextBlockType: null,
+    gameOver: {
+      flag: false,
+      count: 0,
+      countMax: 30,
+    },
   };
   tbCanvas.LoopObject.call(this, 10, data, this.autoStart);
 }
@@ -249,8 +257,10 @@ Tetris.prototype.init = function(){
       activeBlock.x: ${activeBlock.x}
       activeBlock.y: ${activeBlock.y}
       nextBlockType: ${this.data.nextBlockType}
-      inActivate.flag: ${activeBlock.inActivate.flag}
-      inActivate.count: ${activeBlock.inActivate.count}
+      inActivate1.flag: ${activeBlock.inActivate1.flag}
+      inActivate1.count: ${activeBlock.inActivate1.count}
+      inActivate2.flag: ${activeBlock.inActivate2.flag}
+      inActivate2.count: ${activeBlock.inActivate2.count}
       speed: ${this.data.autoDropCountMax}
       `;
     });
@@ -295,7 +305,7 @@ Tetris.prototype.calculate = function(){
   this.updateCeilling();
   this.autoDrop();
   this.updateActiveBlock();
-  if(this.data.activeBlock.inActivate.flag) this.inActivateBlock();
+  if(this.data.activeBlock.inActivate1.flag) this.inActivateBlock();
   this.getInput();
 };
 Tetris.prototype.destroy = function (blockType) {
@@ -329,9 +339,10 @@ Tetris.prototype.createNewBlock = function(){
   newBlock.type = tbCanvas.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
   newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
-  newBlock.inActivate.flag = false;
-  newBlock.inActivate.isDelayed = false;
-  newBlock.inActivate.count = this.data.activeBlock.inActivate.countMax;
+  newBlock.inActivate1.flag = false;
+  newBlock.inActivate1.count = 0;
+  newBlock.inActivate2.flag = false;
+  newBlock.inActivate2.count = 0;
   this.data.nextBlockType = Math.floor(Math.random()*7);
   this.updateActiveBlock();
   this.refStatus.drawNextBlock(this.data.nextBlockType);
@@ -339,7 +350,7 @@ Tetris.prototype.createNewBlock = function(){
 Tetris.prototype.updateActiveBlock = function(){
   let activeBlock= this.data.activeBlock;
 
-  if(!activeBlock.inActivate.isDelayed){
+  if(!activeBlock.inActivate2.flag){
     this.changeActiveBlockTo(Tetris.EMPTY);
 
     for(let i=0;i<4;i++){
@@ -381,13 +392,11 @@ Tetris.prototype.getInput = function(){
 Tetris.prototype.hardDrop = function(){
   let activeBlock = this.data.activeBlock;
 
-  if(this.moveActiveBlock(0,1)){
-    this.data.score += this.data.level/2;
+  if(this.moveDownActiveBlock()){
+    this.addScore(this.data.level/2);
     this.hardDrop();
-  }
-  else{
-    this.refStatus.drawScore(this.data.score);
-    this.inActivateBlock(true);
+  } else {
+    activeBlock.inActivate1.count = activeBlock.inActivate1.countMax;
   }
 };
 Tetris.prototype.moveActiveBlock = function(x,y){
@@ -407,14 +416,15 @@ Tetris.prototype.moveDownActiveBlock = function(){
   let moved = this.moveActiveBlock(0,1);
 
   if(moved){
-    activeBlock.inActivate.count = 0;
+    activeBlock.inActivate1.count = 0;
     if(this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
-      activeBlock.inActivate.flag = false;
+      activeBlock.inActivate1.flag = false;
     }
   }
   else {
-    activeBlock.inActivate.flag = true;
+    activeBlock.inActivate1.flag = true;
   }
+  return moved;
 };
 Tetris.prototype.rotateActiveBlock = function(){
   let activeBlock = this.data.activeBlock;
@@ -448,22 +458,31 @@ Tetris.prototype.autoDrop = function(){
     this.moveDownActiveBlock();
   }
 };
-Tetris.prototype.inActivateBlock = function(forced){
+Tetris.prototype.inActivateBlock = function(){
   let activeBlock = this.data.activeBlock;
-  if(++activeBlock.inActivate.count > activeBlock.inActivate.countMax + activeBlock.inActivate.delayCount){
-    activeBlock.inActivate.count = 0;
+
+  if(!activeBlock.inActivate2.flag
+  && ++activeBlock.inActivate1.count > activeBlock.inActivate1.countMax){
+    if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)){
+      activeBlock.inActivate2.flag = true;
+      this.updateActiveBlock();
+      this.changeActiveBlockTo(this.data.activeBlock.type+2);
+      this.changeFullLinesToStar();
+    }
+  }
+  else if(activeBlock.inActivate2.flag
+  && ++activeBlock.inActivate2.count > activeBlock.inActivate2.countMax){
+    activeBlock.inActivate1.count = 0;
+    activeBlock.inActivate2.count = 0;
     this.removeFullLines();
-    this.createNewBlock();
+    if(this.checkGameOver()){
+      this.gameOver();
+    }
+    else {
+      this.createNewBlock();
+    }
   }
-  else if(!this.checkActiveBlockMove(activeBlock.type,activeBlock.rotation,activeBlock.x,activeBlock.y+1)
-  && !activeBlock.inActivate.isDelayed
-  && (activeBlock.inActivate.count == activeBlock.inActivate.countMax || forced)){
-    activeBlock.inActivate.count = activeBlock.inActivate.countMax;
-    this.updateActiveBlock();
-    this.changeActiveBlockTo(this.data.activeBlock.type+2);
-    activeBlock.inActivate.isDelayed = true;
-    this.changeFullLinesToStar();
-  }
+
 };
 Tetris.prototype.changeFullLinesToStar = function(){
   for(let i=this.rowNum-2;i>=0;i--){
@@ -517,4 +536,12 @@ Tetris.prototype.levelUp = function(){
   this.setSpeed(this.data.level);
   this.refStatus.drawGoal(this.data.goalCount);
   this.refStatus.drawLevel(this.data.level);
+};
+Tetris.prototype.checkGameOver = function(){
+  for(let j=1;j<this.colNum-1;j++){
+    if(this.data.dataArray[3][j]>0) return true;
+  }
+};
+Tetris.prototype.gameOver = function(){
+  this.data.gameOver.flag = true;
 };
