@@ -45,6 +45,7 @@ function Star(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
+    color: undefined,
     blink: 0,
   };
   tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
@@ -57,7 +58,7 @@ Star.prototype.calculate = function(){
 };
 Star.prototype.draw = function(){
   let text = this.data.blink%2===0?"★":"☆";
-  game.tbScreen.insertText(this.data.x,this.data.y,text);
+  game.tbScreen.insertText(this.data.x,this.data.y,text,this.data.color);
 };
 Star.prototype.destroy = function(){
   game.tbScreen.insertText(this.data.x,this.data.y,"  ");
@@ -102,6 +103,7 @@ function Status(data){
   this.data = {
     x: undefined,
     y: undefined,
+    colorset: undefined,
     lastScore: 0,
     bestScore: 0,
   };
@@ -135,7 +137,7 @@ Status.prototype.drawFrame = function(){
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
-  let color = Tetris.prototype.getBlockColor(blockType);
+  let color = this.data.colorset.block[blockType];
   let xAdj = this.data.x+5;
   let yAdj = this.data.y+3;
   for(let i=1;i<3;i++){
@@ -156,7 +158,7 @@ Status.prototype.drawNextBlock = function(blockType){
   }
 };
 Status.prototype.convertScore = function(score){
-  let string = score.toString();
+  let string = Math.floor(score).toString();
   let formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
   let offset = 10 - formatted.length;
   let padding = "";
@@ -183,11 +185,6 @@ Status.prototype.drawBestScore = function(score){
 
 function Tetris(data, status){
   this.autoStart = true;
-  this.ACTIVE_BLOCK = -2;
-  this.CEILLING = -1;
-  this.EMPTY = 0;
-  this.WALL = 1;
-  this.STAR = 100;
   this.refStatus = status;
   this.colNum = 11;
   this.rowNum = 23;
@@ -195,6 +192,8 @@ function Tetris(data, status){
   this.data = {
     x: undefined,
     y: undefined,
+    keyset: undefined,
+    colorset: undefined,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -217,12 +216,18 @@ function Tetris(data, status){
         count: 0,
       },
     },
-    nextBlockType:null,
+    nextBlockType: null,
   };
   tbCanvas.LoopObject.call(this, 10, data, this.autoStart);
 }
 Tetris.prototype = Object.create(tbCanvas.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
+
+  Tetris.ACTIVE_BLOCK = -2;
+  Tetris.CEILING = -1;
+  Tetris.EMPTY = 0;
+  Tetris.WALL = 1;
+  Tetris.STAR = 100;
 
 Tetris.prototype.init = function(){
   this.resetDataArray();
@@ -258,27 +263,28 @@ Tetris.prototype.draw = function(){
       let blockChar;
       let color;
       switch(this.data.dataArray[i][j]){
-        case this.ACTIVE_BLOCK: //-2
+        case Tetris.ACTIVE_BLOCK: //-2
           blockChar="□";
-          color = this.getBlockColor(activeBlock.type);
+          color = this.data.colorset.block[activeBlock.type];
           break;
-        case this.CEILLING: // -1
+        case Tetris.CEILING: // -1
           blockChar="•";
-          color = "gray";
+          color = this.data.colorset.ceiling;
           break;
-        case this.EMPTY: //0
+        case Tetris.EMPTY: //0
           blockChar="  ";
           break;
-        case this.WALL: // 1
+        case Tetris.WALL: // 1
           blockChar="▣";
+          color = this.data.colorset.wall;
           break;
-        case this.STAR: // 1
+        case Tetris.STAR: // 1
           blockChar="☆";
-          color = "yellow";
+          color = this.data.colorset.star;
           break;
         default: // 2~
           blockChar="■";
-          color = this.getBlockColor(this.data.dataArray[i][j]-2);
+          color = this.data.colorset.block[this.data.dataArray[i][j]-2];
           break;
       }
       game.tbScreen.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
@@ -296,17 +302,6 @@ Tetris.prototype.destroy = function (blockType) {
   this.test.destroy();
   tbCanvas.LoopObject.prototype.destroy.call(this);
 };
-Tetris.prototype.getBlockColor = function (blockType) {
-  let color;
-  if(blockType === 0) color = "red";
-  else if(blockType === 1) color = "orange";
-  else if(blockType === 2) color = "blue";
-  else if(blockType === 3) color = "tomato";
-  else if(blockType === 4) color = "yellow";
-  else if(blockType === 5) color = "gray";
-  else if(blockType === 6) color = "green";
-  return color;
-};
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray=[];
   for(let i=0;i<this.rowNum;i++){
@@ -316,16 +311,16 @@ Tetris.prototype.resetDataArray = function(){
     }
   }
   for(let i=1;i<this.rowNum-1;i++){
-    this.data.dataArray[i][0]=this.WALL;
-    this.data.dataArray[i][this.colNum-1]=this.WALL;
+    this.data.dataArray[i][0]=Tetris.WALL;
+    this.data.dataArray[i][this.colNum-1]=Tetris.WALL;
   }
   for(let j=0;j<this.colNum;j++){
-    this.data.dataArray[this.rowNum-1][j]=this.WALL;
+    this.data.dataArray[this.rowNum-1][j]=Tetris.WALL;
   }
 };
 Tetris.prototype.updateCeilling = function(){
   for(let j=1;j<this.colNum-1;j++){
-    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=this.CEILLING;
+    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=Tetris.CEILING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
@@ -345,12 +340,12 @@ Tetris.prototype.updateActiveBlock = function(){
   let activeBlock= this.data.activeBlock;
 
   if(!activeBlock.inActivate.isDelayed){
-    this.changeActiveBlockTo(this.EMPTY);
+    this.changeActiveBlockTo(Tetris.EMPTY);
 
     for(let i=0;i<4;i++){
       for(let j=0;j<4;j++){
         if(BLOCKS[activeBlock.type][activeBlock.rotation][i][j]==1)
-          this.data.dataArray[activeBlock.y+i][activeBlock.x+j]=this.ACTIVE_BLOCK;
+          this.data.dataArray[activeBlock.y+i][activeBlock.x+j]=Tetris.ACTIVE_BLOCK;
       }
     }
   }
@@ -358,7 +353,7 @@ Tetris.prototype.updateActiveBlock = function(){
 Tetris.prototype.changeActiveBlockTo = function(to){
   for(let i=0;i<this.rowNum;i++){
     for(let j=0;j<this.colNum;j++){
-      if(this.data.dataArray[i][j]==this.ACTIVE_BLOCK)
+      if(this.data.dataArray[i][j]==Tetris.ACTIVE_BLOCK)
         this.data.dataArray[i][j]=to;
     }
   }
@@ -387,7 +382,7 @@ Tetris.prototype.hardDrop = function(){
   let activeBlock = this.data.activeBlock;
 
   if(this.moveActiveBlock(0,1)){
-    this.data.score += this.data.level;
+    this.data.score += this.data.level/2;
     this.hardDrop();
   }
   else{
@@ -478,7 +473,7 @@ Tetris.prototype.changeFullLinesToStar = function(){
     }
     if(occupiedCount == this.colNum-2){
       for(let j=1;j<this.colNum-1;j++){
-        this.data.dataArray[i][j] = this.STAR;
+        this.data.dataArray[i][j] = Tetris.STAR;
       }
     }
   }
@@ -490,7 +485,7 @@ Tetris.prototype.removeFullLines = function(){
     for(let j=1;j<this.colNum-1;j++){
       if(removedLineNum){
         if(i<removedLineNum) this.data.dataArray[i][j] = 0;
-        else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == this.CEILLING) this.data.dataArray[i][j] = this.EMPTY;
+        else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == Tetris.CEILING) this.data.dataArray[i][j] = Tetris.EMPTY;
         else this.data.dataArray[i][j] = this.data.dataArray[i-removedLineNum][j];
       }
       if(this.data.dataArray[i][j]>0) occupiedCount++;

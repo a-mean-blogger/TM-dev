@@ -11,8 +11,8 @@ tbCanvas.setting.screen={
   zoom: 0.6,
   column: 70, //120,
   row: 25, //40,
-  backgroundColor:"#000",
-  defalutFontColor:"#fff",
+  backgroundColor:"#151617",
+  defalutFontColor:"#F5F7FA",
   fontFamily:'Nanum Gothic Coding',
   fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
 };
