@@ -99,6 +99,49 @@ Pause.prototype.draw = function(){
   game.tbScreen.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
+function GameOverPopup(speed, data){
+  this.autoStart = true;
+  this.data = {
+    x: undefined,
+    y: undefined,
+    bgColor: undefined,
+    blink: 0,
+    text: "Please press <ESC>",
+    score: 0,
+    scoreText: "",
+  };
+  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+}
+GameOverPopup.prototype = Object.create(tbCanvas.LoopObject.prototype);
+GameOverPopup.prototype.constructor = GameOverPopup;
+
+GameOverPopup.prototype.init = function(){
+  this.data.scoreText = this.data.status.convertScore(this.data.score);
+  this.drawFrame();
+  tbCanvas.LoopObject.prototype.init.call(this);
+};
+GameOverPopup.prototype.drawFrame = function(){
+  game.tbScreen.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+1,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+2,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+3,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+4,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+5,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+6,"┃             ┃","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x,this.data.y+7,"┗━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x+8,this.data.y+1,"[ GAME OVER ]","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x+6,this.data.y+3,"YOUR SCORE: ","#fff",this.data.bgColor);
+  game.tbScreen.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,"#fff",this.data.bgColor);
+};
+
+GameOverPopup.prototype.calculate = function(){
+  this.data.blink = (this.data.blink+1)%2;
+};
+GameOverPopup.prototype.draw = function(){
+  let color = this.data.blink%2===0?"#fff":"gray";
+  game.tbScreen.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
+};
+
 function Status(data){
   this.data = {
     x: undefined,
@@ -234,6 +277,7 @@ function Tetris(data, status){
       flag: false,
       count: 0,
       countMax: 30,
+      popup: false,
     },
   };
   tbCanvas.LoopObject.call(this, 10, data, this.autoStart);
@@ -257,7 +301,6 @@ Tetris.prototype.init = function(){
   this.refStatus.drawScore(this.data.score);
   tbCanvas.LoopObject.prototype.init.call(this);
 
-
   this.test = new tbCanvas.DevTask('test',
     this.data,
     function(){
@@ -278,6 +321,8 @@ Tetris.prototype.init = function(){
 };
 Tetris.prototype.draw = function(){
   let activeBlock = this.data.activeBlock;
+
+  if(this.data.gameOver.popup) return;
 
   for(let i=0;i<this.rowNum;i++){
     for(let j=0;j<this.colNum;j++){
@@ -303,9 +348,10 @@ Tetris.prototype.draw = function(){
           blockChar="▣";
           color = this.data.colorset.wall;
           break;
-        case Tetris.STAR: // 1
+        case Tetris.STAR: //100
           blockChar="☆";
-          color = this.data.colorset.star;
+          var colorNum = j%this.data.colorset.block.length;
+          color = this.data.colorset.block[colorNum];
           break;
         default: // 2~
           blockChar="■";
@@ -327,6 +373,7 @@ Tetris.prototype.calculate = function(){
 };
 Tetris.prototype.destroy = function (blockType) {
   this.test.destroy();
+  if(this.gameOverPopup) this.gameOverPopup.destroy();
   tbCanvas.LoopObject.prototype.destroy.call(this);
 };
 Tetris.prototype.resetDataArray = function(){
@@ -450,7 +497,8 @@ Tetris.prototype.rotateActiveBlock = function(){
   if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y)){
     activeBlock.rotation = rN;
     moved = true;
-  } else if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y-1)){
+  }
+  else if(this.checkActiveBlockMove(activeBlock.type,rN,activeBlock.x,activeBlock.y-1)){
     activeBlock.rotation = rN;
     activeBlock.y -= 1;
     moved = true;
@@ -569,7 +617,12 @@ Tetris.prototype.gameOver = function(){
       if(this.data.dataArray[i][j]>0) this.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
+      this.gameOverPopup();
       clearInterval(interval);
     }
   },100);
+};
+Tetris.prototype.gameOverPopup = function(){
+  this.data.gameOver.popup = true;
+  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:"#444",status:this.refStatus,score:this.data.score});
 };

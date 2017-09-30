@@ -18,7 +18,7 @@ tbCanvas.setting.screen={
 };
 
 tbCanvas.setting.devMode={
-  isActive: true,
+  isActive: false,
   outputDomId: "devOutput",
   frameSpeed: 10,
 };

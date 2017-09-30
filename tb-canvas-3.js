@@ -337,7 +337,7 @@ tbCanvas.DevTask.prototype = Object.create(tbCanvas.LoopObject.prototype);
 tbCanvas.DevTask.prototype.constructor = tbCanvas.DevTask;
 
 tbCanvas.DevTask.prototype.init = function(){
-  this.initInterval();
+  if(tbCanvas.setting.devMode.isActive) this.initInterval();
 };
 tbCanvas.DevTask.prototype.calculate = function(){
   // get this from constructor
