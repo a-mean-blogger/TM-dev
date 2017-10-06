@@ -436,19 +436,19 @@ Tetris.prototype.changeActiveBlockTo = function(to){
 Tetris.prototype.getInput = function(){
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
-    if(TC.inputs.keyboard.checkKey(this.data.keyset.RIGHT)){
+    if(game.TCI.keyboard.checkKey(this.data.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(TC.inputs.keyboard.checkKey(this.data.keyset.LEFT)){
+    if(game.TCI.keyboard.checkKey(this.data.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(TC.inputs.keyboard.checkKey(this.data.keyset.DOWN)){
+    if(game.TCI.keyboard.checkKey(this.data.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(TC.inputs.keyboard.checkKey(this.data.keyset.ROTATE)){
+    if(game.TCI.keyboard.checkKey(this.data.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(TC.inputs.keyboard.checkKey(this.data.keyset.DROP)){
+    if(game.TCI.keyboard.checkKey(this.data.keyset.DROP)){
       this.hardDrop();
     }
   }

@@ -23,35 +23,36 @@ var gameSetting={
   },
 };
 
+
+var screenSetting = {
+  zoom: 0.6,
+  column: 70,
+  row: 25,
+  fontFamily:'Nanum Gothic Coding',
+  fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"
+};
+
+var charGroups = {
+  fullwidth:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣    •
+    regex:"\u2500-\u2BFF\u2022\u2008",
+    isFullwidth:true,
+    sizeAdj:1.2,
+    xAdj:-0.05,
+    yAdj:0.03,
+  },
+  brackets:{//[,],(,)
+    regex:"\\[\\](){}",
+    isFullwidth:false,
+    sizeAdj:0.95,
+    xAdj:0,
+    yAdj:0,
+  }
+};
+
 var game = {
-  TCS: new TC.Screen(
-    // ScreenSetting
-    {
-      zoom: 0.6,
-      column: 70,
-      row: 25,
-      fontFamily:'Nanum Gothic Coding',
-      fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"
-    },
-    // Char Group Setting
-    {
-      fullwidth:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣    •
-        regex:"\u2500-\u2BFF\u2022\u2008",
-        isFullwidth:true,
-        sizeAdj:1.2,
-        xAdj:-0.05,
-        yAdj:0.03,
-      },
-      brackets:{//[,],(,)
-        regex:"\\[\\](){}",
-        isFullwidth:false,
-        sizeAdj:0.95,
-        xAdj:0,
-        yAdj:0,
-      }
-    }
-  ),
-  TCD: new TC.DevTaskMgr(),
+  TCS: new TC.ScreenManager(screenSetting,charGroups),
+  TCD: new TC.DebugManager(),
+  TCI: new TC.InputManager(),
   programs: {},
   data: {
     scores:{
@@ -98,13 +99,13 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(!TC.inputs.keyboard.checkKey(gameSetting.keyset.QUIT) &&  TC.inputs.keyboard.checkKeyAny()){
+  if(!game.TCI.keyboard.checkKey(gameSetting.keyset.QUIT) &&  game.TCI.keyboard.checkKeyAny()){
     game.changeProgram(game.programs.tetris);
   }
 };
 game.programs.intro._destroy = function(){
   game.TCS.clearScreen();
-  TC.inputs.keyboard.clearKey();
+  game.TCI.keyboard.clearKey();
 };
 
 game.programs.tetris = new TC.Program(10,{isPaused:false});
@@ -118,18 +119,18 @@ game.programs.tetris._init = function(){
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset,colorset:gameSetting.colorset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
-  if(TC.inputs.keyboard.checkKey(gameSetting.keyset.QUIT)){
+  if(game.TCI.keyboard.checkKey(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
   }
-  if(this.data.isPaused && TC.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
-    TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
+  if(this.data.isPaused && game.TCI.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    game.TCI.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
     game.TCS.pasteScreen(this.data.pausedScreen);
     this.uniqueObjects.pause.destroy();
   }
-  if(!this.data.isPaused && TC.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
-    TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
+  if(!this.data.isPaused && game.TCI.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    game.TCI.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
     this.data.pausedScreen = game.TCS.copyScreen();
@@ -139,7 +140,7 @@ game.programs.tetris.getInput = function(){
 };
 game.programs.tetris._destroy = function(){
   game.TCS.clearScreen();
-  TC.inputs.keyboard.clearKey();
+  game.TCI.keyboard.clearKey();
 };
 
 game.init();

@@ -1,5 +1,35 @@
-console.log("text-canvas-2.js loaded");
+console.log("text-canvas-1-defaultSettings-and-common.js loaded");
 
+var TC = {};
+
+TC.defaultSettings = {
+  screen: {
+    canvasId: "text-canvas",
+    fontSize: 15,
+    frameSpeed: 10,
+    zoom: 1,
+    column: 60,
+    row: 20,
+    backgroundColor: "#151617",
+    defalutFontColor: "#F5F7FA",
+    fontFamily: 'monospace',
+    fontSource: null,
+  },
+  charGroups: {
+    korean: {//ㄱ     -힝
+      regex: "\u3131-\uD79D",
+      isFullwidth: true,
+      sizeAdj: 1,
+      xAdj: 0,
+      yAdj: 0,
+    },
+  },
+  debug: {
+    isActive: true,
+    outputDomId: "devOutput",
+    frameSpeed: 10,
+  }
+};
 
 TC.common = {};
 
@@ -54,7 +84,7 @@ TC.common.getFullwidthRegex = function(charGroups){
   if(string) return new RegExp("(["+string+"])","g");
 };
 
-// TC.common.merge(object1, object2):
+// TC.common.mergeObjects(object1, object2, ...):
 // Create an object with object1 and object2's properties and return it. object2 will overwrite object1 if there are same properties.
 TC.common.mergeObjects = function(...objects){
   var object = {};
