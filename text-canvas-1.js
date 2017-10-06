@@ -8,21 +8,15 @@ TC.defaultSettings = {};
 
 TC.defaultSettings.screen={
   canvasId:"text-canvas",
-  fontSize: 30,
+  fontSize: 15,
   frameSpeed: 10,
-  zoom: 0.5,
+  zoom: 1,
   column: 60,
   row: 20,
   backgroundColor:"#151617",
   defalutFontColor:"#F5F7FA",
   fontFamily:'monospace',
   fontSource:null,
-};
-
-TC.defaultSettings.devMode={
-  isActive: false,
-  outputDomId: "devOutput",
-  frameSpeed: 10,
 };
 
 TC.defaultSettings.charGroups={
@@ -33,4 +27,10 @@ TC.defaultSettings.charGroups={
     xAdj:0,
     yAdj:0,
   },
+};
+
+TC.defaultSettings.devMode={
+  isActive: true,
+  outputDomId: "devOutput",
+  frameSpeed: 10,
 };

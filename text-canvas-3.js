@@ -332,31 +332,66 @@ TC.Screen.prototype.consoleScreenData = function(canvas){
 
 
 
-TC.DevTask = function(domId, data, calculate){
-  this.outputDom = document.querySelector("#"+TC.defaultSettings.devMode.outputDomId);
+TC.DevTaskMgr = function(customDevModeSetting){
+  this.devModeSetting = TC.common.mergeObjects(TC.defaultSettings.devMode, customDevModeSetting);
+  TC.Object.call(this);
+  this.tasks = {};
+};
+TC.DevTaskMgr.prototype = Object.create(TC.Object.prototype);
+TC.DevTaskMgr.prototype.constructor = TC.DevTaskMgr;
+
+TC.DevTaskMgr.prototype.destroy = function(domId, data, calculate){
+  this.removeTaskAll();
+  TC.Object.prototype.destroy.call(this);
+};
+
+TC.DevTaskMgr.prototype.addTask = function(domId, data, calculate){
+  this.removeTask(domId);
+  this.tasks[domId] = new TC.DevTask(this.devModeSetting, domId, data, calculate);
+};
+
+TC.DevTaskMgr.prototype.removeTask = function(domId){
+  if(this.tasks[domId]){
+    this.tasks[domId].destroy();
+  }
+};
+
+TC.DevTaskMgr.prototype.removeTaskAll = function(){
+  for(var task in this.tasks){
+    this.tasks[task].destroy();
+  }
+};
+
+TC.DevTask = function(devModeSetting, domId, data, calculate){
+  this.devModeSetting = devModeSetting;
+  this.outputDom = document.querySelector("#"+this.devModeSetting.outputDomId);
   this.output = '';
   this.domId = domId;
-  this.data = data;
   this.calculate = calculate;
-  TC.LoopObject.call(this, 10);
+  TC.LoopObject.call(this, 10, data, true);
 };
 TC.DevTask.prototype = Object.create(TC.LoopObject.prototype);
 TC.DevTask.prototype.constructor = TC.DevTask;
 
 TC.DevTask.prototype.init = function(){
-  if(TC.defaultSettings.devMode.isActive) this.initInterval();
+  this.initInterval();
 };
 TC.DevTask.prototype.calculate = function(){
   // get this from constructor
 };
 TC.DevTask.prototype.draw = function(){
-  let dom = document.querySelector("#"+this.domId);
-  if(!dom){
-    dom = document.createElement("div");
-    dom.id = this.domId;
-    this.outputDom.appendChild(dom);
+  if(this.devModeSetting.isActive){
+    let dom = document.querySelector("#"+this.domId);
+    if(!dom){
+      dom = document.createElement("div");
+      dom.id = this.domId;
+      this.outputDom.appendChild(dom);
+    }
+    dom.innerText = this.output;
   }
-  dom.innerText = this.output;
+  else {
+    this.destroy();
+  }
 };
 TC.DevTask.prototype.stop = function(){
   let dom = document.querySelector("#"+this.domId);
@@ -366,13 +401,10 @@ TC.DevTask.prototype.stop = function(){
 TC.DevTask.prototype.restart = function(){
   this.isActive = true;
 };
-TC.DevTask.prototype.beforeDestroy = function(){
-  if(Array.isArray(this.container)){
-    let i = this.container.indexOf(this);
-    if (i >= 0) this.container.splice(i,1);
-  }
+TC.DevTask.prototype.destroy = function(){
   let dom = document.querySelector("#"+this.domId);
   if(dom) dom.remove();
+  TC.LoopObject.prototype.destroy.call(this);
 };
 
 

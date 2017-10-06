@@ -301,7 +301,7 @@ Tetris.prototype.init = function(){
   this.refStatus.drawScore(this.data.score);
   TC.LoopObject.prototype.init.call(this);
 
-  this.test = new TC.DevTask('test',
+  game.TCD.addTask('test',
     this.data,
     function(){
       let activeBlock = this.data.activeBlock;
@@ -372,7 +372,7 @@ Tetris.prototype.calculate = function(){
   }
 };
 Tetris.prototype.destroy = function (blockType) {
-  this.test.destroy();
+  game.TCD.removeTask("test");
   if(this.gameOverPopup) this.gameOverPopup.destroy();
   TC.LoopObject.prototype.destroy.call(this);
 };
@@ -617,12 +617,12 @@ Tetris.prototype.gameOver = function(){
       if(this.data.dataArray[i][j]>0) this.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
-      this.gameOverPopup();
+      this.showGameOverPopup();
       clearInterval(interval);
     }
   },100);
 };
-Tetris.prototype.gameOverPopup = function(){
+Tetris.prototype.showGameOverPopup = function(){
   this.data.gameOver.popup = true;
   this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:"#444",status:this.refStatus,score:this.data.score});
 };

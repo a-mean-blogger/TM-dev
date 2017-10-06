@@ -51,6 +51,7 @@ var game = {
       }
     }
   ),
+  TCD: new TC.DevTaskMgr(),
   programs: {},
   data: {
     scores:{
