@@ -25,10 +25,10 @@ TC.Interval.prototype.init = function (speed,func) {
 };
 
 
-TC.Object = function(data){
+TC.Object = function(data, createWithOutInit){
   this.isActive = true;
   this.data = TC.common.mergeObjects(this.data, data);
-  this.init();
+  if(!createWithOutInit) this.init();
 };
 TC.Object.prototype.init = function (){};
 TC.Object.prototype.destroy = function(){
@@ -39,16 +39,15 @@ TC.Object.prototype._destroy = function(){};
 
 
 TC.LoopObject = function(speed, data, autoStart){
-  this.autoStart = autoStart;
   this.speed = speed;
   this.interval = new TC.Interval();
-  TC.Object.call(this, data);
+  TC.Object.call(this, data, !autoStart);
 };
 TC.LoopObject.prototype = Object.create(TC.Object.prototype);
 TC.LoopObject.prototype.constructor = TC.LoopObject;
 
 TC.LoopObject.prototype.init = function (){
-  if(this.autoStart) this.initInterval();
+  this.initInterval();
 };
 TC.LoopObject.prototype.initInterval = function(){
   this.isActive = true;
@@ -85,10 +84,10 @@ TC.Program.prototype.calculate = function(){
   this.getInput();
 };
 TC.Program.prototype.init = function(){
+  TC.LoopObject.prototype.init.call(this);
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  this.initInterval();
   this._init();
 };
 TC.Program.prototype._init = function(){};
@@ -141,7 +140,7 @@ TC.Screen = function(screenSetting){
   this.canvas.style.height = this.canvas.height * this.screen.zoom + "px";
   this.ctx = this.canvas.getContext("2d");
 
-  TC.LoopObject.call(this, this.screen.frameSpeed);
+  TC.LoopObject.call(this, this.screen.frameSpeed, null, true);
 };
 TC.Screen.prototype = Object.create(TC.LoopObject.prototype);
 TC.Screen.prototype.constructor = TC.Screen;

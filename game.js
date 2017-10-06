@@ -24,7 +24,7 @@ var gameSetting={
 };
 
 var game = {
-  tbScreen: new TC.Screen(),
+  TCS: new TC.Screen(),
   programs: {},
   data: {
     scores:{
@@ -50,24 +50,24 @@ var game = {
 
 game.programs.intro = new TC.Program(10,{x:5,y:3});
 game.programs.intro.timeline = function(){
-  if(this.count ==  10) game.tbScreen.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
-  if(this.count ==  20) game.tbScreen.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
-  if(this.count ==  30) game.tbScreen.insertText(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
-  if(this.count ==  40) game.tbScreen.insertText(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
-  if(this.count ==  50) game.tbScreen.insertText(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
-  if(this.count ==  60) game.tbScreen.insertText(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
-  if(this.count ==  70) game.tbScreen.insertText(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.count ==  10) game.TCS.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
+  if(this.count ==  20) game.TCS.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
+  if(this.count ==  30) game.TCS.insertText(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
+  if(this.count ==  40) game.TCS.insertText(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
+  if(this.count ==  50) game.TCS.insertText(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
+  if(this.count ==  60) game.TCS.insertText(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
+  if(this.count ==  70) game.TCS.insertText(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(this.count ==  70){
     this.addToObjects(new Star(500,{x:this.data.x+8,y:this.data.y+1}));
     this.addToObjects(new Star(700,{x:this.data.x+26,y:this.data.y+2}));
-    game.tbScreen.insertText(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
-    game.tbScreen.insertText(this.data.x,this.data.y+9, "  △   : Shift","#fff");
-    game.tbScreen.insertText(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
-    game.tbScreen.insertText(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
-    game.tbScreen.insertText(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
-    game.tbScreen.insertText(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
-    game.tbScreen.insertText(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
-    game.tbScreen.insertText(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
+    game.TCS.insertText(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
+    game.TCS.insertText(this.data.x,this.data.y+9, "  △   : Shift","#fff");
+    game.TCS.insertText(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
+    game.TCS.insertText(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
+    game.TCS.insertText(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
+    game.TCS.insertText(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
+    game.TCS.insertText(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
+    game.TCS.insertText(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
   }
 };
 game.programs.intro.getInput = function(){
@@ -76,7 +76,7 @@ game.programs.intro.getInput = function(){
   }
 };
 game.programs.intro._destroy = function(){
-  game.tbScreen.clearScreen();
+  game.TCS.clearScreen();
   TC.inputs.keyboard.clearKey();
 };
 
@@ -98,21 +98,21 @@ game.programs.tetris.getInput = function(){
     TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
-    game.tbScreen.pasteScreen(this.data.pausedScreen);
+    game.TCS.pasteScreen(this.data.pausedScreen);
     this.uniqueObjects.pause.destroy();
   }
   if(!this.data.isPaused && TC.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
     TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
-    this.data.pausedScreen = game.tbScreen.copyScreen();
-    game.tbScreen.fillScreen(" ", null, "rgba(0,0,0,0.4)");
+    this.data.pausedScreen = game.TCS.copyScreen();
+    game.TCS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
     this.uniqueObjects.pause = new Pause(800,{x:15,y:11,bgColor:"#444"});
   }
 };
 game.programs.tetris._destroy = function(){
-  game.tbScreen.clearScreen();
+  game.TCS.clearScreen();
   TC.inputs.keyboard.clearKey();
 };
 
-game.init();
+//game.init();
