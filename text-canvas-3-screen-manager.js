@@ -5,11 +5,6 @@ TC.ScreenManager = function(customSreenSetting, customCharGroups){
   this.screenSetting = TC.common.mergeObjects(TC.defaultSettings.screen, customSreenSetting);
   this.charGroups = TC.common.mergeObjects(TC.defaultSettings.charGroups, customCharGroups);
 
-  this.isFontLoaded = false;
-  this.screenSettingData = [];
-  this.blockWidth = TC.common.getBlockWidth(this.screenSetting.fontSize);
-  this.blockHeight = TC.common.getBlockHeight(this.screenSetting.fontSize);
-
   try{
     this.canvas = document.querySelector("#"+this.screenSetting.canvasId);
     if(!this.canvas){
@@ -20,9 +15,15 @@ TC.ScreenManager = function(customSreenSetting, customCharGroups){
     }
   }
   catch(errorMessage){
-    console.error("new TC.ScreenManager ERROR: "+errorMessage+" TC.ScreenManager is not created.");
+    this.isActive = false;
+    console.error("new TC.ScreenManager ERROR: "+errorMessage+" TC.ScreenManager is not created correctly.");
     return;
   }
+
+  this.isFontLoaded = false;
+  this.screenSettingData = [];
+  this.blockWidth = TC.common.getBlockWidth(this.screenSetting.fontSize);
+  this.blockHeight = TC.common.getBlockHeight(this.screenSetting.fontSize);
   this.canvas.width = this.blockWidth * this.screenSetting.column;
   this.canvas.height = this.blockHeight * this.screenSetting.row;
   this.canvas.style.border = this.screenSetting.backgroundColor+" 1px solid";
@@ -30,6 +31,8 @@ TC.ScreenManager = function(customSreenSetting, customCharGroups){
   this.canvas.style.backgroundColor = this.screenSetting.backgroundColor;
   this.canvas.style.width = this.canvas.width * this.screenSetting.zoom + "px";
   this.canvas.style.height = this.canvas.height * this.screenSetting.zoom + "px";
+  this.canvas.tabIndex = 1; // for input keydown event
+  this.canvas.style.outline = "none"; // for input keydown event
   this.ctx = this.canvas.getContext("2d");
 
   TC.LoopObject.call(this, this.screenSetting.frameSpeed, null, true);

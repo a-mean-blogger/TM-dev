@@ -3,8 +3,21 @@ console.log("text-canvas-5-debug-manager.js loaded");
 // DebugManager
 TC.DebugManager = function(debugSetting){
   this.debugSetting = TC.common.mergeObjects(TC.defaultSettings.debug, debugSetting);
-  TC.Object.call(this);
+
+  try{
+    this.outputDom = document.querySelector("#"+this.debugSetting.outputDomId);
+    if(!this.outputDom){
+      throw("'#"+this.debugSetting.outputDomId+"' does not exist! ");
+    }
+  }
+  catch(errorMessage){
+    this.isActive = false;
+    console.error("new TC.DebugManager ERROR: "+errorMessage+" TC.DebugManager is not created.");
+    return;
+  }
+
   this.tasks = {};
+  TC.Object.call(this);
 };
 TC.DebugManager.prototype = Object.create(TC.Object.prototype);
 TC.DebugManager.prototype.constructor = TC.DebugManager;
@@ -31,9 +44,8 @@ TC.DebugManager.prototype.removeTaskAll = function(){
 // DebugManager_Task
 TC.DebugManager_Task = function(debugManager, taskName, data, calculate){
   this.debugManager = debugManager;
-  this.outputDom = document.querySelector("#"+this.debugManager.debugSetting.outputDomId);
   this.output = '';
-  this.taskName = taskName;
+  this.domId = taskName;
   this.calculate = calculate;
   TC.LoopObject.call(this, 10, data, true);
 };
@@ -48,11 +60,11 @@ TC.DebugManager_Task.prototype.calculate = function(){
 };
 TC.DebugManager_Task.prototype.draw = function(){
   if(this.debugManager.debugSetting.isActive){
-    let dom = document.querySelector("#"+this.taskName);
+    let dom = document.querySelector("#"+this.domId);
     if(!dom){
       dom = document.createElement("div");
-      dom.id = this.taskName;
-      this.outputDom.appendChild(dom);
+      dom.id = this.domId;
+      this.debugManager.outputDom.appendChild(dom);
     }
     dom.innerText = this.output;
   }
@@ -61,7 +73,7 @@ TC.DebugManager_Task.prototype.draw = function(){
   }
 };
 TC.DebugManager_Task.prototype.stop = function(){
-  let dom = document.querySelector("#"+this.taskName);
+  let dom = document.querySelector("#"+this.domId);
   dom.remove();
   this.isActive = false;
 };
@@ -69,7 +81,7 @@ TC.DebugManager_Task.prototype.restart = function(){
   this.isActive = true;
 };
 TC.DebugManager_Task.prototype.destroy = function(){
-  let dom = document.querySelector("#"+this.taskName);
+  let dom = document.querySelector("#"+this.domId);
   if(dom) dom.remove();
   TC.LoopObject.prototype.destroy.call(this);
 };

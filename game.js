@@ -50,7 +50,7 @@ var charGroups = {
 };
 
 var game = {
-  TCS: new TC.ScreenManager(screenSetting,charGroups),
+  TCS: new TC.ScreenManager(screenSetting, charGroups),
   TCD: new TC.DebugManager(),
   TCI: new TC.InputManager(),
   programs: {},

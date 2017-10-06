@@ -1,7 +1,20 @@
 console.log("text-canvas-4-input-manager.js loaded");
 
 // InputManager
-TC.InputManager = function(){
+TC.InputManager = function(customTargetDomId){
+  var targetDomId = customTargetDomId?customTargetDomId:TC.defaultSettings.screen.canvasId;
+  try{
+    this.targetDom = document.querySelector("#"+targetDomId);
+    if(!this.targetDom){
+      throw("'#"+domId+"' does not exist! ");
+    }
+  }
+  catch(errorMessage){
+    this.isActive = false;
+    console.error("new TC.InputManager ERROR: "+errorMessage+" TC.InputManager is not created.");
+    return;
+  }
+
   this.isAllowed = true;
   this.keyboard = new TC.InputManager_Keyboard(this);
   TC.Object.call(this);
@@ -9,9 +22,7 @@ TC.InputManager = function(){
 TC.InputManager.prototype = Object.create(TC.Object.prototype);
 TC.InputManager.prototype.constructor = TC.InputManager;
 
-TC.InputManager.prototype.init = function(){
-  this.keyboard.init();
-};
+TC.InputManager.prototype.init = function(){};
 
 // InputManager_Keyboard
 TC.InputManager_Keyboard = function(inputManager){
@@ -41,8 +52,8 @@ TC.InputManager_Keyboard.prototype = Object.create(TC.Object.prototype);
 TC.InputManager_Keyboard.prototype.constructor = TC.InputManager_Keyboard;
 
 TC.InputManager_Keyboard.prototype.init = function(){
-  document.addEventListener("keydown", this.eventHandlers.keydown);
-  document.addEventListener("keyup", this.eventHandlers.keyup);
+  this.inputManager.targetDom.addEventListener("keydown", this.eventHandlers.keydown);
+  this.inputManager.targetDom.addEventListener("keyup", this.eventHandlers.keyup);
 };
 TC.InputManager_Keyboard.prototype.checkKeyState= function(keyCode){
   // console.log("keyCode: ", keyCode);
