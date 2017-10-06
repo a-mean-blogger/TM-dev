@@ -146,7 +146,7 @@ function Status(data){
   this.data = {
     x: undefined,
     y: undefined,
-    colorset: undefined,
+    COLORSET: undefined,
     scores: {
       lastScore: 0,
       bestScore: 0,
@@ -182,7 +182,7 @@ Status.prototype.drawFrame = function(){
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
-  let color = this.data.colorset.block[blockType];
+  let color = this.data.COLORSET.block[blockType];
   let xAdj = this.data.x+5;
   let yAdj = this.data.y+3;
   for(let i=1;i<3;i++){
@@ -245,8 +245,8 @@ function Tetris(data, status){
   this.data = {
     x: undefined,
     y: undefined,
-    keyset: undefined,
-    colorset: undefined,
+    KEYSET: undefined,
+    COLORSET: undefined,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -320,7 +320,8 @@ Tetris.prototype.init = function(){
     });
 };
 Tetris.prototype.draw = function(){
-  let activeBlock = this.data.activeBlock;
+  var activeBlock = this.data.activeBlock;
+  const COLORSET = this.data.COLORSET;
 
   if(this.data.gameOver.popup) return;
 
@@ -331,31 +332,31 @@ Tetris.prototype.draw = function(){
       switch(this.data.dataArray[i][j]){
         case Tetris.ACTIVE_BLOCK: //-2
           blockChar="□";
-          color = this.data.colorset.block[activeBlock.type];
+          color = COLORSET.block[activeBlock.type];
           break;
         case Tetris.GRAY_BLOCK: //-2
           blockChar="■";
-          color = this.data.colorset.grayBlock;
+          color = COLORSET.grayBlock;
           break;
         case Tetris.CEILING: // -1
           blockChar="•";
-          color = this.data.colorset.ceiling;
+          color = COLORSET.ceiling;
           break;
         case Tetris.EMPTY: //0
           blockChar="  ";
           break;
         case Tetris.WALL: // 1
           blockChar="▣";
-          color = this.data.colorset.wall;
+          color = COLORSET.wall;
           break;
         case Tetris.STAR: //100
           blockChar="☆";
-          var colorNum = j%this.data.colorset.block.length;
-          color = this.data.colorset.block[colorNum];
+          var colorNum = j%COLORSET.block.length;
+          color = COLORSET.block[colorNum];
           break;
         default: // 2~
           blockChar="■";
-          color = this.data.colorset.block[this.data.dataArray[i][j]-2];
+          color = COLORSET.block[this.data.dataArray[i][j]-2];
           break;
       }
       game.TCS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
@@ -434,21 +435,22 @@ Tetris.prototype.changeActiveBlockTo = function(to){
   }
 };
 Tetris.prototype.getInput = function(){
+  const KEYSET = this.data.KEYSET;
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
-    if(game.TCI.keyboard.checkKey(this.data.keyset.RIGHT)){
+    if(game.TCI.keyboard.checkKey(KEYSET.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(game.TCI.keyboard.checkKey(this.data.keyset.LEFT)){
+    if(game.TCI.keyboard.checkKey(KEYSET.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(game.TCI.keyboard.checkKey(this.data.keyset.DOWN)){
+    if(game.TCI.keyboard.checkKey(KEYSET.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(game.TCI.keyboard.checkKey(this.data.keyset.ROTATE)){
+    if(game.TCI.keyboard.checkKey(KEYSET.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(game.TCI.keyboard.checkKey(this.data.keyset.DROP)){
+    if(game.TCI.keyboard.checkKey(KEYSET.DROP)){
       this.hardDrop();
     }
   }

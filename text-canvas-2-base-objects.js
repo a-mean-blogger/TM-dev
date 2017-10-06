@@ -32,10 +32,8 @@ TC.Object = function(data, createWithOutInit){
 };
 TC.Object.prototype.init = function (){};
 TC.Object.prototype.destroy = function(){
-  this._destroy();
   this.isActive = false;
 };
-TC.Object.prototype._destroy = function(){};
 
 // LoopObject
 TC.LoopObject = function(speed, data, autoStart){
@@ -63,7 +61,6 @@ TC.LoopObject.prototype.destroy = function(){
   this.interval.stop();
   TC.Object.prototype.destroy.call(this);
 };
-TC.LoopObject.prototype._destroy = function(){};
 
 // Program
 TC.Program = function(speed, data){
@@ -94,7 +91,7 @@ TC.Program.prototype._init = function(){};
 TC.Program.prototype.destroy = function(){
   TC.LoopObject.prototype.destroy.call(this);
   this.count = 0;
-  for(let i = this.objects.length-1;i>=0;i--){
+  for(let i = this.objects.length-1; i >= 0; i--){
     this.objects[i].destroy();
   }
   for(let key in this.uniqueObjects){
