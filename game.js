@@ -24,7 +24,33 @@ var gameSetting={
 };
 
 var game = {
-  TCS: new TC.Screen(),
+  TCS: new TC.Screen(
+    // ScreenSetting
+    {
+      zoom: 0.6,
+      column: 70,
+      row: 25,
+      fontFamily:'Nanum Gothic Coding',
+      fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"
+    },
+    // Char Group Setting
+    {
+      fullwidth:{//■     □     ★     ☆     △     ▷     ▽     ◁     ▣    •
+        regex:"\u2500-\u2BFF\u2022\u2008",
+        isFullwidth:true,
+        sizeAdj:1.2,
+        xAdj:-0.05,
+        yAdj:0.03,
+      },
+      brackets:{//[,],(,)
+        regex:"\\[\\](){}",
+        isFullwidth:false,
+        sizeAdj:0.95,
+        xAdj:0,
+        yAdj:0,
+      }
+    }
+  ),
   programs: {},
   data: {
     scores:{
@@ -115,4 +141,4 @@ game.programs.tetris._destroy = function(){
   TC.inputs.keyboard.clearKey();
 };
 
-//game.init();
+game.init();

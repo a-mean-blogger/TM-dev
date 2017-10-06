@@ -37,18 +37,18 @@ TC.common.isNumber = function(num){
   else return false;
 };
 
-TC.common.getCharGroup = function(char){
-for(let group in TC.defaultSettings.charGroups){
-  let charset = TC.defaultSettings.charGroups[group];
+TC.common.getCharGroup = function(charGroups, char){
+for(let group in charGroups){
+  let charset = charGroups[group];
     let regex = new RegExp("^["+charset.regex+"]$");
     if(regex.test(char)) return charset;
   }
 };
 
-TC.common.getFullwidthRegex = function(){
+TC.common.getFullwidthRegex = function(charGroups){
   let string = "";
-  for(let group in TC.defaultSettings.charGroups){
-    let charset = TC.defaultSettings.charGroups[group];
+  for(let group in charGroups){
+    let charset = charGroups[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
   if(string) return new RegExp("(["+string+"])","g");
