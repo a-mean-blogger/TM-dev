@@ -12,9 +12,9 @@ function TextObject(speed, data, patternFunc){
     },
   };
   this.patternFunc = patternFunc;
-  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, speed, data, this.autoStart);
 }
-TextObject.prototype = Object.create(tbCanvas.LoopObject.prototype);
+TextObject.prototype = Object.create(TC.LoopObject.prototype);
 TextObject.prototype.constructor = TextObject;
 
 TextObject.prototype.draw = function(){
@@ -27,7 +27,7 @@ TextObject.prototype.calculate = function(){
   this.patternFunc();
 };
 TextObject.prototype.destroy = function(){
-  tbCanvas.LoopObject.prototype.destroy.call(this);
+  TC.LoopObject.prototype.destroy.call(this);
 };
 
 const BLOCKS = [
@@ -48,9 +48,9 @@ function Star(speed, data){
     color: undefined,
     blink: 0,
   };
-  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, speed, data, this.autoStart);
 }
-Star.prototype = Object.create(tbCanvas.LoopObject.prototype);
+Star.prototype = Object.create(TC.LoopObject.prototype);
 Star.prototype.constructor = Star;
 
 Star.prototype.calculate = function(){
@@ -62,7 +62,7 @@ Star.prototype.draw = function(){
 };
 Star.prototype.destroy = function(){
   game.tbScreen.insertText(this.data.x,this.data.y,"  ");
-  tbCanvas.LoopObject.prototype.destroy.call(this);
+  TC.LoopObject.prototype.destroy.call(this);
 };
 
 function Pause(speed, data){
@@ -74,14 +74,14 @@ function Pause(speed, data){
     blink: 0,
     text: "Please press <P> to return to game",
   };
-  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, speed, data, this.autoStart);
 }
-Pause.prototype = Object.create(tbCanvas.LoopObject.prototype);
+Pause.prototype = Object.create(TC.LoopObject.prototype);
 Pause.prototype.constructor = Pause;
 
 Pause.prototype.init = function(){
   this.drawFrame();
-  tbCanvas.LoopObject.prototype.init.call(this);
+  TC.LoopObject.prototype.init.call(this);
 };
 Pause.prototype.drawFrame = function(){
   game.tbScreen.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
@@ -110,15 +110,15 @@ function GameOverPopup(speed, data){
     score: 0,
     scoreText: "",
   };
-  tbCanvas.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, speed, data, this.autoStart);
 }
-GameOverPopup.prototype = Object.create(tbCanvas.LoopObject.prototype);
+GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
 
 GameOverPopup.prototype.init = function(){
   this.data.scoreText = this.data.status.convertScore(this.data.score);
   this.drawFrame();
-  tbCanvas.LoopObject.prototype.init.call(this);
+  TC.LoopObject.prototype.init.call(this);
 };
 GameOverPopup.prototype.drawFrame = function(){
   game.tbScreen.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
@@ -152,9 +152,9 @@ function Status(data){
       bestScore: 0,
     }
   };
-  tbCanvas.Object.call(this, data);
+  TC.Object.call(this, data);
 }
-Status.prototype = Object.create(tbCanvas.Object.prototype);
+Status.prototype = Object.create(TC.Object.prototype);
 Status.prototype.constructor = Status;
 
 Status.prototype.init = function(){
@@ -280,9 +280,9 @@ function Tetris(data, status){
       popup: false,
     },
   };
-  tbCanvas.LoopObject.call(this, 10, data, this.autoStart);
+  TC.LoopObject.call(this, 10, data, this.autoStart);
 }
-Tetris.prototype = Object.create(tbCanvas.LoopObject.prototype);
+Tetris.prototype = Object.create(TC.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
 Tetris.ACTIVE_BLOCK = -2;
@@ -299,9 +299,9 @@ Tetris.prototype.init = function(){
   this.refStatus.drawLevel(this.data.level);
   this.refStatus.drawGoal(this.data.goalCount);
   this.refStatus.drawScore(this.data.score);
-  tbCanvas.LoopObject.prototype.init.call(this);
+  TC.LoopObject.prototype.init.call(this);
 
-  this.test = new tbCanvas.DevTask('test',
+  this.test = new TC.DevTask('test',
     this.data,
     function(){
       let activeBlock = this.data.activeBlock;
@@ -374,7 +374,7 @@ Tetris.prototype.calculate = function(){
 Tetris.prototype.destroy = function (blockType) {
   this.test.destroy();
   if(this.gameOverPopup) this.gameOverPopup.destroy();
-  tbCanvas.LoopObject.prototype.destroy.call(this);
+  TC.LoopObject.prototype.destroy.call(this);
 };
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray=[];
@@ -400,7 +400,7 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   let newBlock = this.data.activeBlock;
   newBlock.rotation = 0;
-  newBlock.type = tbCanvas.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
+  newBlock.type = TC.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
   newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
   newBlock.inActivate1.flag = false;
@@ -436,19 +436,19 @@ Tetris.prototype.changeActiveBlockTo = function(to){
 Tetris.prototype.getInput = function(){
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
-    if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.RIGHT)){
+    if(TC.inputs.keyboard.checkKey(this.data.keyset.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.LEFT)){
+    if(TC.inputs.keyboard.checkKey(this.data.keyset.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.DOWN)){
+    if(TC.inputs.keyboard.checkKey(this.data.keyset.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.ROTATE)){
+    if(TC.inputs.keyboard.checkKey(this.data.keyset.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(tbCanvas.inputs.keyboard.checkKey(this.data.keyset.DROP)){
+    if(TC.inputs.keyboard.checkKey(this.data.keyset.DROP)){
       this.hardDrop();
     }
   }

@@ -24,7 +24,7 @@ var gameSetting={
 };
 
 var game = {
-  tbScreen: new tbCanvas.Screen(),
+  tbScreen: new TC.Screen(),
   programs: {},
   data: {
     scores:{
@@ -48,7 +48,7 @@ var game = {
   }
 };
 
-game.programs.intro = new tbCanvas.Program(10,{x:5,y:3});
+game.programs.intro = new TC.Program(10,{x:5,y:3});
 game.programs.intro.timeline = function(){
   if(this.count ==  10) game.tbScreen.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
   if(this.count ==  20) game.tbScreen.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
@@ -71,16 +71,16 @@ game.programs.intro.timeline = function(){
   }
 };
 game.programs.intro.getInput = function(){
-  if(!tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.QUIT) &&  tbCanvas.inputs.keyboard.checkKeyAny()){
+  if(!TC.inputs.keyboard.checkKey(gameSetting.keyset.QUIT) &&  TC.inputs.keyboard.checkKeyAny()){
     game.changeProgram(game.programs.tetris);
   }
 };
 game.programs.intro._destroy = function(){
   game.tbScreen.clearScreen();
-  tbCanvas.inputs.keyboard.clearKey();
+  TC.inputs.keyboard.clearKey();
 };
 
-game.programs.tetris = new tbCanvas.Program(10,{isPaused:false});
+game.programs.tetris = new TC.Program(10,{isPaused:false});
 game.programs.tetris.uniqueObjects = {
   status : undefined,
   player1Game : undefined,
@@ -91,18 +91,18 @@ game.programs.tetris._init = function(){
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,keyset:gameSetting.tetris1.keyset,colorset:gameSetting.colorset},this.uniqueObjects.status);
 };
 game.programs.tetris.getInput = function(){
-  if(tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.QUIT)){
+  if(TC.inputs.keyboard.checkKey(gameSetting.keyset.QUIT)){
     game.changeProgram(game.programs.intro);
   }
-  if(this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
-    tbCanvas.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
+  if(this.data.isPaused && TC.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.start();
     this.data.isPaused = false;
     game.tbScreen.pasteScreen(this.data.pausedScreen);
     this.uniqueObjects.pause.destroy();
   }
-  if(!this.data.isPaused && tbCanvas.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
-    tbCanvas.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
+  if(!this.data.isPaused && TC.inputs.keyboard.checkKey(gameSetting.keyset.PAUSE)){
+    TC.inputs.keyboard.clearKey(gameSetting.keyset.PAUSE);
     this.uniqueObjects.player1Game.interval.stop();
     this.data.isPaused = true;
     this.data.pausedScreen = game.tbScreen.copyScreen();
@@ -112,7 +112,7 @@ game.programs.tetris.getInput = function(){
 };
 game.programs.tetris._destroy = function(){
   game.tbScreen.clearScreen();
-  tbCanvas.inputs.keyboard.clearKey();
+  TC.inputs.keyboard.clearKey();
 };
 
 game.init();

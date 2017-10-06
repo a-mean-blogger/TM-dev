@@ -1,11 +1,13 @@
-console.log("tb-canvas-1.js loaded");
+console.log("text-canvas-1.js loaded");
 
+// Declare TC and TC default settings
 
-var tbCanvas = {};
+var TC = {};
 
-tbCanvas.setting = {};
-tbCanvas.setting.screen={
-  canvasId:"tb-canvas",
+TC.defaultSettings = {};
+
+TC.defaultSettings.screen={
+  canvasId:"text-canvas",
   fontSize: 30,
   frameSpeed: 10,
   zoom: 0.6,
@@ -17,13 +19,13 @@ tbCanvas.setting.screen={
   fontSource:"https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css",
 };
 
-tbCanvas.setting.devMode={
+TC.defaultSettings.devMode={
   isActive: false,
   outputDomId: "devOutput",
   frameSpeed: 10,
 };
 
-tbCanvas.setting.charGroups={
+TC.defaultSettings.charGroups={
   group1:{//ㄱ     -힝
     regex:"\u3131-\uD79D",
     isFullwidth:true,
