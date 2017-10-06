@@ -18,10 +18,10 @@ TextObject.prototype = Object.create(TC.LoopObject.prototype);
 TextObject.prototype.constructor = TextObject;
 
 TextObject.prototype.draw = function(){
-  game.TCS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
+  Main.TCS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
   this.data.previous.x = this.data.x;
   this.data.previous.y = this.data.y;
-  game.TCS.insertText(this.data.x,this.data.y,this.data.text);
+  Main.TCS.insertText(this.data.x,this.data.y,this.data.text);
 };
 TextObject.prototype.calculate = function(){
   this.patternFunc();
@@ -58,10 +58,10 @@ Star.prototype.calculate = function(){
 };
 Star.prototype.draw = function(){
   let text = this.data.blink%2===0?"★":"☆";
-  game.TCS.insertText(this.data.x,this.data.y,text,this.data.color);
+  Main.TCS.insertText(this.data.x,this.data.y,text,this.data.color);
 };
 Star.prototype.destroy = function(){
-  game.TCS.insertText(this.data.x,this.data.y,"  ");
+  Main.TCS.insertText(this.data.x,this.data.y,"  ");
   TC.LoopObject.prototype.destroy.call(this);
 };
 
@@ -84,11 +84,11 @@ Pause.prototype.init = function(){
   TC.LoopObject.prototype.init.call(this);
 };
 Pause.prototype.drawFrame = function(){
-  game.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+1,"┃                  ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+2,"┃                  ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+3,"┗━━━━━━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x+14,this.data.y+1,"[ PAUSED ]","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+1,"┃                  ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+2,"┃                  ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+3,"┗━━━━━━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x+14,this.data.y+1,"[ PAUSED ]","#fff",this.data.bgColor);
 };
 
 Pause.prototype.calculate = function(){
@@ -96,7 +96,7 @@ Pause.prototype.calculate = function(){
 };
 Pause.prototype.draw = function(){
   let color = this.data.blink%2===0?"#fff":"gray";
-  game.TCS.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
+  Main.TCS.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 function GameOverPopup(speed, data){
@@ -121,17 +121,17 @@ GameOverPopup.prototype.init = function(){
   TC.LoopObject.prototype.init.call(this);
 };
 GameOverPopup.prototype.drawFrame = function(){
-  game.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+1,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+2,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+3,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+4,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+5,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+6,"┃             ┃","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x,this.data.y+7,"┗━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x+8,this.data.y+1,"[ GAME OVER ]","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x+6,this.data.y+3,"YOUR SCORE: ","#fff",this.data.bgColor);
-  game.TCS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,"#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+1,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+2,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+3,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+4,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+5,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+6,"┃             ┃","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x,this.data.y+7,"┗━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x+8,this.data.y+1,"[ GAME OVER ]","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x+6,this.data.y+3,"YOUR SCORE: ","#fff",this.data.bgColor);
+  Main.TCS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,"#fff",this.data.bgColor);
 };
 
 GameOverPopup.prototype.calculate = function(){
@@ -139,7 +139,7 @@ GameOverPopup.prototype.calculate = function(){
 };
 GameOverPopup.prototype.draw = function(){
   let color = this.data.blink%2===0?"#fff":"gray";
-  game.TCS.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
+  Main.TCS.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
 };
 
 function Status(data){
@@ -163,22 +163,22 @@ Status.prototype.init = function(){
   this.drawBestScore(this.data.scores.bestScore);
 };
 Status.prototype.drawFrame = function(){
-  game.TCS.insertText(this.data.x,   this.data.y+ 0, " LEVEL :");
-  game.TCS.insertText(this.data.x,   this.data.y+ 1, " GOAL  :");
-  game.TCS.insertText(this.data.x,   this.data.y+ 2, "┍      ┑");
-  game.TCS.insertText(this.data.x+4, this.data.y+ 2, "N E X T");
-  game.TCS.insertText(this.data.x,   this.data.y+ 3, "│      │");
-  game.TCS.insertText(this.data.x,   this.data.y+ 4, "│      │");
-  game.TCS.insertText(this.data.x,   this.data.y+ 5, "│      │");
-  game.TCS.insertText(this.data.x,   this.data.y+ 6, "│      │");
-  game.TCS.insertText(this.data.x,   this.data.y+ 7, "┕━━━━━━┙");
-  game.TCS.insertText(this.data.x,   this.data.y+ 8, " YOUR SCORE :");
-  game.TCS.insertText(this.data.x,   this.data.y+10, " LAST SCORE :");
-  game.TCS.insertText(this.data.x,   this.data.y+12, " BEST SCORE :");
-  game.TCS.insertText(this.data.x,   this.data.y+15, "  △   : Shift        SPACE : Hard Drop");
-  game.TCS.insertText(this.data.x,   this.data.y+16, "◁  ▷ : Left / Right   P   : Pause");
-  game.TCS.insertText(this.data.x,   this.data.y+17, "  ▽   : Soft Drop     ESC  : Quit");
-  game.TCS.insertText(this.data.x,   this.data.y+20, "www.A-MEAN-Blog.com");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 0, " LEVEL :");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 1, " GOAL  :");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 2, "┍      ┑");
+  Main.TCS.insertText(this.data.x+4, this.data.y+ 2, "N E X T");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 3, "│      │");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 4, "│      │");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 5, "│      │");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 6, "│      │");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 7, "┕━━━━━━┙");
+  Main.TCS.insertText(this.data.x,   this.data.y+ 8, " YOUR SCORE :");
+  Main.TCS.insertText(this.data.x,   this.data.y+10, " LAST SCORE :");
+  Main.TCS.insertText(this.data.x,   this.data.y+12, " BEST SCORE :");
+  Main.TCS.insertText(this.data.x,   this.data.y+15, "  △   : Shift        SPACE : Hard Drop");
+  Main.TCS.insertText(this.data.x,   this.data.y+16, "◁  ▷ : Left / Right   P   : Pause");
+  Main.TCS.insertText(this.data.x,   this.data.y+17, "  ▽   : Soft Drop     ESC  : Quit");
+  Main.TCS.insertText(this.data.x,   this.data.y+20, "www.A-MEAN-Blog.com");
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
@@ -189,7 +189,7 @@ Status.prototype.drawNextBlock = function(blockType){
     for(let j=0;j<5;j++){
       let x = xAdj-2+j*2;
       let y = yAdj+i;
-      game.TCS.insertText(x,y,"  ");
+      Main.TCS.insertText(x,y,"  ");
     }
   }
   for(let i=1;i<3;i++){
@@ -197,7 +197,7 @@ Status.prototype.drawNextBlock = function(blockType){
       let x = xAdj+j*2+xOffset;
       let y = yAdj+i;
       if(BLOCKS[blockType][0][i][j]==1) {
-        game.TCS.insertText(x,y,"■", color);
+        Main.TCS.insertText(x,y,"■", color);
       }
     }
   }
@@ -212,20 +212,20 @@ Status.prototype.convertScore = function(score){
 };
 Status.prototype.drawLevel = function(num){
   num = (num>9)?num:" "+num;
-  game.TCS.insertText(this.data.x+9, this.data.y, num);
+  Main.TCS.insertText(this.data.x+9, this.data.y, num);
 };
 Status.prototype.drawGoal = function(num){
   num = (num>9)?num:" "+num;
-  game.TCS.insertText(this.data.x+9, this.data.y+1, num);
+  Main.TCS.insertText(this.data.x+9, this.data.y+1, num);
 };
 Status.prototype.drawScore = function(score){
-  game.TCS.insertText(this.data.x+7, this.data.y+9, this.convertScore(score));
+  Main.TCS.insertText(this.data.x+7, this.data.y+9, this.convertScore(score));
 };
 Status.prototype.drawLastScore = function(score){
-  game.TCS.insertText(this.data.x+7, this.data.y+11, this.convertScore(score));
+  Main.TCS.insertText(this.data.x+7, this.data.y+11, this.convertScore(score));
 };
 Status.prototype.drawBestScore = function(score){
-  game.TCS.insertText(this.data.x+7, this.data.y+13, this.convertScore(score));
+  Main.TCS.insertText(this.data.x+7, this.data.y+13, this.convertScore(score));
 };
 Status.prototype.updateLastScore = function(score){
   this.data.scores.lastScore = score;
@@ -301,7 +301,7 @@ Tetris.prototype.init = function(){
   this.refStatus.drawScore(this.data.score);
   TC.LoopObject.prototype.init.call(this);
 
-  game.TCD.addTask('test',
+  Main.TCD.addTask('test',
     this.data,
     function(){
       let activeBlock = this.data.activeBlock;
@@ -359,7 +359,7 @@ Tetris.prototype.draw = function(){
           color = COLORSET.block[this.data.dataArray[i][j]-2];
           break;
       }
-      game.TCS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
+      Main.TCS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
     }
   }
 };
@@ -373,7 +373,7 @@ Tetris.prototype.calculate = function(){
   }
 };
 Tetris.prototype.destroy = function (blockType) {
-  game.TCD.removeTask("test");
+  Main.TCD.removeTask("test");
   if(this.gameOverPopup) this.gameOverPopup.destroy();
   TC.LoopObject.prototype.destroy.call(this);
 };
@@ -438,19 +438,19 @@ Tetris.prototype.getInput = function(){
   const KEYSET = this.data.KEYSET;
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
-    if(game.TCI.keyboard.checkKey(KEYSET.RIGHT)){
+    if(Main.TCI.keyboard.checkKey(KEYSET.RIGHT)){
       this.moveActiveBlock(1,0);
     }
-    if(game.TCI.keyboard.checkKey(KEYSET.LEFT)){
+    if(Main.TCI.keyboard.checkKey(KEYSET.LEFT)){
       this.moveActiveBlock(-1,0);
     }
-    if(game.TCI.keyboard.checkKey(KEYSET.DOWN)){
+    if(Main.TCI.keyboard.checkKey(KEYSET.DOWN)){
       this.moveDownActiveBlock();
     }
-    if(game.TCI.keyboard.checkKey(KEYSET.ROTATE)){
+    if(Main.TCI.keyboard.checkKey(KEYSET.ROTATE)){
       this.rotateActiveBlock();
     }
-    if(game.TCI.keyboard.checkKey(KEYSET.DROP)){
+    if(Main.TCI.keyboard.checkKey(KEYSET.DROP)){
       this.hardDrop();
     }
   }

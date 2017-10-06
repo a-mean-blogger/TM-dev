@@ -82,8 +82,8 @@ TC.Program.prototype.calculate = function(){
 };
 TC.Program.prototype.init = function(){
   TC.LoopObject.prototype.init.call(this);
-  this.objects = [];
-  this.uniqueObjects = {};
+  if(!this.objects) this.objects = [];
+  if(!this.uniqueObjects) this.uniqueObjects = {};
   this.count = 0;
   this._init();
 };
