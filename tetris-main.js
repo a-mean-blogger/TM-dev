@@ -25,36 +25,34 @@ var charGroups = {
   }
 };
 
-var gameSettings ={
-  KEYSET: {
-    QUIT: 27, // esc key
-    PAUSE: 80, // 'p';
-  },
-  COL_NUM: 11,
-  ROW_NUM: 23,
-  SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
-  COLORSET: {
-    WALL: '#F5F7FA',
-    CEILING: '#656D78',
-    BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
-    GAME_OVER_BLOCK: '#AAB2BD',
-  },
-  PLAYER1: {
-    KEYSET: {
-      RIGHT: 39,
-      LEFT: 37,
-      ROTATE: 38,
-      DOWN: 40,
-      DROP: 32, //space key
-    }
-  },
-};
-
 var MAIN = {
   TCS: new TC.ScreenManager(screenSetting, charGroups),
   TCD: new TC.DebugManager(),
   TCI: new TC.InputManager(),
-  settings: gameSettings,
+  SETTINGS: {
+    COL_NUM: 11,
+    ROW_NUM: 23,
+    SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
+    KEYSET: {
+      QUIT: 27, // esc key
+      PAUSE: 80, // 'p';
+    },
+    COLORSET: {
+      WALL: '#F5F7FA',
+      CEILING: '#656D78',
+      BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
+      GAME_OVER_BLOCK: '#AAB2BD',
+    },
+    PLAYER1: {
+      KEYSET: {
+        RIGHT: 39,
+        LEFT: 37,
+        ROTATE: 38,
+        DOWN: 40,
+        DROP: 32, //space key
+      }
+    },
+  },
   programs: {
     intro: new Program_Intro(10,{x:5,y:3}),
     game: new Program_Game(100,{isPaused:false}),

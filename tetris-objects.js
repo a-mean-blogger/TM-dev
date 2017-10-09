@@ -163,7 +163,7 @@ function Status(data){
   this.data = {
     x: undefined,
     y: undefined,
-    COLORSET: MAIN.settings.COLORSET,
+    COLORSET: MAIN.SETTINGS.COLORSET,
   };
   TC.Object.call(this, data);
 }
@@ -265,9 +265,9 @@ function Tetris(data, refStatus){
     x: undefined,
     y: undefined,
     refStatus: undefined,
-    COL_NUM: MAIN.settings.COL_NUM,
-    ROW_NUM: MAIN.settings.ROW_NUM,
-    COLORSET: MAIN.settings.COLORSET,
+    COL_NUM: MAIN.SETTINGS.COL_NUM,
+    ROW_NUM: MAIN.SETTINGS.ROW_NUM,
+    COLORSET: MAIN.SETTINGS.COLORSET,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -523,10 +523,10 @@ Tetris.prototype.addScore = function(score){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
-  if(level<=MAIN.settings.SPEED_LOOKUP.length){
-    this.data.autoDropCountMax = MAIN.settings.SPEED_LOOKUP[this.data.level-1];
+  if(level<=MAIN.SETTINGS.SPEED_LOOKUP.length){
+    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[this.data.level-1];
   }else{
-    this.data.autoDropCountMax = MAIN.settings.SPEED_LOOKUP[MAIN.settings.SPEED_LOOKUP.length-1];
+    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[MAIN.SETTINGS.SPEED_LOOKUP.length-1];
   }
 };
 Tetris.prototype.levelUp = function(){
