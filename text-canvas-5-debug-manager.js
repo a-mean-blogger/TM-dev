@@ -1,6 +1,14 @@
 console.log('text-canvas-5-debug-manager.js loaded');
 
-// DebugManager
+/******************************/
+/* TC.DebugManager            */
+/******************************/
+// Object Type: TC.Object
+// Description: manages debug tasks
+// functions:
+// - addTask: add a debug task, taskName should be unique otherwise it will replace the existing task
+// - removeTask: remove a debug task
+// - removeAllTasks: remove All debug task
 TC.DebugManager = function(debugSetting){
   this.debugSetting = TC.common.mergeObjects(TC.defaultSettings.debug, debugSetting);
 
@@ -22,10 +30,13 @@ TC.DebugManager = function(debugSetting){
 TC.DebugManager.prototype = Object.create(TC.Object.prototype);
 TC.DebugManager.prototype.constructor = TC.DebugManager;
 
+// TC.Object functions implementation
 TC.DebugManager.prototype.destroy = function(){
-  this.removeTaskAll();
+  this.removeAllTasks();
   TC.Object.prototype.destroy.call(this);
 };
+
+// TC.DebugManager pulbic functions
 TC.DebugManager.prototype.addTask = function(taskName, data, calculate){
   this.removeTask(taskName);
   this.tasks[taskName] = new TC.DebugManager_Task(this, taskName, data, calculate);
@@ -33,15 +44,20 @@ TC.DebugManager.prototype.addTask = function(taskName, data, calculate){
 TC.DebugManager.prototype.removeTask = function(taskName){
   if(this.tasks[taskName]){
     this.tasks[taskName].destroy();
+    delete this.tasks[taskName];
   }
 };
-TC.DebugManager.prototype.removeTaskAll = function(){
+TC.DebugManager.prototype.removeAllTasks = function(){
   for(var task in this.tasks){
     this.tasks[task].destroy();
   }
 };
 
-// DebugManager_Task
+/******************************/
+/* TC.DebugManager_Task       */
+/******************************/
+// Object Type: TC.LoopObject
+// Description: display data on dom for debugging
 TC.DebugManager_Task = function(debugManager, taskName, data, calculate){
   this.autoStart = true;
   this.speed = 100;
@@ -54,6 +70,15 @@ TC.DebugManager_Task = function(debugManager, taskName, data, calculate){
 TC.DebugManager_Task.prototype = Object.create(TC.LoopObject.prototype);
 TC.DebugManager_Task.prototype.constructor = TC.DebugManager_Task;
 
+// TC.LoopObject functions inheritance
+TC.DebugManager_Task.prototype.init = function(){TC.LoopObject.prototype.init.call(this);};
+TC.DebugManager_Task.prototype.destroy = function(){
+  let dom = document.querySelector('#'+this.domId);
+  if(dom) dom.remove();
+  TC.LoopObject.prototype.destroy.call(this);
+};
+
+// TC.LoopObject functions implementation
 TC.DebugManager_Task.prototype.calculate = function(){
   // get this from constructor
 };
@@ -70,17 +95,4 @@ TC.DebugManager_Task.prototype.draw = function(){
   else {
     this.destroy();
   }
-};
-TC.DebugManager_Task.prototype.stop = function(){
-  let dom = document.querySelector('#'+this.domId);
-  dom.remove();
-  this.isActive = false;
-};
-TC.DebugManager_Task.prototype.restart = function(){
-  this.isActive = true;
-};
-TC.DebugManager_Task.prototype.destroy = function(){
-  let dom = document.querySelector('#'+this.domId);
-  if(dom) dom.remove();
-  TC.LoopObject.prototype.destroy.call(this);
 };

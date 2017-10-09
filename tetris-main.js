@@ -68,8 +68,6 @@ var MAIN = {
     this.programs.intro.init();
   },
   destroy: function(){
-    this.TCS.clearScreen();
-    this.TCI.keyboard.clearKey();
     for(let i in this.programs){
       let program = this.programs[i];
       program.destroy();

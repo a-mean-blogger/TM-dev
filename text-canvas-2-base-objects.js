@@ -30,40 +30,50 @@ TC.Interval.prototype.init = function (speed,func) {
 /* TC.Object                  */
 /******************************/
 // Description: create an Object that does not loop
+//             init is an function that can be inherited for additional initial behavior,
+//             destroy is an function that can be inherited for additional destroy behavior.
 TC.Object = function(data, createWithOutInit){
   this.data = TC.common.mergeObjects(this.data, data);
   if(!createWithOutInit) this.init();
 };
 
 // TC.Object interface functions
-TC.Object.prototype.init = function (){};
-TC.Object.prototype.destroy = function(){};
+TC.Object.prototype.init = function (){
+  this.isActive = true;
+};
+TC.Object.prototype.destroy = function(){
+  this.isActive = false;
+};
 
 /******************************/
 /* TC.LoopObject              */
 /******************************/
-// Description: create an Object that does loop
+// Description: create an Object that does loop.
+//             speed is the interval(millisecond), caculate and draw are functions that loop.
+//             calculate is an interface function that need to be implemented and calculate values in data,
+//             draw is is an interface function that need to be implemented and display the values on screen,
 TC.LoopObject = function(data, speed, autoStart){
-  this.isActive = true;
+  this.isActive = true; // need this to tell this object is not destroyed even though it's not autoStarted
+  this.createWithOutInit = !autoStart;
   this.speed = speed;
   this.interval = new TC.Interval();
-  TC.Object.call(this, data, !autoStart);
+  TC.Object.call(this, data, this.createWithOutInit);
 };
 TC.LoopObject.prototype = Object.create(TC.Object.prototype);
 TC.LoopObject.prototype.constructor = TC.LoopObject;
 
-// TC.Object functions implementation
+// TC.Object functions inheritance
 TC.LoopObject.prototype.init = function (){
-  this.isActive = true;
   this.draw();
   this.interval.init(this.speed, _=> {
     if(this.isActive) this.calculate();
     if(this.isActive) this.draw();
   });
+  TC.Object.prototype.init.call(this);
 };
 TC.LoopObject.prototype.destroy = function(){
-  this.isActive = false;
   this.interval.stop();
+  TC.Object.prototype.destroy.call(this);
 };
 
 // TC.LoopObject interface functions
@@ -73,7 +83,7 @@ TC.LoopObject.prototype.draw = function(){};
 /******************************/
 /* TC.Program              */
 /******************************/
-// Description: an object to control TC.Objects and/or TC.LoopObjects
+// Description: an object to control multiple TC.Objects and/or TC.LoopObjects
 TC.Program = function(data, speed){
   this.autoStart = false;
   this.speed = speed;
@@ -87,11 +97,11 @@ TC.Program.prototype.constructor = TC.Program;
 
 // TC.LoopObject functions inheritance
 TC.Program.prototype.init = function(){
+  this.count = 0;
   TC.LoopObject.prototype.init.call(this);
 };
 TC.Program.prototype.destroy = function(){
   TC.LoopObject.prototype.destroy.call(this);
-  this.count = 0;
   for(let i = this.objects.length-1; i >= 0; i--){
     this.objects[i].destroy();
   }
@@ -111,6 +121,6 @@ TC.Program.prototype.getInput = function(){};
 
 // TC.LoopObject functions
 TC.Program.prototype.addToObjects = function(object){
-  this.objects = this.objects.filter(object => object.isActive);
+  this.objects = this.objects.filter(object => object.isActive); // removed destroyed objects
   this.objects.push(object);
 };

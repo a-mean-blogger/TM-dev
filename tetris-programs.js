@@ -16,8 +16,14 @@ Program_Intro.prototype = Object.create(TC.Program.prototype);
 Program_Intro.prototype.constructor = Program_Intro;
 
 // TC.Program functions inheritance
-Program_Intro.prototype.init = function(){TC.Program.prototype.init.call(this);};
-Program_Intro.prototype.destroy = function(){TC.Program.prototype.destroy.call(this);};
+Program_Intro.prototype.init = function(){
+  MAIN.TCI.keyboard.clearKey();
+  TC.Program.prototype.init.call(this);
+};
+Program_Intro.prototype.destroy = function(){
+  MAIN.TCS.clearScreen();
+  TC.Program.prototype.destroy.call(this);
+};
 Program_Intro.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
 
 // TC.Program functions implementation
@@ -69,12 +75,16 @@ Program_Game.prototype.constructor = Program_Game;
 
 // TC.Program functions inheritance
 Program_Game.prototype.init = function(){
+  MAIN.TCI.keyboard.clearKey();
   this.data.isPaused = false;
   this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,refStatus:this.uniqueObjects.status});
   TC.Program.prototype.init.call(this);
 };
-Program_Game.prototype.destroy = function(){TC.Program.prototype.destroy.call(this);};
+Program_Game.prototype.destroy = function(){
+  TC.Program.prototype.destroy.call(this);
+  MAIN.TCS.clearScreen();
+};
 Program_Game.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
 
 // TC.Program functions implementation

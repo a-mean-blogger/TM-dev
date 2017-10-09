@@ -4,7 +4,7 @@ console.log('text-canvas-4-input-manager.js loaded');
 /* TC.InputManager            */
 /******************************/
 // Object Type: TC.Object
-// Description: manages inputs
+// Description: manages input methods
 TC.InputManager = function(customTargetDomId){
   var targetDomId = customTargetDomId?customTargetDomId:TC.defaultSettings.screen.canvasId;
   try{
@@ -26,11 +26,27 @@ TC.InputManager = function(customTargetDomId){
 TC.InputManager.prototype = Object.create(TC.Object.prototype);
 TC.InputManager.prototype.constructor = TC.InputManager;
 
+// TC.InputManager functions - allow/disallow
+TC.InputManager.prototype.isAllowed = function(keyCode){
+  return this.isAllowed;
+};
+TC.InputManager.prototype.disAllow = function(keyCode){
+  this.isAllowed = false;
+};
+TC.InputManager.prototype.allow = function(keyCode){
+  this.isAllowed = true;
+};
+
 /******************************/
 /* TC.InputManager_Keyboard   */
 /******************************/
 // Object Type: TC.Object
 // Description: manages Keyboard inputs
+// functions:
+// - checkKeyState: check if key is pressed at the moment of checking
+// - checkKeyPressed: check if key is ever pressed since last check
+// - checkKeyState: checkKeyState+checkKeyPressed
+//                 (check if key is pressed at the moment of checking or if key is ever pressed since last check)
 TC.InputManager_Keyboard = function(inputManager){
   this.isAllowed = true;
   this.inputManager = inputManager;
@@ -57,13 +73,14 @@ TC.InputManager_Keyboard = function(inputManager){
 TC.InputManager_Keyboard.prototype = Object.create(TC.Object.prototype);
 TC.InputManager_Keyboard.prototype.constructor = TC.InputManager_Keyboard;
 
+// TC.Object functions implementation
 TC.InputManager_Keyboard.prototype.init = function(){
   this.inputManager.targetDom.addEventListener('keydown', this.eventHandlers.keydown);
   this.inputManager.targetDom.addEventListener('keyup', this.eventHandlers.keyup);
 };
 
-
-TC.InputManager_Keyboard.prototype.checkKeyState= function(keyCode){
+// TC.InputManager_Keyboard functions - keyState
+TC.InputManager_Keyboard.prototype.checkKeyState = function(keyCode){
   // console.log('keyCode: ', keyCode);
   // console.log('this.keyState: ', this.keyState);
   if(this.keyState[keyCode]) {
@@ -71,7 +88,7 @@ TC.InputManager_Keyboard.prototype.checkKeyState= function(keyCode){
   }
   else return false;
 };
-TC.InputManager_Keyboard.prototype.checkKeyStateAny= function(){
+TC.InputManager_Keyboard.prototype.checkKeyStateAny = function(){
   if(Object.keys(this.keyState).length){
     // console.log('this.keyState: ', this.keyState);
     return true;
@@ -85,6 +102,18 @@ TC.InputManager_Keyboard.prototype.clearKeyState = function(){
   this.keyState = {};
 };
 
+// TC.InputManager_Keyboard functions - allow/disallow
+TC.InputManager_Keyboard.prototype.isAllowed = function(keyCode){
+  return this.isAllowed;
+};
+TC.InputManager_Keyboard.prototype.disAllow = function(keyCode){
+  this.isAllowed = false;
+};
+TC.InputManager_Keyboard.prototype.allow = function(keyCode){
+  this.isAllowed = true;
+};
+
+// TC.InputManager_Keyboard functions - keyPressed
 TC.InputManager_Keyboard.prototype.checkKeyPressed = function(keyCode){
   // console.log('keyCode: ', keyCode);
   // console.log('this.keyPressed: ', this.keyPressed);
@@ -108,7 +137,7 @@ TC.InputManager_Keyboard.prototype.clearKeyPressed = function(){
   this.keyPressed = {};
 };
 
-
+// TC.InputManager_Keyboard functions - key
 TC.InputManager_Keyboard.prototype.checkKey = function(keyCode){
   return this.checkKeyPressed(keyCode) || this.checkKeyState(keyCode);
 };
