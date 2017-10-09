@@ -9,7 +9,7 @@ TC.Interval = function(){
   this.speed = undefined;
 };
 TC.Interval.prototype.stop = function () {
-  window.clearInterval(this.id);
+  if(this.id) window.clearInterval(this.id);
   this.id = null;
 };
 TC.Interval.prototype.start = function () {
@@ -72,8 +72,10 @@ TC.LoopObject.prototype.destroy = function(){
 TC.LoopObject.prototype.calculate = function(){};
 TC.LoopObject.prototype.draw = function(){};
 
-
-// Program
+/******************************/
+/* TC.Program              */
+/******************************/
+// Description: an object to control TC.Objects and/or TC.LoopObjects
 TC.Program = function(data, speed){
   this.autoStart = false;
   this.speed = speed;
@@ -85,21 +87,10 @@ TC.Program = function(data, speed){
 TC.Program.prototype = Object.create(TC.LoopObject.prototype);
 TC.Program.prototype.constructor = TC.Program;
 
-TC.Program.prototype.timeline = function(){};
-TC.Program.prototype.getInput = function(){};
-TC.Program.prototype.calculate = function(){
-  this.count++;
-  this.timeline();
-  this.getInput();
-};
+// TC.LoopObject functions inheritance
 TC.Program.prototype.init = function(){
   TC.LoopObject.prototype.init.call(this);
-  if(!this.objects) this.objects = [];
-  if(!this.uniqueObjects) this.uniqueObjects = {};
-  this.count = 0;
-  this._init();
 };
-TC.Program.prototype._init = function(){};
 TC.Program.prototype.destroy = function(){
   TC.LoopObject.prototype.destroy.call(this);
   this.count = 0;
@@ -110,6 +101,17 @@ TC.Program.prototype.destroy = function(){
     if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
   }
 };
+TC.Program.prototype.calculate = function(){
+  this.count++;
+  this.timeline();
+  this.getInput();
+};
+
+// TC.LoopObject interface functions
+TC.Program.prototype.timeline = function(){};
+TC.Program.prototype.getInput = function(){};
+
+// TC.LoopObject functions
 TC.Program.prototype.addToObjects = function(object){
   this.objects = this.objects.filter(object => object.isActive);
   this.objects.push(object);

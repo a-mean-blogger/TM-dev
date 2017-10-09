@@ -15,6 +15,11 @@ var Program_Intro = function(speed, data){
 Program_Intro.prototype = Object.create(TC.Program.prototype);
 Program_Intro.prototype.constructor = Program_Intro;
 
+// TC.Program functions inheritance
+Program_Intro.prototype.init = function(){TC.Program.prototype.init.call(this);};
+Program_Intro.prototype.destroy = function(){TC.Program.prototype.destroy.call(this);};
+Program_Intro.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
+
 // TC.Program functions implementation
 Program_Intro.prototype.timeline = function(){
   if(this.count ==  10) MAIN.TCS.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
@@ -62,12 +67,17 @@ var Program_Game = function(speed, data){
 Program_Game.prototype = Object.create(TC.Program.prototype);
 Program_Game.prototype.constructor = Program_Game;
 
-// TC.Program functions implementation
+// TC.Program functions inheritance
 Program_Game.prototype.init = function(){
   this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,refStatus:this.uniqueObjects.status});
   TC.Program.prototype.init.call(this);
 };
+Program_Game.prototype.destroy = function(){TC.Program.prototype.destroy.call(this);};
+Program_Game.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
+
+// TC.Program functions implementation
+Program_Game.prototype.timeline = function(){};
 Program_Game.prototype.getInput = function(){
   if(MAIN.TCI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.QUIT)){
     MAIN.changeProgram(MAIN.programs.intro);

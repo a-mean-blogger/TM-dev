@@ -1,6 +1,22 @@
 console.log('text-canvas-3-screen-manager.js loaded');
 
-// ScreenManager
+/******************************/
+/* TC.ScreenManager_Char      */
+/******************************/
+TC.ScreenManager_Char = function(screen, char, isFullwidth, color, backgroundColor){
+  this.char = char;
+  this.isFullwidth = isFullwidth;
+  this.color = color?color:screen.defalutFontColor;
+  this.backgroundColor = backgroundColor?backgroundColor:screen.backgroundColor;
+  this.font = screen.fontFamily;
+  this.isNew = true;
+};
+
+/******************************/
+/* TC.ScreenManager           */
+/******************************/
+// Object Type: TC.LoopObject
+// Description: manages canvas screen
 TC.ScreenManager = function(customSreenSetting, customCharGroups){
   this.screenSetting = TC.common.mergeObjects(TC.defaultSettings.screen, customSreenSetting);
   this.charGroups = TC.common.mergeObjects(TC.defaultSettings.charGroups, customCharGroups);
@@ -43,6 +59,7 @@ TC.ScreenManager = function(customSreenSetting, customCharGroups){
 TC.ScreenManager.prototype = Object.create(TC.LoopObject.prototype);
 TC.ScreenManager.prototype.constructor = TC.ScreenManager;
 
+// TC.LoopObject functions inheritance
 TC.ScreenManager.prototype.init = function () {
   this.initScreenData();
   if(this.screenSetting.fontSource && !document.querySelector(`link[href='${this.screenSetting.fontSource}'][rel='stylesheet']`)){
@@ -53,18 +70,11 @@ TC.ScreenManager.prototype.init = function () {
   }
   TC.LoopObject.prototype.init.call(this);
 };
+TC.ScreenManager.prototype.destroy = function(){TC.LoopObject.prototype.destroy.call(this);};
+
+// TC.LoopObject functions implementation
 TC.ScreenManager.prototype.calculate = function() {
   if(!this.isFontLoaded) this.checkFontLoaded();
-};
-TC.ScreenManager.prototype.getBackgroundWidthRecursive = function(i,j,bgUpdated){
-  bgUpdated[i][j] = true;
-  if(j+1<this.screenSetting.column
-  && this.screenSettingData[i][j+1].isNew
-  && this.screenSettingData[i][j].backgroundColor == this.screenSettingData[i][j+1].backgroundColor){
-    return this.getBackgroundWidthRecursive(i,j+1,bgUpdated) + this.blockWidth;
-  } else {
-    return this.blockWidth;
-  }
 };
 TC.ScreenManager.prototype.draw = function() {
   let ctx = this.ctx;
@@ -115,7 +125,26 @@ TC.ScreenManager.prototype.draw = function() {
     }
   }
 };
-TC.ScreenManager.prototype.checkFontLoaded= function(){
+
+// TC.ScreenManager private functions
+TC.ScreenManager.prototype.getBackgroundWidthRecursive = function(i,j,bgUpdated){
+  bgUpdated[i][j] = true;
+  if(j+1<this.screenSetting.column
+  && this.screenSettingData[i][j+1].isNew
+  && this.screenSettingData[i][j].backgroundColor == this.screenSettingData[i][j+1].backgroundColor){
+    return this.getBackgroundWidthRecursive(i,j+1,bgUpdated) + this.blockWidth;
+  } else {
+    return this.blockWidth;
+  }
+};
+TC.ScreenManager.prototype.refreshScreen = function(){
+  for(let i = 0; i <this.screenSettingData.length; i++){
+    for(let j = 0; j<this.screenSettingData[i].length; j++){
+      this.screenSettingData[i][j].isNew = true;
+    }
+  }
+};
+TC.ScreenManager.prototype.checkFontLoaded = function(){
   if(document.fonts.check('1em '+this.screenSetting.fontFamily)){
     this.isFontLoaded = true;
     this.refreshScreen();
@@ -133,26 +162,6 @@ TC.ScreenManager.prototype.initScreenData = function(){
       this.screenSettingData[i][j]=new TC.ScreenManager_Char(this.screenSetting, ' ');
     }
   }
-};
-TC.ScreenManager.prototype.refreshScreen = function(){
-  for(let i = 0; i <this.screenSettingData.length; i++){
-    for(let j = 0; j<this.screenSettingData[i].length; j++){
-      this.screenSettingData[i][j].isNew = true;
-    }
-  }
-};
-TC.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
-  if(typeof char != 'string') char = ' ';
-  this.screenSettingData = [];
-  for(let i = 0; i <this.screenSetting.row; i++){
-    this.screenSettingData[i]=[];
-    for(let j = 0; j<this.screenSetting.column; j++){
-      this.screenSettingData[i][j]=new TC.ScreenManager_Char(this.screenSetting, char, false, color, backgroundColor);
-    }
-  }
-};
-TC.ScreenManager.prototype.clearScreen = function(){
-  this.fillScreen(' ');
 };
 TC.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor){
   if(char.constructor != String) return console.error(char+' is invalid');
@@ -176,6 +185,21 @@ TC.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor)
 };
 TC.ScreenManager.prototype.deleteChar = function(x,y){
   this.insertChar(x,y,' ');
+};
+
+// TC.ScreenManager public functions
+TC.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
+  if(typeof char != 'string') char = ' ';
+  this.screenSettingData = [];
+  for(let i = 0; i <this.screenSetting.row; i++){
+    this.screenSettingData[i]=[];
+    for(let j = 0; j<this.screenSetting.column; j++){
+      this.screenSettingData[i][j]=new TC.ScreenManager_Char(this.screenSetting, char, false, color, backgroundColor);
+    }
+  }
+};
+TC.ScreenManager.prototype.clearScreen = function(){
+  this.fillScreen(' ');
 };
 TC.ScreenManager.prototype.insertText = function(x,y,text,color,backgroundColor){
   let regex = TC.common.getFullwidthRegex(this.charGroups);
@@ -218,14 +242,4 @@ TC.ScreenManager.prototype.consoleScreenData = function(canvas){
     }
     console.log(row);
   }
-};
-
-// ScreenManager_Char
-TC.ScreenManager_Char = function(screen, char, isFullwidth, color, backgroundColor){
-  this.char = char;
-  this.isFullwidth = isFullwidth;
-  this.color = color?color:screen.defalutFontColor;
-  this.backgroundColor = backgroundColor?backgroundColor:screen.backgroundColor;
-  this.font = screen.fontFamily;
-  this.isNew = true;
 };
