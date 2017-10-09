@@ -236,29 +236,6 @@ Status.prototype.updateBestScore = function(score){
   this.drawBestScore(score);
 };
 
-function Tetris_ActiveBlock(data){
-  this.data = {
-    type: undefined,
-    rotation: undefined,
-    x: undefined,
-    y: undefined,
-    inActivate1: {
-      flag: false,
-      count: 0,
-      countMax: 50,
-    },
-    inActivate2: {
-      flag: false,
-      count: 0,
-      countMax: 10,
-    },
-  };
-  TC.Object.call(this, data);
-}
-Tetris_ActiveBlock.prototype = Object.create(TC.Object.prototype);
-Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
-
-
 function Tetris(data, status){
   this.autoStart = true;
   this.refStatus = status;
@@ -414,7 +391,7 @@ Tetris.prototype.createNewBlock = function(){
   newBlock.x = Math.floor(this.colNum/2)-1;
   newBlock.y = 0;
 
-  this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
+  this.data.activeBlock = new Tetris_ActiveBlock(newBlock, this);
   this.data.nextBlockType = Math.floor(Math.random()*7);
   this.updateActiveBlock();
   this.refStatus.drawNextBlock(this.data.nextBlockType);
@@ -440,6 +417,9 @@ Tetris.prototype.changeActiveBlockTo = function(to){
         this.data.dataArray[i][j]=to;
     }
   }
+};
+Tetris.prototype.changeActiveBlockToInactive = function(activeBlock){
+  this.changeActiveBlockTo(activeBlock.data.type+2);
 };
 Tetris.prototype.getInput = function(){
   const KEYSET = this.data.KEYSET;
@@ -472,59 +452,6 @@ Tetris.prototype.hardDrop = function(){
     activeBlockData.inActivate1.count = activeBlockData.inActivate1.countMax;
   }
 };
-Tetris.prototype.moveActiveBlock = function(x,y){
-  let activeBlockData = this.data.activeBlock.data;
-  let xN = activeBlockData.x+x;
-  let yN = activeBlockData.y+y;
-  let moved = false;
-  if(this.checkActiveBlockMove(activeBlockData.type,activeBlockData.rotation,xN,yN)){
-    activeBlockData.x = xN;
-    activeBlockData.y = yN;
-    moved = true;
-  }
-  return moved;
-};
-Tetris.prototype.moveDownActiveBlock = function(){
-  let activeBlockData = this.data.activeBlock.data;
-  let moved = this.moveActiveBlock(0,1);
-
-  if(moved){
-    activeBlockData.inActivate1.count = 0;
-    if(this.checkActiveBlockMove(activeBlockData.type,activeBlockData.rotation,activeBlockData.x,activeBlockData.y+1)){
-      activeBlockData.inActivate1.flag = false;
-    }
-  }
-  else {
-    activeBlockData.inActivate1.flag = true;
-  }
-  return moved;
-};
-Tetris.prototype.rotateActiveBlock = function(){
-  let activeBlockData = this.data.activeBlock.data;
-  let rN = (activeBlockData.rotation+1)%4;
-  let moved = false;
-  if(this.checkActiveBlockMove(activeBlockData.type,rN,activeBlockData.x,activeBlockData.y)){
-    activeBlockData.rotation = rN;
-    moved = true;
-  }
-  else if(this.checkActiveBlockMove(activeBlockData.type,rN,activeBlockData.x,activeBlockData.y-1)){
-    activeBlockData.rotation = rN;
-    activeBlockData.y -= 1;
-    moved = true;
-  }
-  return moved;
-};
-Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
-  for(let i=0;i<4;i++){
-    for(let j=0;j<4;j++){
-      if(BLOCKS[type][rN][i][j]==1
-      && this.data.dataArray[yN+i][xN+j] > 0){
-        return false;
-      }
-    }
-  }
-  return true;
-};
 Tetris.prototype.autoDrop = function(){
   if(++this.data.autoDropCount > this.data.autoDropCountMax){
     this.data.autoDropCount = 0;
@@ -532,21 +459,16 @@ Tetris.prototype.autoDrop = function(){
   }
 };
 Tetris.prototype.inActivateBlock = function(){
-  let activeBlockData = this.data.activeBlock.data;
+  let activeBlock = this.data.activeBlock;
 
-  if(!activeBlockData.inActivate2.flag
-  && ++activeBlockData.inActivate1.count > activeBlockData.inActivate1.countMax){
-    if(!this.checkActiveBlockMove(activeBlockData.type,activeBlockData.rotation,activeBlockData.x,activeBlockData.y+1)){
-      activeBlockData.inActivate2.flag = true;
-      this.updateActiveBlock();
-      this.changeActiveBlockTo(activeBlockData.type+2);
-      this.changeFullLinesToStar();
-    }
+  if(activeBlock.checkInactivate2Ready()){
+    activeBlock.startInactivate2();
+    this.updateActiveBlock();
+    this.changeActiveBlockToInactive(activeBlock);
+    this.changeFullLinesToStar();
   }
-  else if(activeBlockData.inActivate2.flag
-  && ++activeBlockData.inActivate2.count > activeBlockData.inActivate2.countMax){
-    activeBlockData.inActivate1.count = 0;
-    activeBlockData.inActivate2.count = 0;
+  else if(activeBlock.checkInactivate2Finished()){
+    activeBlock.resetInactivateStatus();
     this.removeFullLines();
     if(this.checkGameOver()){
       this.gameOver();
@@ -633,4 +555,120 @@ Tetris.prototype.gameOver = function(){
 Tetris.prototype.showGameOverPopup = function(){
   this.data.gameOver.popup = true;
   this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:"#444",status:this.refStatus,score:this.data.score});
+};
+
+
+function Tetris_ActiveBlock(data,refTetris){
+  this.data = {
+    type: undefined,
+    rotation: undefined,
+    x: undefined,
+    y: undefined,
+    inActivate1: {
+      flag: false,
+      count: 0,
+      countMax: 50,
+    },
+    inActivate2: {
+      flag: false,
+      count: 0,
+      countMax: 10,
+    },
+  };
+  this.refTetris = refTetris;
+  TC.Object.call(this, data);
+}
+Tetris_ActiveBlock.prototype = Object.create(TC.Object.prototype);
+Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
+
+Tetris_ActiveBlock.prototype.checkInactivate2Ready = function(){
+  var checkStatus = false;
+  if(!this.data.inActivate2.flag
+  && ++this.data.inActivate1.count > this.data.inActivate1.countMax){
+    if(!this.checkActiveBlockMove(this.data.type,this.data.rotation,this.data.x,this.data.y+1)){
+      checkStatus = true;
+    }
+  }
+  return checkStatus;
+};
+Tetris_ActiveBlock.prototype.startInactivate2 = function(){
+  this.data.inActivate2.flag = true;
+};
+Tetris_ActiveBlock.prototype.checkInactivate2Finished = function(){
+  var checkStatus = false;
+  if(this.data.inActivate2.flag
+  && ++this.data.inActivate2.count > this.data.inActivate2.countMax){
+    checkStatus = true;
+  }
+  return checkStatus;
+};
+Tetris_ActiveBlock.prototype.resetInactivateStatus = function(){
+  this.data.inActivate1.count = 0;
+  this.data.inActivate2.count = 0;
+};
+Tetris_ActiveBlock.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
+  var dataArray = this.refTetris.data.dataArray;
+  for(let i=0;i<4;i++){
+    for(let j=0;j<4;j++){
+      if(BLOCKS[type][rN][i][j]==1
+      && dataArray[yN+i][xN+j] > 0){
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+Tetris.prototype.moveActiveBlock = function(x,y){
+  let activeBlockData = this.data.activeBlock.data;
+  let xN = activeBlockData.x+x;
+  let yN = activeBlockData.y+y;
+  let moved = false;
+  if(this.checkActiveBlockMove(activeBlockData.type,activeBlockData.rotation,xN,yN)){
+    activeBlockData.x = xN;
+    activeBlockData.y = yN;
+    moved = true;
+  }
+  return moved;
+};
+Tetris.prototype.moveDownActiveBlock = function(){
+  let activeBlockData = this.data.activeBlock.data;
+  let moved = this.moveActiveBlock(0,1);
+
+  if(moved){
+    activeBlockData.inActivate1.count = 0;
+    if(this.checkActiveBlockMove(activeBlockData.type,activeBlockData.rotation,activeBlockData.x,activeBlockData.y+1)){
+      activeBlockData.inActivate1.flag = false;
+    }
+  }
+  else {
+    activeBlockData.inActivate1.flag = true;
+  }
+  return moved;
+};
+Tetris.prototype.rotateActiveBlock = function(){
+  let activeBlockData = this.data.activeBlock.data;
+  let rN = (activeBlockData.rotation+1)%4;
+  let moved = false;
+  if(this.checkActiveBlockMove(activeBlockData.type,rN,activeBlockData.x,activeBlockData.y)){
+    activeBlockData.rotation = rN;
+    moved = true;
+  }
+  else if(this.checkActiveBlockMove(activeBlockData.type,rN,activeBlockData.x,activeBlockData.y-1)){
+    activeBlockData.rotation = rN;
+    activeBlockData.y -= 1;
+    moved = true;
+  }
+  return moved;
+};
+Tetris.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
+  for(let i=0;i<4;i++){
+    for(let j=0;j<4;j++){
+      if(BLOCKS[type][rN][i][j]==1
+      && this.data.dataArray[yN+i][xN+j] > 0){
+        return false;
+      }
+    }
+  }
+  return true;
 };
