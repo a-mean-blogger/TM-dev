@@ -423,6 +423,7 @@ Tetris.prototype.changeActiveBlockToInactive = function(activeBlock){
 };
 Tetris.prototype.getInput = function(){
   const KEYSET = this.data.KEYSET;
+  var activeBlock = this.data.activeBlock;
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
     if(MAIN.TCI.keyboard.checkKey(KEYSET.RIGHT)){
@@ -435,7 +436,7 @@ Tetris.prototype.getInput = function(){
       this.moveDownActiveBlock();
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.ROTATE)){
-      this.rotateActiveBlock();
+      activeBlock.rotate();
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.DROP)){
       this.hardDrop();
@@ -617,6 +618,20 @@ Tetris_ActiveBlock.prototype.checkActiveBlockMove = function(type,rN,xN,yN){
     }
   }
   return true;
+};
+Tetris_ActiveBlock.prototype.rotate = function(){
+  let rN = (this.data.rotation+1)%4;
+  let moved = false;
+  if(this.checkActiveBlockMove(this.data.type,rN,this.data.x,this.data.y)){
+    this.data.rotation = rN;
+    moved = true;
+  }
+  else if(this.checkActiveBlockMove(this.data.type,rN,this.data.x,this.data.y-1)){
+    this.data.rotation = rN;
+    this.data.y -= 1;
+    moved = true;
+  }
+  return moved;
 };
 
 Tetris.prototype.moveActiveBlock = function(x,y){
