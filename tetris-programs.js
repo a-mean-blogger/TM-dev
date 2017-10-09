@@ -1,16 +1,23 @@
 console.log("tetris-programs.js loaded");
 
+
+/******************************/
+/* Program_Intro              */
+/******************************/
+// Object Type: TC.Program
+// Description: Display intro screen and move to tetris game when any key entered
 var Program_Intro = function(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
-    KEYSET: undefined,
+    gameSettings: undefined,
   };
   TC.Program.call(this, speed, data);
 };
 Program_Intro.prototype = Object.create(TC.Program.prototype);
 Program_Intro.prototype.constructor = Program_Intro;
 
+// TC.Program functions implementation
 Program_Intro.prototype.timeline = function(){
   if(this.count ==  10) MAIN.TCS.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
   if(this.count ==  20) MAIN.TCS.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
@@ -33,16 +40,21 @@ Program_Intro.prototype.timeline = function(){
   }
 };
 Program_Intro.prototype.getInput = function(){
-  const KEYSET = this.data.KEYSET;
+  const KEYSET = this.data.gameSettings.KEYSET;
   if(!MAIN.TCI.keyboard.checkKey(KEYSET.QUIT) &&  MAIN.TCI.keyboard.checkKeyAny()){
     MAIN.changeProgram(MAIN.programs.game);
   }
 };
 
 
+/******************************/
+/* Program_Game              */
+/******************************/
+// Object Type: TC.Program
+// Description: control Tetris Games
 var Program_Game = function(speed, data){
   this.data = {
-    KEYSET: undefined,
+    gameSettings: undefined,
     isPaused: false,
   };
   this.uniqueObjects = {
@@ -55,6 +67,7 @@ var Program_Game = function(speed, data){
 Program_Game.prototype = Object.create(TC.Program.prototype);
 Program_Game.prototype.constructor = Program_Game;
 
+// TC.Program functions implementation
 Program_Game.prototype.init = function(){
   this.uniqueObjects.status = new Status({
     x:28,y:3,
@@ -62,18 +75,16 @@ Program_Game.prototype.init = function(){
   }, MAIN.data.scores);
   this.uniqueObjects.player1Game = new Tetris({
     x:3,y:1,
-    KEYSET:MAIN.settings.tetris1.keyset,
     COLORSET:MAIN.settings.colorset
   }, this.uniqueObjects.status);
   TC.Program.prototype.init.call(this);
 };
-
 Program_Game.prototype.getInput = function(){
-  const KEYSET = this.data.KEYSET;
-  if(MAIN.TCI.keyboard.checkKey(KEYSET.QUIT)){
+  const gameSettings = this.data.gameSettings;
+  if(MAIN.TCI.keyboard.checkKey(gameSettings.KEYSET.QUIT)){
     MAIN.changeProgram(MAIN.programs.intro);
   }
-  if(MAIN.TCI.keyboard.checkKey(KEYSET.PAUSE)){
+  if(MAIN.TCI.keyboard.checkKey(gameSettings.KEYSET.PAUSE)){
     if(this.data.isPaused){
       this.uniqueObjects.player1Game.interval.start();
       this.data.isPaused = false;
@@ -87,5 +98,25 @@ Program_Game.prototype.getInput = function(){
       MAIN.TCS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.uniqueObjects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
+  }
+  this.checkTetrisInput(this.uniqueObjects.player1Game, gameSettings.tetris1.KEYSET);
+};
+
+// Custom functions
+Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET){
+  if(MAIN.TCI.keyboard.checkKey(KEYSET.RIGHT)){
+    tetrisGame.processKeyInput(KEYSET, KEYSET.RIGHT);
+  }
+  if(MAIN.TCI.keyboard.checkKey(KEYSET.LEFT)){
+    tetrisGame.processKeyInput(KEYSET, KEYSET.LEFT);
+  }
+  if(MAIN.TCI.keyboard.checkKey(KEYSET.DOWN)){
+    tetrisGame.processKeyInput(KEYSET, KEYSET.DOWN);
+  }
+  if(MAIN.TCI.keyboard.checkKey(KEYSET.ROTATE)){
+    tetrisGame.processKeyInput(KEYSET, KEYSET.ROTATE);
+  }
+  if(MAIN.TCI.keyboard.checkKey(KEYSET.DROP)){
+    tetrisGame.processKeyInput(KEYSET, KEYSET.DROP);
   }
 };

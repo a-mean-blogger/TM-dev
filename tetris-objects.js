@@ -49,7 +49,7 @@ function Star(speed, data){
 Star.prototype = Object.create(TC.LoopObject.prototype);
 Star.prototype.constructor = Star;
 
-// TC.LoopObject functions
+// TC.LoopObject functions implementation
 Star.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
@@ -81,7 +81,7 @@ function PausePopup(speed, data){
 PausePopup.prototype = Object.create(TC.LoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
 
-// TC.LoopObject functions
+// TC.LoopObject functions implementation
 PausePopup.prototype.init = function(){
   this.drawFrame();
   TC.LoopObject.prototype.init.call(this);
@@ -125,7 +125,7 @@ function GameOverPopup(speed, data){
 GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
 
-// TC.LoopObject functions
+// TC.LoopObject functions implementation
 GameOverPopup.prototype.init = function(){
   this.data.scoreText = Status.convertScore(this.data.score);
   this.drawFrame();
@@ -255,23 +255,25 @@ Status.prototype.updateBestScore = function(score){
   this.drawBestScore(score);
 };
 
-function Tetris(data, status){
+/******************************/
+/* Tetris                     */
+/******************************/
+// Object Type: TC.LoopObject
+// Description: Main Tetris game
+function Tetris(data, refStatus){
   this.autoStart = true;
-  this.refStatus = status;
+  this.refStatus = refStatus;
   this.colNum = 11;
   this.rowNum = 23;
   this.speedLookup = [80,60,40,20,10,8,4,2,1,0];
   this.data = {
     x: undefined,
     y: undefined,
-    KEYSET: undefined,
     COLORSET: undefined,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
     score: 0,
-    inputSpeedCountMax: 10,
-    inputSpeedCount: 0,
     autoDropCountMax: 80,
     autoDropCount: 0,
     dataArray: null,
@@ -289,6 +291,7 @@ function Tetris(data, status){
 Tetris.prototype = Object.create(TC.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
+// Static properties
 Tetris.ACTIVE_BLOCK = -2;
 Tetris.CEILING = -1;
 Tetris.EMPTY = 0;
@@ -305,6 +308,7 @@ Tetris.BLOCKS = [
   [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
 ];
 
+// TC.LoopObject functions implementation
 Tetris.prototype.init = function(){
   this.resetDataArray();
   this.createNewBlock();
@@ -383,7 +387,6 @@ Tetris.prototype.calculate = function(){
     this.autoDrop();
     activeBlock.updateOnTetrisDataArray(this.data.dataArray);
     if(activeBlock.isInactivate1On()) this.inactivateBlock();
-    this.getInput();
   }
 };
 Tetris.prototype.destroy = function (blockType) {
@@ -391,6 +394,8 @@ Tetris.prototype.destroy = function (blockType) {
   if(this.gameOverPopup) this.gameOverPopup.destroy();
   TC.LoopObject.prototype.destroy.call(this);
 };
+
+// Custom functions
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray=[];
   for(let i=0;i<this.rowNum;i++){
@@ -423,28 +428,24 @@ Tetris.prototype.createNewBlock = function(){
   this.data.nextBlockType = Math.floor(Math.random()*7);
   this.refStatus.drawNextBlock(this.data.nextBlockType);
 };
-Tetris.prototype.getInput = function(){
-  if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
-    this.data.inputSpeedCount = 0;
-
-    const KEYSET = this.data.KEYSET;
-    var activeBlock = this.data.activeBlock;
-
-    if(MAIN.TCI.keyboard.checkKey(KEYSET.RIGHT)){
+Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
+  var activeBlock = this.data.activeBlock;
+  switch (keyInput) {
+    case KEYSET.RIGHT:
       activeBlock.moveRight(this.data.dataArray);
-    }
-    if(MAIN.TCI.keyboard.checkKey(KEYSET.LEFT)){
+      break;
+    case KEYSET.LEFT:
       activeBlock.moveLeft(this.data.dataArray);
-    }
-    if(MAIN.TCI.keyboard.checkKey(KEYSET.DOWN)){
+      break;
+    case KEYSET.DOWN:
       activeBlock.moveDown(this.data.dataArray);
-    }
-    if(MAIN.TCI.keyboard.checkKey(KEYSET.ROTATE)){
+      break;
+    case KEYSET.ROTATE:
       activeBlock.rotate(this.data.dataArray);
-    }
-    if(MAIN.TCI.keyboard.checkKey(KEYSET.DROP)){
+      break;
+    case KEYSET.DROP:
       this.hardDrop();
-    }
+      break;
   }
 };
 Tetris.prototype.hardDrop = function(){
@@ -562,7 +563,11 @@ Tetris.prototype.showGameOverPopup = function(){
   this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:"#444",score:this.data.score});
 };
 
-
+/******************************/
+/* Tetris_ActiveBlock         */
+/******************************/
+// Object Type: TC.Object
+// Description: Contains active tetris block status and functions to control it
 function Tetris_ActiveBlock(data){
   this.data = {
     type: 0,

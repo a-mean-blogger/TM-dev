@@ -26,7 +26,7 @@ var charGroups = {
 };
 
 var gameSettings ={
-  keyset:{
+  KEYSET:{
     QUIT:27, // esc key
     PAUSE:80, // "p";
   },
@@ -38,7 +38,7 @@ var gameSettings ={
     star: "#FFCE54",
   },
   tetris1:{
-    keyset:{
+    KEYSET:{
       RIGHT:39,
       LEFT:37,
       ROTATE:38,
@@ -54,8 +54,8 @@ var MAIN = {
   TCI: new TC.InputManager(),
   settings: gameSettings,
   programs: {
-    intro: new Program_Intro(10,{x:5,y:3,KEYSET:gameSettings.keyset}),
-    game: new Program_Game(100,{KEYSET:gameSettings.keyset,isPaused:false}),
+    intro: new Program_Intro(10,{x:5,y:3,gameSettings:gameSettings}),
+    game: new Program_Game(100,{gameSettings:gameSettings,isPaused:false}),
   },
   data: {
     scores:{
