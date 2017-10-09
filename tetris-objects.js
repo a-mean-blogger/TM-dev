@@ -159,13 +159,12 @@ GameOverPopup.prototype.drawFrame = function(){
 /******************************/
 // Object Type: TC.Object
 // Description: Display Tetris game status
-function Status(data,refMainScores){
+function Status(data){
   this.data = {
     x: undefined,
     y: undefined,
     COLORSET: MAIN.settings.COLORSET,
   };
-  this.refMainScores = refMainScores;
   TC.Object.call(this, data);
 }
 Status.prototype = Object.create(TC.Object.prototype);
@@ -184,8 +183,8 @@ Status.convertScore = function(score){
 // TC.Object functions
 Status.prototype.init = function(){
   this.drawFrame();
-  this.drawLastScore(this.refMainScores.lastScore);
-  this.drawBestScore(this.refMainScores.bestScore);
+  this.drawLastScore(MAIN.data.scores.lastScore);
+  this.drawBestScore(MAIN.data.scores.bestScore);
 };
 
 // Custom functions
@@ -247,11 +246,11 @@ Status.prototype.drawBestScore = function(score){
   MAIN.TCS.insertText(this.data.x+7, this.data.y+13, Status.convertScore(score));
 };
 Status.prototype.updateLastScore = function(score){
-  this.refMainScores.lastScore = score;
+  MAIN.data.scores.lastScore = score;
   this.drawLastScore(score);
 };
 Status.prototype.updateBestScore = function(score){
-  this.refMainScores.bestScore = Math.max(score,this.refMainScores.bestScore);
+  MAIN.data.scores.bestScore = Math.max(score,MAIN.data.scores.bestScore);
   this.drawBestScore(score);
 };
 
@@ -262,11 +261,11 @@ Status.prototype.updateBestScore = function(score){
 // Description: Main Tetris game
 function Tetris(data, refStatus){
   this.autoStart = true;
-  this.refStatus = refStatus;
   this.speedLookup = [80,60,40,20,10,8,4,2,1,0];
   this.data = {
     x: undefined,
     y: undefined,
+    refStatus: undefined,
     COL_NUM: MAIN.settings.COL_NUM,
     ROW_NUM: MAIN.settings.ROW_NUM,
     COLORSET: MAIN.settings.COLORSET,
@@ -313,9 +312,9 @@ Tetris.prototype.init = function(){
   this.resetDataArray();
   this.createNewBlock();
   this.setSpeed(this.data.level);
-  this.refStatus.drawLevel(this.data.level);
-  this.refStatus.drawGoal(this.data.goalCount);
-  this.refStatus.drawScore(this.data.score);
+  this.data.refStatus.drawLevel(this.data.level);
+  this.data.refStatus.drawGoal(this.data.goalCount);
+  this.data.refStatus.drawScore(this.data.score);
   TC.LoopObject.prototype.init.call(this);
 
   MAIN.TCD.addTask('test',
@@ -426,7 +425,7 @@ Tetris.prototype.createNewBlock = function(){
   this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
   this.data.activeBlock.updateOnTetrisDataArray(this.data.dataArray);
   this.data.nextBlockType = Math.floor(Math.random()*7);
-  this.refStatus.drawNextBlock(this.data.nextBlockType);
+  this.data.refStatus.drawNextBlock(this.data.nextBlockType);
 };
 Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
   var activeBlock = this.data.activeBlock;
@@ -516,13 +515,13 @@ Tetris.prototype.removeFullLines = function(){
       this.addScore(100 * this.data.level);
 
       if(--this.data.goalCount === 0) this.levelUp();
-      else this.refStatus.drawGoal(this.data.goalCount);
+      else this.data.refStatus.drawGoal(this.data.goalCount);
     }
   }
 };
 Tetris.prototype.addScore = function(score){
   this.data.score += score;
-  this.refStatus.drawScore(this.data.score);
+  this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
   if(level<=this.speedLookup.length){
@@ -535,8 +534,8 @@ Tetris.prototype.levelUp = function(){
   this.data.level++;
   this.data.goalCount = this.data.goalCountMax;
   this.setSpeed(this.data.level);
-  this.refStatus.drawGoal(this.data.goalCount);
-  this.refStatus.drawLevel(this.data.level);
+  this.data.refStatus.drawGoal(this.data.goalCount);
+  this.data.refStatus.drawLevel(this.data.level);
 };
 Tetris.prototype.checkGameOver = function(){
   for(let j=1;j<this.data.COL_NUM-1;j++){
@@ -545,8 +544,8 @@ Tetris.prototype.checkGameOver = function(){
 };
 Tetris.prototype.gameOver = function(){
   this.data.gameOver.flag = true;
-  this.refStatus.updateBestScore(this.data.score);
-  this.refStatus.updateLastScore(this.data.score);
+  this.data.refStatus.updateBestScore(this.data.score);
+  this.data.refStatus.updateLastScore(this.data.score);
   let i = this.data.ROW_NUM-2;
   let interval = setInterval(_=>{
     for(let j=1;j<this.data.COL_NUM-1;j++){

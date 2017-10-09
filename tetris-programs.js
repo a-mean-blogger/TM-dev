@@ -66,12 +66,8 @@ Program_Game.prototype.constructor = Program_Game;
 
 // TC.Program functions implementation
 Program_Game.prototype.init = function(){
-  this.uniqueObjects.status = new Status({
-    x:28,y:3,
-  }, MAIN.data.scores);
-  this.uniqueObjects.player1Game = new Tetris({
-    x:3,y:1,
-  }, this.uniqueObjects.status);
+  this.uniqueObjects.status = new Status({x:28,y:3});
+  this.uniqueObjects.player1Game = new Tetris({x:3,y:1,refStatus:this.uniqueObjects.status});
   TC.Program.prototype.init.call(this);
 };
 Program_Game.prototype.getInput = function(){
