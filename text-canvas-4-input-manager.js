@@ -1,6 +1,10 @@
 console.log('text-canvas-4-input-manager.js loaded');
 
-// InputManager
+/******************************/
+/* TC.InputManager            */
+/******************************/
+// Object Type: TC.Object
+// Description: manages inputs
 TC.InputManager = function(customTargetDomId){
   var targetDomId = customTargetDomId?customTargetDomId:TC.defaultSettings.screen.canvasId;
   try{
@@ -22,9 +26,11 @@ TC.InputManager = function(customTargetDomId){
 TC.InputManager.prototype = Object.create(TC.Object.prototype);
 TC.InputManager.prototype.constructor = TC.InputManager;
 
-TC.InputManager.prototype.init = function(){};
-
-// InputManager_Keyboard
+/******************************/
+/* TC.InputManager_Keyboard   */
+/******************************/
+// Object Type: TC.Object
+// Description: manages Keyboard inputs
 TC.InputManager_Keyboard = function(inputManager){
   this.isAllowed = true;
   this.inputManager = inputManager;
@@ -55,6 +61,8 @@ TC.InputManager_Keyboard.prototype.init = function(){
   this.inputManager.targetDom.addEventListener('keydown', this.eventHandlers.keydown);
   this.inputManager.targetDom.addEventListener('keyup', this.eventHandlers.keyup);
 };
+
+
 TC.InputManager_Keyboard.prototype.checkKeyState= function(keyCode){
   // console.log('keyCode: ', keyCode);
   // console.log('this.keyState: ', this.keyState);
@@ -76,6 +84,7 @@ TC.InputManager_Keyboard.prototype.removeKeyState = function(keyCode){
 TC.InputManager_Keyboard.prototype.clearKeyState = function(){
   this.keyState = {};
 };
+
 TC.InputManager_Keyboard.prototype.checkKeyPressed = function(keyCode){
   // console.log('keyCode: ', keyCode);
   // console.log('this.keyPressed: ', this.keyPressed);
@@ -98,6 +107,8 @@ TC.InputManager_Keyboard.prototype.removeKeyPressed = function(keyCode){
 TC.InputManager_Keyboard.prototype.clearKeyPressed = function(){
   this.keyPressed = {};
 };
+
+
 TC.InputManager_Keyboard.prototype.checkKey = function(keyCode){
   return this.checkKeyPressed(keyCode) || this.checkKeyState(keyCode);
 };
