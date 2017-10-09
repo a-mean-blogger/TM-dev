@@ -261,7 +261,6 @@ Status.prototype.updateBestScore = function(score){
 // Description: Main Tetris game
 function Tetris(data, refStatus){
   this.autoStart = true;
-  this.speedLookup = [80,60,40,20,10,8,4,2,1,0];
   this.data = {
     x: undefined,
     y: undefined,
@@ -524,10 +523,10 @@ Tetris.prototype.addScore = function(score){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
-  if(level<=this.speedLookup.length){
-    this.data.autoDropCountMax = this.speedLookup[this.data.level-1];
+  if(level<=MAIN.settings.SPEED_LOOKUP.length){
+    this.data.autoDropCountMax = MAIN.settings.SPEED_LOOKUP[this.data.level-1];
   }else{
-    this.data.autoDropCountMax = this.speedLookup[this.speedLookup.length-1];
+    this.data.autoDropCountMax = MAIN.settings.SPEED_LOOKUP[MAIN.settings.SPEED_LOOKUP.length-1];
   }
 };
 Tetris.prototype.levelUp = function(){
