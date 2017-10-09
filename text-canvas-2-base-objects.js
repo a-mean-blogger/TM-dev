@@ -65,10 +65,11 @@ TC.LoopObject.prototype.destroy = function(){
 // Program
 TC.Program = function(data, speed){
   this.autoStart = false;
+  this.speed = speed;
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 };
 TC.Program.prototype = Object.create(TC.LoopObject.prototype);
 TC.Program.prototype.constructor = TC.Program;

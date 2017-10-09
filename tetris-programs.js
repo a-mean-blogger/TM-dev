@@ -86,7 +86,7 @@ Program_Game.prototype.getInput = function(){
       this.data.isPaused = true;
       this.data.pausedScreen = MAIN.TCS.copyScreen();
       MAIN.TCS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
-      this.uniqueObjects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
+      this.uniqueObjects.pausePopup = new PausePopup({x:15,y:11,bgColor:"#444"},800);
     }
   }
   this.checkTetrisInput(this.uniqueObjects.player1Game, MAIN.SETTINGS.PLAYER1.KEYSET);

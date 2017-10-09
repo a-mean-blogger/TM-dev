@@ -22,7 +22,7 @@ TC.DebugManager = function(debugSetting){
 TC.DebugManager.prototype = Object.create(TC.Object.prototype);
 TC.DebugManager.prototype.constructor = TC.DebugManager;
 
-TC.DebugManager.prototype.destroy = function(taskName, data, calculate){
+TC.DebugManager.prototype.destroy = function(){
   this.removeTaskAll();
   TC.Object.prototype.destroy.call(this);
 };
@@ -44,11 +44,12 @@ TC.DebugManager.prototype.removeTaskAll = function(){
 // DebugManager_Task
 TC.DebugManager_Task = function(debugManager, taskName, data, calculate){
   this.autoStart = true;
+  this.speed = 100;
   this.debugManager = debugManager;
   this.output = '';
   this.domId = taskName;
   this.calculate = calculate;
-  TC.LoopObject.call(this, data, 10, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 };
 TC.DebugManager_Task.prototype = Object.create(TC.LoopObject.prototype);
 TC.DebugManager_Task.prototype.constructor = TC.DebugManager_Task;

@@ -2,6 +2,7 @@ console.log('tetris-object.js loaded');
 
 // function TextObject(data, speed, patternFunc){
 //   this.autoStart = true;
+//   this.speed = speed;
 //   this.data = {
 //     x: undefined,
 //     y: undefined,
@@ -12,7 +13,7 @@ console.log('tetris-object.js loaded');
 //     },
 //   };
 //   this.patternFunc = patternFunc;
-//   TC.LoopObject.call(this, data, speed, this.autoStart);
+//   TC.LoopObject.call(this, data, this.speed, this.autoStart);
 // }
 // TextObject.prototype = Object.create(TC.LoopObject.prototype);
 // TextObject.prototype.constructor = TextObject;
@@ -38,13 +39,14 @@ console.log('tetris-object.js loaded');
 // Description: Create a Blinking star
 function Star(data, speed){
   this.autoStart = true;
+  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
     color: undefined,
     blink: 0,
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 }
 Star.prototype = Object.create(TC.LoopObject.prototype);
 Star.prototype.constructor = Star;
@@ -67,8 +69,9 @@ Star.prototype.destroy = function(){
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Pause Popup box
-function PausePopup(speed, data){
+function PausePopup(data, speed){
   this.autoStart = true;
+  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
@@ -76,7 +79,7 @@ function PausePopup(speed, data){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 }
 PausePopup.prototype = Object.create(TC.LoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
@@ -109,8 +112,9 @@ PausePopup.prototype.drawFrame = function(){
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Game Over Popup box
-function GameOverPopup(speed, data){
+function GameOverPopup(data, speed){
   this.autoStart = true;
+  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
@@ -120,7 +124,7 @@ function GameOverPopup(speed, data){
     score: 0,
     scoreText: '',
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 }
 GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
@@ -259,8 +263,9 @@ Status.prototype.updateBestScore = function(score){
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Main Tetris game
-function Tetris(data, refStatus){
+function Tetris(data){
   this.autoStart = true;
+  this.speed = 10;
   this.data = {
     x: undefined,
     y: undefined,
@@ -284,7 +289,7 @@ function Tetris(data, refStatus){
       popup: false,
     },
   };
-  TC.LoopObject.call(this, data, 10, this.autoStart);
+  TC.LoopObject.call(this, data, this.speed, this.autoStart);
 }
 Tetris.prototype = Object.create(TC.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
@@ -558,7 +563,7 @@ Tetris.prototype.gameOver = function(){
 };
 Tetris.prototype.showGameOverPopup = function(){
   this.data.gameOver.popup = true;
-  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
+  this.gameOverPopup = new GameOverPopup({x:19,y:5,bgColor:'#444',score:this.data.score},800);
 };
 
 /******************************/
