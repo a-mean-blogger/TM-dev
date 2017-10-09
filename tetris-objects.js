@@ -427,10 +427,10 @@ Tetris.prototype.getInput = function(){
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
     if(MAIN.TCI.keyboard.checkKey(KEYSET.RIGHT)){
-      this.moveActiveBlock(1,0);
+      activeBlock.move(1,0);
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.LEFT)){
-      this.moveActiveBlock(-1,0);
+      activeBlock.move(-1,0);
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.DOWN)){
       this.moveDownActiveBlock();
@@ -629,6 +629,18 @@ Tetris_ActiveBlock.prototype.rotate = function(){
   else if(this.checkActiveBlockMove(this.data.type,rN,this.data.x,this.data.y-1)){
     this.data.rotation = rN;
     this.data.y -= 1;
+    moved = true;
+  }
+  return moved;
+};
+
+Tetris_ActiveBlock.prototype.move = function(x,y){
+  let xN = this.data.x+x;
+  let yN = this.data.y+y;
+  let moved = false;
+  if(this.checkActiveBlockMove(this.data.type,this.data.rotation,xN,yN)){
+    this.data.x = xN;
+    this.data.y = yN;
     moved = true;
   }
   return moved;
