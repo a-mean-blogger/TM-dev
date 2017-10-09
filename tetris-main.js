@@ -55,7 +55,7 @@ var MAIN = {
   },
   programs: {
     intro: new Program_Intro(10,{x:5,y:3}),
-    game: new Program_Game(100,{isPaused:false}),
+    game: new Program_Game(100),
   },
   data: {
     scores: {

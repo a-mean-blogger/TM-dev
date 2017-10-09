@@ -69,6 +69,7 @@ Program_Game.prototype.constructor = Program_Game;
 
 // TC.Program functions inheritance
 Program_Game.prototype.init = function(){
+  this.data.isPaused = false;
   this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,refStatus:this.uniqueObjects.status});
   TC.Program.prototype.init.call(this);
@@ -84,20 +85,24 @@ Program_Game.prototype.getInput = function(){
   }
   if(MAIN.TCI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.PAUSE)){
     if(this.data.isPaused){
-      this.uniqueObjects.player1Game.interval.start();
       this.data.isPaused = false;
-      MAIN.TCS.pasteScreen(this.data.pausedScreen);
+      this.uniqueObjects.player1Game.interval.start();
       this.uniqueObjects.pausePopup.destroy();
+      MAIN.TCS.pasteScreen(this.data.pausedScreen);
+      MAIN.TCI.keyboard.clearKey();
     }
     else {
-      this.uniqueObjects.player1Game.interval.stop();
       this.data.isPaused = true;
+      this.uniqueObjects.player1Game.interval.stop();
       this.data.pausedScreen = MAIN.TCS.copyScreen();
       MAIN.TCS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.uniqueObjects.pausePopup = new PausePopup({x:15,y:11,bgColor:"#444"},800);
     }
   }
-  this.checkTetrisInput(this.uniqueObjects.player1Game, MAIN.SETTINGS.PLAYER1.KEYSET);
+
+  if(!this.data.isPaused){
+    this.checkTetrisInput(this.uniqueObjects.player1Game, MAIN.SETTINGS.PLAYER1.KEYSET);
+  }
 };
 
 // Custom functions
