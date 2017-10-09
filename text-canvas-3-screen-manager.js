@@ -51,7 +51,7 @@ TC.ScreenManager.prototype.init = function () {
     link.rel = 'stylesheet';
     document.getElementsByTagName('head')[0].appendChild(link);
   }
-  this.initInterval();
+  TC.LoopObject.prototype.init.call(this);
 };
 TC.ScreenManager.prototype.calculate = function() {
   if(!this.isFontLoaded) this.checkFontLoaded();

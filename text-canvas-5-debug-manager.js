@@ -54,9 +54,6 @@ TC.DebugManager_Task = function(debugManager, taskName, data, calculate){
 TC.DebugManager_Task.prototype = Object.create(TC.LoopObject.prototype);
 TC.DebugManager_Task.prototype.constructor = TC.DebugManager_Task;
 
-TC.DebugManager_Task.prototype.init = function(){
-  this.initInterval();
-};
 TC.DebugManager_Task.prototype.calculate = function(){
   // get this from constructor
 };

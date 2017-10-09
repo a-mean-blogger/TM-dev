@@ -1,6 +1,8 @@
 console.log('text-canvas-2-base-objects.js loaded');
 
-// Interval
+/******************************/
+/* TC.Interval                */
+/******************************/
 TC.Interval = function(){
   this.id = undefined;
   this.func = undefined;
@@ -24,18 +26,26 @@ TC.Interval.prototype.init = function (speed,func) {
   this.start();
 };
 
-// Object
+/******************************/
+/* TC.Object                  */
+/******************************/
+// Description: create an Object that does not loop
 TC.Object = function(data, createWithOutInit){
   this.isActive = true;
   this.data = TC.common.mergeObjects(this.data, data);
   if(!createWithOutInit) this.init();
 };
-TC.Object.prototype.init = function (){};
+TC.Object.prototype.init = function (){
+  this.isActive = true;
+};
 TC.Object.prototype.destroy = function(){
   this.isActive = false;
 };
 
-// LoopObject
+/******************************/
+/* TC.LoopObject              */
+/******************************/
+// Description: create an Object that does loop
 TC.LoopObject = function(data, speed, autoStart){
   this.speed = speed;
   this.interval = new TC.Interval();
@@ -44,23 +54,24 @@ TC.LoopObject = function(data, speed, autoStart){
 TC.LoopObject.prototype = Object.create(TC.Object.prototype);
 TC.LoopObject.prototype.constructor = TC.LoopObject;
 
+// TC.Object functions inheritance
 TC.LoopObject.prototype.init = function (){
-  this.initInterval();
-};
-TC.LoopObject.prototype.initInterval = function(){
-  this.isActive = true;
   this.draw();
   this.interval.init(this.speed, _=> {
     if(this.isActive) this.calculate();
     if(this.isActive) this.draw();
   });
+  TC.Object.prototype.init.call(this);
 };
-TC.LoopObject.prototype.calculate = function(){};
-TC.LoopObject.prototype.draw = function(){};
 TC.LoopObject.prototype.destroy = function(){
   this.interval.stop();
   TC.Object.prototype.destroy.call(this);
 };
+
+// TC.LoopObject interface functions
+TC.LoopObject.prototype.calculate = function(){};
+TC.LoopObject.prototype.draw = function(){};
+
 
 // Program
 TC.Program = function(data, speed){

@@ -1,6 +1,5 @@
 console.log("tetris-programs.js loaded");
 
-
 /******************************/
 /* Program_Intro              */
 /******************************/
@@ -43,7 +42,6 @@ Program_Intro.prototype.getInput = function(){
     MAIN.changeProgram(MAIN.programs.game);
   }
 };
-
 
 /******************************/
 /* Program_Game              */

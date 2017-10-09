@@ -31,7 +31,6 @@ console.log('tetris-object.js loaded');
 //   TC.LoopObject.prototype.destroy.call(this);
 // };
 
-
 /******************************/
 /* Star                       */
 /******************************/
@@ -105,7 +104,6 @@ PausePopup.prototype.drawFrame = function(){
   MAIN.TCS.insertText(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
   MAIN.TCS.insertText(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
-
 
 /******************************/
 /* GameOverPopup              */
