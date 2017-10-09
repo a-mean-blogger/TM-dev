@@ -396,15 +396,17 @@ Tetris.prototype.createNewBlock = function(){
   this.refStatus.drawNextBlock(this.data.nextBlockType);
 };
 Tetris.prototype.getInput = function(){
-  const KEYSET = this.data.KEYSET;
-  var activeBlock = this.data.activeBlock;
   if(++this.data.inputSpeedCount > this.data.inputSpeedCountMax){
     this.data.inputSpeedCount = 0;
+
+    const KEYSET = this.data.KEYSET;
+    var activeBlock = this.data.activeBlock;
+
     if(MAIN.TCI.keyboard.checkKey(KEYSET.RIGHT)){
-      activeBlock.move(this.data.dataArray,1,0);
+      activeBlock.moveRight(this.data.dataArray);
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.LEFT)){
-      activeBlock.move(this.data.dataArray,-1,0);
+      activeBlock.moveLeft(this.data.dataArray);
     }
     if(MAIN.TCI.keyboard.checkKey(KEYSET.DOWN)){
       activeBlock.moveDown(this.data.dataArray);
@@ -555,9 +557,97 @@ function Tetris_ActiveBlock(data){
 Tetris_ActiveBlock.prototype = Object.create(TC.Object.prototype);
 Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 
+// Getters, Setters
 Tetris_ActiveBlock.prototype.getType = function(){
   return this.data.type;
 };
+
+// Custom Functions - Update ActiveBlock to dataArray
+Tetris_ActiveBlock.prototype.transFormTo = function(dataArray,to){
+  for(let i=0;i<dataArray.length;i++){
+    for(let j=0;j<dataArray[i].length;j++){
+      if(dataArray[i][j]==Tetris.ACTIVE_BLOCK)
+        dataArray[i][j]=to;
+    }
+  }
+};
+Tetris_ActiveBlock.prototype.transFormToInactiveBlock = function(dataArray){
+  this.transFormTo(dataArray,this.data.type+2);
+};
+Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
+  if(!this.data.inactivate2.flag){
+    this.transFormTo(dataArray, Tetris.EMPTY);
+
+    for(let i=0;i<4;i++){
+      for(let j=0;j<4;j++){
+        if(BLOCKS[this.data.type][this.data.rotation][i][j]==1)
+          dataArray[this.data.y+i][this.data.x+j]=Tetris.ACTIVE_BLOCK;
+      }
+    }
+  }
+};
+
+// Custom Functions - Check and move ActiveBLock
+Tetris_ActiveBlock.prototype.checkMove = function(dataArray,type,rN,xN,yN){
+  for(let i=0;i<4;i++){
+    for(let j=0;j<4;j++){
+      if(BLOCKS[type][rN][i][j]==1
+      && dataArray[yN+i][xN+j] > 0){
+        return false;
+      }
+    }
+  }
+  return true;
+};
+Tetris_ActiveBlock.prototype.checkMoveDown = function(dataArray){
+  return this.checkMove(dataArray,this.data.type,this.data.rotation,this.data.x,this.data.y+1);
+};
+Tetris_ActiveBlock.prototype.move = function(dataArray,x,y){
+  let xN = this.data.x+x;
+  let yN = this.data.y+y;
+  let moved = false;
+  if(this.checkMove(dataArray,this.data.type,this.data.rotation,xN,yN)){
+    this.data.x = xN;
+    this.data.y = yN;
+    moved = true;
+  }
+  return moved;
+};
+Tetris_ActiveBlock.prototype.moveRight = function(dataArray){
+  this.move(dataArray,1,0);
+};
+Tetris_ActiveBlock.prototype.moveLeft = function(dataArray){
+  this.move(dataArray,-1,0);
+};
+Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
+  let moved = this.move(dataArray,0,1);
+  if(moved){
+    this.data.inactivate1.count = 0;
+    if(this.checkMoveDown(dataArray)){
+      this.data.inactivate1.flag = false;
+    }
+  }
+  else {
+    this.data.inactivate1.flag = true;
+  }
+  return moved;
+};
+Tetris_ActiveBlock.prototype.rotate = function(dataArray){
+  let rN = (this.data.rotation+1)%4;
+  let moved = false;
+  if(this.checkMove(dataArray,this.data.type,rN,this.data.x,this.data.y)){
+    this.data.rotation = rN;
+    moved = true;
+  }
+  else if(this.checkMove(dataArray,this.data.type,rN,this.data.x,this.data.y-1)){
+    this.data.rotation = rN;
+    this.data.y -= 1;
+    moved = true;
+  }
+  return moved;
+};
+
+// Custom functions - Inactivation
 Tetris_ActiveBlock.prototype.isInactivate1On = function(){
   return this.data.inactivate1.flag;
 };
@@ -584,81 +674,6 @@ Tetris_ActiveBlock.prototype.resetInactivateStatus = function(){
   this.data.inactivate1.count = 0;
   this.data.inactivate2.count = 0;
 };
-Tetris_ActiveBlock.prototype.checkMove = function(dataArray, type,rN,xN,yN){
-  for(let i=0;i<4;i++){
-    for(let j=0;j<4;j++){
-      if(BLOCKS[type][rN][i][j]==1
-      && dataArray[yN+i][xN+j] > 0){
-        return false;
-      }
-    }
-  }
-  return true;
-};
-Tetris_ActiveBlock.prototype.checkMoveDown = function(dataArray){
-  return this.checkMove(dataArray, this.data.type,this.data.rotation,this.data.x,this.data.y+1);
-};
-Tetris_ActiveBlock.prototype.rotate = function(dataArray){
-  let rN = (this.data.rotation+1)%4;
-  let moved = false;
-  if(this.checkMove(dataArray, this.data.type,rN,this.data.x,this.data.y)){
-    this.data.rotation = rN;
-    moved = true;
-  }
-  else if(this.checkMove(dataArray, this.data.type,rN,this.data.x,this.data.y-1)){
-    this.data.rotation = rN;
-    this.data.y -= 1;
-    moved = true;
-  }
-  return moved;
-};
-Tetris_ActiveBlock.prototype.move = function(dataArray,x,y){
-  let xN = this.data.x+x;
-  let yN = this.data.y+y;
-  let moved = false;
-  if(this.checkMove(dataArray, this.data.type,this.data.rotation,xN,yN)){
-    this.data.x = xN;
-    this.data.y = yN;
-    moved = true;
-  }
-  return moved;
-};
-Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
-  let moved = this.move(dataArray,0,1);
-  if(moved){
-    this.data.inactivate1.count = 0;
-    if(this.checkMoveDown(dataArray)){
-      this.data.inactivate1.flag = false;
-    }
-  }
-  else {
-    this.data.inactivate1.flag = true;
-  }
-  return moved;
-};
 Tetris_ActiveBlock.prototype.forceToInactivate2Ready = function(){
   this.data.inactivate1.count = this.data.inactivate1.countMax;
-};
-Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
-  if(!this.data.inactivate2.flag){
-    this.transFormTo(dataArray, Tetris.EMPTY);
-
-    for(let i=0;i<4;i++){
-      for(let j=0;j<4;j++){
-        if(BLOCKS[this.data.type][this.data.rotation][i][j]==1)
-          dataArray[this.data.y+i][this.data.x+j]=Tetris.ACTIVE_BLOCK;
-      }
-    }
-  }
-};
-Tetris_ActiveBlock.prototype.transFormTo = function(dataArray, to){
-  for(let i=0;i<dataArray.length;i++){
-    for(let j=0;j<dataArray[i].length;j++){
-      if(dataArray[i][j]==Tetris.ACTIVE_BLOCK)
-        dataArray[i][j]=to;
-    }
-  }
-};
-Tetris_ActiveBlock.prototype.transFormToInactiveBlock = function(dataArray){
-  this.transFormTo(dataArray, this.data.type+2);
 };
