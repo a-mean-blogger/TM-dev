@@ -2,6 +2,7 @@ console.log('text-canvas-3-screen-manager.js loaded');
 
 // ScreenManager
 TC.ScreenManager = function(customSreenSetting, customCharGroups){
+  this.autoStart = true;
   this.screenSetting = TC.common.mergeObjects(TC.defaultSettings.screen, customSreenSetting);
   this.charGroups = TC.common.mergeObjects(TC.defaultSettings.charGroups, customCharGroups);
 
@@ -35,7 +36,7 @@ TC.ScreenManager = function(customSreenSetting, customCharGroups){
   this.canvas.style.outline = 'none'; // for input keydown event
   this.ctx = this.canvas.getContext('2d');
 
-  TC.LoopObject.call(this, this.screenSetting.frameSpeed, null, true);
+  TC.LoopObject.call(this, null, this.screenSetting.frameSpeed, this.autoStart);
 };
 TC.ScreenManager.prototype = Object.create(TC.LoopObject.prototype);
 TC.ScreenManager.prototype.constructor = TC.ScreenManager;

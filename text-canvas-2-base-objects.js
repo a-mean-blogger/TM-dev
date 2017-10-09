@@ -36,7 +36,7 @@ TC.Object.prototype.destroy = function(){
 };
 
 // LoopObject
-TC.LoopObject = function(speed, data, autoStart){
+TC.LoopObject = function(data, speed, autoStart){
   this.speed = speed;
   this.interval = new TC.Interval();
   TC.Object.call(this, data, !autoStart);
@@ -63,12 +63,12 @@ TC.LoopObject.prototype.destroy = function(){
 };
 
 // Program
-TC.Program = function(speed, data){
+TC.Program = function(data, speed){
   this.autoStart = false;
   this.objects = [];
   this.uniqueObjects = {};
   this.count = 0;
-  TC.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, data, speed, this.autoStart);
 };
 TC.Program.prototype = Object.create(TC.LoopObject.prototype);
 TC.Program.prototype.constructor = TC.Program;

@@ -1,6 +1,6 @@
 console.log('tetris-object.js loaded');
 
-// function TextObject(speed, data, patternFunc){
+// function TextObject(data, speed, patternFunc){
 //   this.autoStart = true;
 //   this.data = {
 //     x: undefined,
@@ -12,7 +12,7 @@ console.log('tetris-object.js loaded');
 //     },
 //   };
 //   this.patternFunc = patternFunc;
-//   TC.LoopObject.call(this, speed, data, this.autoStart);
+//   TC.LoopObject.call(this, data, speed, this.autoStart);
 // }
 // TextObject.prototype = Object.create(TC.LoopObject.prototype);
 // TextObject.prototype.constructor = TextObject;
@@ -36,7 +36,7 @@ console.log('tetris-object.js loaded');
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Blinking star
-function Star(speed, data){
+function Star(data, speed){
   this.autoStart = true;
   this.data = {
     x: undefined,
@@ -44,7 +44,7 @@ function Star(speed, data){
     color: undefined,
     blink: 0,
   };
-  TC.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, data, speed, this.autoStart);
 }
 Star.prototype = Object.create(TC.LoopObject.prototype);
 Star.prototype.constructor = Star;
@@ -76,7 +76,7 @@ function PausePopup(speed, data){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TC.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, data, speed, this.autoStart);
 }
 PausePopup.prototype = Object.create(TC.LoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
@@ -120,7 +120,7 @@ function GameOverPopup(speed, data){
     score: 0,
     scoreText: '',
   };
-  TC.LoopObject.call(this, speed, data, this.autoStart);
+  TC.LoopObject.call(this, data, speed, this.autoStart);
 }
 GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
@@ -284,7 +284,7 @@ function Tetris(data, refStatus){
       popup: false,
     },
   };
-  TC.LoopObject.call(this, 10, data, this.autoStart);
+  TC.LoopObject.call(this, data, 10, this.autoStart);
 }
 Tetris.prototype = Object.create(TC.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;

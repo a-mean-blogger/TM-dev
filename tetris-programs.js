@@ -11,7 +11,7 @@ var Program_Intro = function(speed, data){
     x: undefined,
     y: undefined,
   };
-  TC.Program.call(this, speed, data);
+  TC.Program.call(this, data, speed);
 };
 Program_Intro.prototype = Object.create(TC.Program.prototype);
 Program_Intro.prototype.constructor = Program_Intro;
@@ -26,8 +26,8 @@ Program_Intro.prototype.timeline = function(){
   if(this.count ==  60) MAIN.TCS.insertText(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
   if(this.count ==  70) MAIN.TCS.insertText(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(this.count ==  70){
-    this.addToObjects(new Star(500,{x:this.data.x+8,y:this.data.y+1}));
-    this.addToObjects(new Star(700,{x:this.data.x+26,y:this.data.y+2}));
+    this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
+    this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
     MAIN.TCS.insertText(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
     MAIN.TCS.insertText(this.data.x,this.data.y+9, "  △   : Shift","#fff");
     MAIN.TCS.insertText(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
@@ -59,7 +59,7 @@ var Program_Game = function(speed, data){
     player1Game : undefined,
     pausePopup: undefined,
   };
-  TC.Program.call(this, speed, data);
+  TC.Program.call(this, data, speed);
 };
 Program_Game.prototype = Object.create(TC.Program.prototype);
 Program_Game.prototype.constructor = Program_Game;
