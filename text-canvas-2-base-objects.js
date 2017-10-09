@@ -1,4 +1,4 @@
-console.log("text-canvas-2-base-objects.js loaded");
+console.log('text-canvas-2-base-objects.js loaded');
 
 // Interval
 TC.Interval = function(){

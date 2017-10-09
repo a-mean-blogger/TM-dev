@@ -1,11 +1,11 @@
-console.log("tetris-object.js loaded");
+console.log('tetris-object.js loaded');
 
 // function TextObject(speed, data, patternFunc){
 //   this.autoStart = true;
 //   this.data = {
 //     x: undefined,
 //     y: undefined,
-//     text: "",
+//     text: '',
 //     previous: {
 //       x: undefined,
 //       y: undefined,
@@ -54,11 +54,11 @@ Star.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
 Star.prototype.draw = function(){
-  let text = this.data.blink%2===0?"★":"☆";
+  let text = this.data.blink%2===0?'★':'☆';
   MAIN.TCS.insertText(this.data.x,this.data.y,text,this.data.color);
 };
 Star.prototype.destroy = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,"  ");
+  MAIN.TCS.insertText(this.data.x,this.data.y,'  ');
   TC.LoopObject.prototype.destroy.call(this);
 };
 
@@ -74,7 +74,7 @@ function PausePopup(speed, data){
     y: undefined,
     bgColor: undefined,
     blink: 0,
-    text: "Please press <P> to return to game",
+    text: 'Please press <P> to return to game',
   };
   TC.LoopObject.call(this, speed, data, this.autoStart);
 }
@@ -90,17 +90,17 @@ PausePopup.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
 PausePopup.prototype.draw = function(){
-  let color = this.data.blink%2===0?"#fff":"gray";
+  let color = this.data.blink%2===0?'#fff':'gray';
   MAIN.TCS.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+1,"┃                  ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+2,"┃                  ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+3,"┗━━━━━━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+14,this.data.y+1,"[ PAUSED ]","#fff",this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
 
 
@@ -116,9 +116,9 @@ function GameOverPopup(speed, data){
     y: undefined,
     bgColor: undefined,
     blink: 0,
-    text: "Please press <ESC>",
+    text: 'Please press <ESC>',
     score: 0,
-    scoreText: "",
+    scoreText: '',
   };
   TC.LoopObject.call(this, speed, data, this.autoStart);
 }
@@ -135,23 +135,23 @@ GameOverPopup.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
 GameOverPopup.prototype.draw = function(){
-  let color = this.data.blink%2===0?"#fff":"gray";
+  let color = this.data.blink%2===0?'#fff':'gray';
   MAIN.TCS.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,  "┏━━━━━━━━━━━━━┓","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+1,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+2,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+3,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+4,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+5,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+6,"┃             ┃","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+7,"┗━━━━━━━━━━━━━┛","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+8,this.data.y+1,"[ GAME OVER ]","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+6,this.data.y+3,"YOUR SCORE: ","#fff",this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,"#fff",this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  MAIN.TCS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
 /******************************/
@@ -163,7 +163,7 @@ function Status(data,refMainScores){
   this.data = {
     x: undefined,
     y: undefined,
-    COLORSET: undefined,
+    COLORSET: MAIN.settings.COLORSET,
   };
   this.refMainScores = refMainScores;
   TC.Object.call(this, data);
@@ -176,8 +176,8 @@ Status.convertScore = function(score){
   let string = Math.floor(score).toString();
   let formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
   let offset = 10 - formatted.length;
-  let padding = "";
-  for(let i=offset;i>0;i--) padding+=" ";
+  let padding = '';
+  for(let i=offset;i>0;i--) padding+=' ';
   return padding+ formatted;
 };
 
@@ -190,33 +190,33 @@ Status.prototype.init = function(){
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 0, " LEVEL :");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 1, " GOAL  :");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 2, "┍      ┑");
-  MAIN.TCS.insertText(this.data.x+4, this.data.y+ 2, "N E X T");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 3, "│      │");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 4, "│      │");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 5, "│      │");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 6, "│      │");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 7, "┕━━━━━━┙");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 8, " YOUR SCORE :");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+10, " LAST SCORE :");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+12, " BEST SCORE :");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+15, "  △   : Shift        SPACE : Hard Drop");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+16, "◁  ▷ : Left / Right   P   : Pause");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+17, "  ▽   : Soft Drop     ESC  : Quit");
-  MAIN.TCS.insertText(this.data.x,   this.data.y+20, "www.A-MEAN-Blog.com");
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 0, ' LEVEL :');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 1, ' GOAL  :');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 2, '┍      ┑');
+  MAIN.TCS.insertText(this.data.x+4, this.data.y+ 2, 'N E X T');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 3, '│      │');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 4, '│      │');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 5, '│      │');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 6, '│      │');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+10, ' LAST SCORE :');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+12, ' BEST SCORE :');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
+  MAIN.TCS.insertText(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
 };
 Status.prototype.drawNextBlock = function(blockType){
   let xOffset = (blockType === 0 || blockType === 1)?-1:0;
-  let color = this.data.COLORSET.block[blockType];
+  let color = this.data.COLORSET.BLOCKS[blockType];
   let xAdj = this.data.x+5;
   let yAdj = this.data.y+3;
   for(let i=1;i<3;i++){
     for(let j=0;j<5;j++){
       let x = xAdj-2+j*2;
       let y = yAdj+i;
-      MAIN.TCS.insertText(x,y,"  ");
+      MAIN.TCS.insertText(x,y,'  ');
     }
   }
   for(let i=1;i<3;i++){
@@ -224,17 +224,17 @@ Status.prototype.drawNextBlock = function(blockType){
       let x = xAdj+j*2+xOffset;
       let y = yAdj+i;
       if(Tetris.BLOCKS[blockType][0][i][j]==1) {
-        MAIN.TCS.insertText(x,y,"■", color);
+        MAIN.TCS.insertText(x,y,'■', color);
       }
     }
   }
 };
 Status.prototype.drawLevel = function(num){
-  num = (num>9)?num:" "+num;
+  num = (num>9)?num:' '+num;
   MAIN.TCS.insertText(this.data.x+9, this.data.y, num);
 };
 Status.prototype.drawGoal = function(num){
-  num = (num>9)?num:" "+num;
+  num = (num>9)?num:' '+num;
   MAIN.TCS.insertText(this.data.x+9, this.data.y+1, num);
 };
 Status.prototype.drawScore = function(score){
@@ -263,13 +263,13 @@ Status.prototype.updateBestScore = function(score){
 function Tetris(data, refStatus){
   this.autoStart = true;
   this.refStatus = refStatus;
-  this.colNum = 11;
-  this.rowNum = 23;
   this.speedLookup = [80,60,40,20,10,8,4,2,1,0];
   this.data = {
     x: undefined,
     y: undefined,
-    COLORSET: undefined,
+    COL_NUM: MAIN.settings.COL_NUM,
+    ROW_NUM: MAIN.settings.ROW_NUM,
+    COLORSET: MAIN.settings.COLORSET,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -342,38 +342,38 @@ Tetris.prototype.draw = function(){
 
   if(this.data.gameOver.popup) return;
 
-  for(let i=0;i<this.rowNum;i++){
-    for(let j=0;j<this.colNum;j++){
+  for(let i=0;i<this.data.ROW_NUM;i++){
+    for(let j=0;j<this.data.COL_NUM;j++){
       let blockChar;
       let color;
       switch(this.data.dataArray[i][j]){
         case Tetris.ACTIVE_BLOCK: //-2
-          blockChar="□";
-          color = COLORSET.block[activeBlock.getType()];
+          blockChar='□';
+          color = COLORSET.BLOCKS[activeBlock.getType()];
           break;
         case Tetris.GRAY_BLOCK: //-2
-          blockChar="■";
-          color = COLORSET.grayBlock;
+          blockChar='■';
+          color = COLORSET.GAME_OVER_BLOCK;
           break;
         case Tetris.CEILING: // -1
-          blockChar="•";
-          color = COLORSET.ceiling;
+          blockChar='•';
+          color = COLORSET.CEILING;
           break;
         case Tetris.EMPTY: //0
-          blockChar="  ";
+          blockChar='  ';
           break;
         case Tetris.WALL: // 1
-          blockChar="▣";
-          color = COLORSET.wall;
+          blockChar='▣';
+          color = COLORSET.WALL;
           break;
         case Tetris.STAR: //100
-          blockChar="☆";
-          var colorNum = j%COLORSET.block.length;
-          color = COLORSET.block[colorNum];
+          blockChar='☆';
+          var colorNum = j%COLORSET.BLOCKS.length;
+          color = COLORSET.BLOCKS[colorNum];
           break;
         default: // 2~
-          blockChar="■";
-          color = COLORSET.block[this.data.dataArray[i][j]-2];
+          blockChar='■';
+          color = COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
           break;
       }
       MAIN.TCS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
@@ -390,7 +390,7 @@ Tetris.prototype.calculate = function(){
   }
 };
 Tetris.prototype.destroy = function (blockType) {
-  MAIN.TCD.removeTask("test");
+  MAIN.TCD.removeTask('test');
   if(this.gameOverPopup) this.gameOverPopup.destroy();
   TC.LoopObject.prototype.destroy.call(this);
 };
@@ -398,28 +398,28 @@ Tetris.prototype.destroy = function (blockType) {
 // Custom functions
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray=[];
-  for(let i=0;i<this.rowNum;i++){
+  for(let i=0;i<this.data.ROW_NUM;i++){
     this.data.dataArray[i]=[];
-    for(let j=0;j<this.colNum;j++){
+    for(let j=0;j<this.data.COL_NUM;j++){
       this.data.dataArray[i][j]=0;
     }
   }
-  for(let i=1;i<this.rowNum-1;i++){
+  for(let i=1;i<this.data.ROW_NUM-1;i++){
     this.data.dataArray[i][0]=Tetris.WALL;
-    this.data.dataArray[i][this.colNum-1]=Tetris.WALL;
+    this.data.dataArray[i][this.data.COL_NUM-1]=Tetris.WALL;
   }
-  for(let j=0;j<this.colNum;j++){
-    this.data.dataArray[this.rowNum-1][j]=Tetris.WALL;
+  for(let j=0;j<this.data.COL_NUM;j++){
+    this.data.dataArray[this.data.ROW_NUM-1][j]=Tetris.WALL;
   }
 };
 Tetris.prototype.updateCeilling = function(){
-  for(let j=1;j<this.colNum-1;j++){
+  for(let j=1;j<this.data.COL_NUM-1;j++){
     if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=Tetris.CEILING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
-    x: Math.floor(this.colNum/2)-1,
+    x: Math.floor(this.data.COL_NUM/2)-1,
     type: TC.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7)
   };
 
@@ -486,13 +486,13 @@ Tetris.prototype.inactivateBlock = function(){
   }
 };
 Tetris.prototype.changeFullLinesToStar = function(){
-  for(let i=this.rowNum-2;i>=0;i--){
+  for(let i=this.data.ROW_NUM-2;i>=0;i--){
     let occupiedCount = 0;
-    for(let j=1;j<this.colNum-1;j++){
+    for(let j=1;j<this.data.COL_NUM-1;j++){
       if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
-    if(occupiedCount == this.colNum-2){
-      for(let j=1;j<this.colNum-1;j++){
+    if(occupiedCount == this.data.COL_NUM-2){
+      for(let j=1;j<this.data.COL_NUM-1;j++){
         this.data.dataArray[i][j] = Tetris.STAR;
       }
     }
@@ -500,9 +500,9 @@ Tetris.prototype.changeFullLinesToStar = function(){
 };
 Tetris.prototype.removeFullLines = function(){
   let removedLineNum = 0;
-  for(let i=this.rowNum-2;i>=0;i--){
+  for(let i=this.data.ROW_NUM-2;i>=0;i--){
     let occupiedCount = 0;
-    for(let j=1;j<this.colNum-1;j++){
+    for(let j=1;j<this.data.COL_NUM-1;j++){
       if(removedLineNum){
         if(i<removedLineNum) this.data.dataArray[i][j] = 0;
         else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == Tetris.CEILING) this.data.dataArray[i][j] = Tetris.EMPTY;
@@ -510,7 +510,7 @@ Tetris.prototype.removeFullLines = function(){
       }
       if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
-    if(occupiedCount == this.colNum-2){
+    if(occupiedCount == this.data.COL_NUM-2){
       i++;
       removedLineNum++;
       this.addScore(100 * this.data.level);
@@ -539,7 +539,7 @@ Tetris.prototype.levelUp = function(){
   this.refStatus.drawLevel(this.data.level);
 };
 Tetris.prototype.checkGameOver = function(){
-  for(let j=1;j<this.colNum-1;j++){
+  for(let j=1;j<this.data.COL_NUM-1;j++){
     if(this.data.dataArray[3][j]>0) return true;
   }
 };
@@ -547,9 +547,9 @@ Tetris.prototype.gameOver = function(){
   this.data.gameOver.flag = true;
   this.refStatus.updateBestScore(this.data.score);
   this.refStatus.updateLastScore(this.data.score);
-  let i = this.rowNum-2;
+  let i = this.data.ROW_NUM-2;
   let interval = setInterval(_=>{
-    for(let j=1;j<this.colNum-1;j++){
+    for(let j=1;j<this.data.COL_NUM-1;j++){
       if(this.data.dataArray[i][j]>0) this.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
@@ -560,7 +560,7 @@ Tetris.prototype.gameOver = function(){
 };
 Tetris.prototype.showGameOverPopup = function(){
   this.data.gameOver.popup = true;
-  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:"#444",score:this.data.score});
+  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
 };
 
 /******************************/

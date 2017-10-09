@@ -10,7 +10,6 @@ var Program_Intro = function(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
-    gameSettings: undefined,
   };
   TC.Program.call(this, speed, data);
 };
@@ -40,8 +39,7 @@ Program_Intro.prototype.timeline = function(){
   }
 };
 Program_Intro.prototype.getInput = function(){
-  const KEYSET = this.data.gameSettings.KEYSET;
-  if(!MAIN.TCI.keyboard.checkKey(KEYSET.QUIT) &&  MAIN.TCI.keyboard.checkKeyAny()){
+  if(!MAIN.TCI.keyboard.checkKey(MAIN.settings.KEYSET.QUIT) &&  MAIN.TCI.keyboard.checkKeyAny()){
     MAIN.changeProgram(MAIN.programs.game);
   }
 };
@@ -54,7 +52,6 @@ Program_Intro.prototype.getInput = function(){
 // Description: control Tetris Games
 var Program_Game = function(speed, data){
   this.data = {
-    gameSettings: undefined,
     isPaused: false,
   };
   this.uniqueObjects = {
@@ -71,20 +68,17 @@ Program_Game.prototype.constructor = Program_Game;
 Program_Game.prototype.init = function(){
   this.uniqueObjects.status = new Status({
     x:28,y:3,
-    COLORSET:MAIN.settings.colorset,
   }, MAIN.data.scores);
   this.uniqueObjects.player1Game = new Tetris({
     x:3,y:1,
-    COLORSET:MAIN.settings.colorset
   }, this.uniqueObjects.status);
   TC.Program.prototype.init.call(this);
 };
 Program_Game.prototype.getInput = function(){
-  const gameSettings = this.data.gameSettings;
-  if(MAIN.TCI.keyboard.checkKey(gameSettings.KEYSET.QUIT)){
+  if(MAIN.TCI.keyboard.checkKey(MAIN.settings.KEYSET.QUIT)){
     MAIN.changeProgram(MAIN.programs.intro);
   }
-  if(MAIN.TCI.keyboard.checkKey(gameSettings.KEYSET.PAUSE)){
+  if(MAIN.TCI.keyboard.checkKey(MAIN.settings.KEYSET.PAUSE)){
     if(this.data.isPaused){
       this.uniqueObjects.player1Game.interval.start();
       this.data.isPaused = false;
@@ -99,7 +93,7 @@ Program_Game.prototype.getInput = function(){
       this.uniqueObjects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
   }
-  this.checkTetrisInput(this.uniqueObjects.player1Game, gameSettings.tetris1.KEYSET);
+  this.checkTetrisInput(this.uniqueObjects.player1Game, MAIN.settings.PLAYER1.KEYSET);
 };
 
 // Custom functions

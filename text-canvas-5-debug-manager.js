@@ -1,18 +1,18 @@
-console.log("text-canvas-5-debug-manager.js loaded");
+console.log('text-canvas-5-debug-manager.js loaded');
 
 // DebugManager
 TC.DebugManager = function(debugSetting){
   this.debugSetting = TC.common.mergeObjects(TC.defaultSettings.debug, debugSetting);
 
   try{
-    this.outputDom = document.querySelector("#"+this.debugSetting.outputDomId);
+    this.outputDom = document.querySelector('#'+this.debugSetting.outputDomId);
     if(!this.outputDom){
-      throw("'#"+this.debugSetting.outputDomId+"' does not exist! ");
+      throw('[#'+this.debugSetting.outputDomId+'] does not exist! ');
     }
   }
   catch(errorMessage){
     this.isActive = false;
-    console.error("new TC.DebugManager ERROR: "+errorMessage+" TC.DebugManager is not created.");
+    console.error('new TC.DebugManager ERROR: '+errorMessage+' TC.DebugManager is not created.');
     return;
   }
 
@@ -60,9 +60,9 @@ TC.DebugManager_Task.prototype.calculate = function(){
 };
 TC.DebugManager_Task.prototype.draw = function(){
   if(this.debugManager.debugSetting.isActive){
-    let dom = document.querySelector("#"+this.domId);
+    let dom = document.querySelector('#'+this.domId);
     if(!dom){
-      dom = document.createElement("div");
+      dom = document.createElement('div');
       dom.id = this.domId;
       this.debugManager.outputDom.appendChild(dom);
     }
@@ -73,7 +73,7 @@ TC.DebugManager_Task.prototype.draw = function(){
   }
 };
 TC.DebugManager_Task.prototype.stop = function(){
-  let dom = document.querySelector("#"+this.domId);
+  let dom = document.querySelector('#'+this.domId);
   dom.remove();
   this.isActive = false;
 };
@@ -81,7 +81,7 @@ TC.DebugManager_Task.prototype.restart = function(){
   this.isActive = true;
 };
 TC.DebugManager_Task.prototype.destroy = function(){
-  let dom = document.querySelector("#"+this.domId);
+  let dom = document.querySelector('#'+this.domId);
   if(dom) dom.remove();
   TC.LoopObject.prototype.destroy.call(this);
 };

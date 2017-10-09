@@ -1,23 +1,23 @@
-console.log("text-canvas-1-defaultSettings-and-common.js loaded");
+console.log('text-canvas-1-defaultSettings-and-common.js loaded');
 
 var TC = {};
 
 TC.defaultSettings = {
   screen: {
-    canvasId: "text-canvas",
+    canvasId: 'text-canvas',
     fontSize: 15,
     frameSpeed: 10,
     zoom: 1,
     column: 60,
     row: 20,
-    backgroundColor: "#151617",
-    defalutFontColor: "#F5F7FA",
+    backgroundColor: '#151617',
+    defalutFontColor: '#F5F7FA',
     fontFamily: 'monospace',
     fontSource: null,
   },
   charGroups: {
     korean: {//ㄱ     -힝
-      regex: "\u3131-\uD79D",
+      regex: '\u3131-\uD79D',
       isFullwidth: true,
       sizeAdj: 1,
       xAdj: 0,
@@ -26,7 +26,7 @@ TC.defaultSettings = {
   },
   debug: {
     isActive: true,
-    outputDomId: "text-canvas-debug-output",
+    outputDomId: 'text-canvas-debug-output',
     frameSpeed: 10,
   }
 };
@@ -70,18 +70,18 @@ TC.common.isNumber = function(num){
 TC.common.getCharGroup = function(charGroups, char){
 for(let group in charGroups){
   let charset = charGroups[group];
-    let regex = new RegExp("^["+charset.regex+"]$");
+    let regex = new RegExp('^['+charset.regex+']$');
     if(regex.test(char)) return charset;
   }
 };
 
 TC.common.getFullwidthRegex = function(charGroups){
-  let string = "";
+  let string = '';
   for(let group in charGroups){
     let charset = charGroups[group];
     if(charset&&charset.isFullwidth) string += charset.regex;
   }
-  if(string) return new RegExp("(["+string+"])","g");
+  if(string) return new RegExp('(['+string+'])','g');
 };
 
 // TC.common.mergeObjects(object1, object2, ...):
