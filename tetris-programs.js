@@ -48,7 +48,7 @@ var Program_Game = function(speed, data){
   this.uniqueObjects = {
     status : undefined,
     player1Game : undefined,
-    pause: undefined,
+    pausePopup: undefined,
   };
   TC.Program.call(this, speed, data);
 };
@@ -59,8 +59,7 @@ Program_Game.prototype.init = function(){
   this.uniqueObjects.status = new Status({
     x:28,y:3,
     COLORSET:MAIN.settings.colorset,
-    scores:MAIN.data.scores
-  });
+  }, MAIN.data.scores);
   this.uniqueObjects.player1Game = new Tetris({
     x:3,y:1,
     KEYSET:MAIN.settings.tetris1.keyset,
@@ -79,14 +78,14 @@ Program_Game.prototype.getInput = function(){
       this.uniqueObjects.player1Game.interval.start();
       this.data.isPaused = false;
       MAIN.TCS.pasteScreen(this.data.pausedScreen);
-      this.uniqueObjects.pause.destroy();
+      this.uniqueObjects.pausePopup.destroy();
     }
     else {
       this.uniqueObjects.player1Game.interval.stop();
       this.data.isPaused = true;
       this.data.pausedScreen = MAIN.TCS.copyScreen();
       MAIN.TCS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
-      this.uniqueObjects.pause = new Pause(800,{x:15,y:11,bgColor:"#444"});
+      this.uniqueObjects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
   }
 };
