@@ -27,7 +27,7 @@ var charGroups = {
 
 var MAIN = {
   TCS: new TC.ScreenManager(screenSetting, charGroups),
-  TCD: new TC.DebugManager(),
+  TCD: new TC.DebugManager({devMode: true}),
   TCI: new TC.InputManager(),
   SETTINGS: {
     COL_NUM: 11,

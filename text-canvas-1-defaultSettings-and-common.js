@@ -25,9 +25,8 @@ TC.defaultSettings = {
     },
   },
   debug: {
-    isActive: true,
+    devMode: false,
     outputDomId: 'text-canvas-debug-output',
-    frameSpeed: 10,
   }
 };
 

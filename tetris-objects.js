@@ -318,24 +318,6 @@ Tetris.prototype.init = function(){
   this.data.refStatus.drawGoal(this.data.goalCount);
   this.data.refStatus.drawScore(this.data.score);
   TC.LoopObject.prototype.init.call(this);
-
-  MAIN.TCD.addTask('test',
-    this.data,
-    function(){
-      let activeBlockData = this.data.activeBlock.data;
-      this.output =
-      `activeBlock.type: ${activeBlockData.type}
-      activeBlock.rotation: ${activeBlockData.rotation}
-      activeBlock.x: ${activeBlockData.x}
-      activeBlock.y: ${activeBlockData.y}
-      nextBlockType: ${this.data.nextBlockType}
-      inactivate1.flag: ${activeBlockData.inactivate1.flag}
-      inactivate1.count: ${activeBlockData.inactivate1.count}
-      inactivate2.flag: ${activeBlockData.inactivate2.flag}
-      inactivate2.count: ${activeBlockData.inactivate2.count}
-      speed: ${this.data.autoDropCountMax}
-      `;
-    });
 };
 Tetris.prototype.draw = function(){
   var activeBlock = this.data.activeBlock;
@@ -389,9 +371,23 @@ Tetris.prototype.calculate = function(){
     activeBlock.updateOnTetrisDataArray(this.data.dataArray);
     if(activeBlock.isInactivate1On()) this.inactivateBlock();
   }
+
+  var activeBlockData = this.data.activeBlock.data;
+  MAIN.TCD.print('test',{
+      'activeBlock.type': activeBlockData.type,
+      'activeBlock.rotation': activeBlockData.rotation,
+      'activeBlock.x': activeBlockData.x,
+      'activeBlock.y': activeBlockData.y,
+      'nextBlockType': this.data.nextBlockType,
+      'inactivate1.flag': activeBlockData.inactivate1.flag,
+      'inactivate1.count': activeBlockData.inactivate1.count,
+      'inactivate2.flag': activeBlockData.inactivate2.flag,
+      'inactivate2.count': activeBlockData.inactivate2.count,
+      'speed': this.data.autoDropCountMax
+    });
 };
 Tetris.prototype.destroy = function (blockType) {
-  MAIN.TCD.removeTask('test');
+  MAIN.TCD.delete('test');
   if(this.gameOverPopup) this.gameOverPopup.destroy();
   TC.LoopObject.prototype.destroy.call(this);
 };
