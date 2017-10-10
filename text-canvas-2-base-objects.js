@@ -37,7 +37,7 @@ TC.Object = function(data, createWithOutInit){
   if(!createWithOutInit) this.init();
 };
 
-// TC.Object interface functions
+// TC.Object functions
 TC.Object.prototype.init = function (){
   this.isActive = true;
 };
@@ -109,17 +109,20 @@ TC.Program.prototype.destroy = function(){
     if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
   }
 };
+
+// TC.LoopObject functions implementation
 TC.Program.prototype.calculate = function(){
   this.count++;
   this.timeline();
   this.getInput();
 };
 
-// TC.LoopObject interface functions
+// TC.Program interface functions
+TC.Program.prototype.draw = function(){};
 TC.Program.prototype.timeline = function(){};
 TC.Program.prototype.getInput = function(){};
 
-// TC.LoopObject functions
+// TC.Program functions
 TC.Program.prototype.addToObjects = function(object){
   this.objects = this.objects.filter(object => object.isActive); // removed destroyed objects
   this.objects.push(object);

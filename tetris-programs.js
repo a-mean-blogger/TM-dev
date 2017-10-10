@@ -4,7 +4,7 @@ console.log("tetris-programs.js loaded");
 /* Program_Intro              */
 /******************************/
 // Object Type: TC.Program
-// Description: Display intro screen and move to tetris game when any key entered
+// Description: Display intro screen and move to Tetris game when any key entered
 var Program_Intro = function(speed, data){
   this.data = {
     x: undefined,
@@ -24,9 +24,12 @@ Program_Intro.prototype.destroy = function(){
   MAIN.TCS.clearScreen();
   TC.Program.prototype.destroy.call(this);
 };
-Program_Intro.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
+Program_Intro.prototype.calculate = function(){
+  TC.Program.prototype.calculate.call(this);
+};
 
 // TC.Program functions implementation
+Program_Intro.prototype.draw = function(){};
 Program_Intro.prototype.timeline = function(){
   if(this.count ==  10) MAIN.TCS.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
   if(this.count ==  20) MAIN.TCS.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
@@ -85,9 +88,12 @@ Program_Game.prototype.destroy = function(){
   TC.Program.prototype.destroy.call(this);
   MAIN.TCS.clearScreen();
 };
-Program_Game.prototype.calculate = function(){TC.Program.prototype.calculate.call(this);};
+Program_Game.prototype.calculate = function(){
+  TC.Program.prototype.calculate.call(this);
+};
 
 // TC.Program functions implementation
+Program_Game.prototype.draw = function(){};
 Program_Game.prototype.timeline = function(){};
 Program_Game.prototype.getInput = function(){
   if(MAIN.TCI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.QUIT)){

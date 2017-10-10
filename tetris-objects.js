@@ -1,54 +1,67 @@
 console.log('tetris-object.js loaded');
 
-// function TextObject(data, speed, patternFunc){
-//   this.autoStart = true;
-//   this.speed = speed;
-//   this.data = {
-//     x: undefined,
-//     y: undefined,
-//     text: '',
-//     previous: {
-//       x: undefined,
-//       y: undefined,
-//     },
-//   };
-//   this.patternFunc = patternFunc;
-//   TC.LoopObject.call(this, data, this.speed, this.autoStart);
-// }
-// TextObject.prototype = Object.create(TC.LoopObject.prototype);
-// TextObject.prototype.constructor = TextObject;
-//
-// TextObject.prototype.draw = function(){
-//   MAIN.TCS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
-//   this.data.previous.x = this.data.x;
-//   this.data.previous.y = this.data.y;
-//   MAIN.TCS.insertText(this.data.x,this.data.y,this.data.text);
-// };
-// TextObject.prototype.calculate = function(){
-//   this.patternFunc();
-// };
-// TextObject.prototype.destroy = function(){
-//   TC.LoopObject.prototype.destroy.call(this);
-// };
+var TextObject = function(data, speed, patternFunc){
+  this.autoStart = true;
+  this.data = {
+    x: undefined,
+    y: undefined,
+    text: '',
+    previous: {
+      x: undefined,
+      y: undefined,
+    },
+  };
+  this.patternFunc = patternFunc;
+  TC.LoopObject.call(this, data, speed, this.autoStart);
+};
+TextObject.prototype = Object.create(TC.LoopObject.prototype);
+TextObject.prototype.constructor = TextObject;
+
+// TC.LoopObject functions inheritance
+TextObject.prototype.init = function(){
+  TC.LoopObject.prototype.init.call(this);
+};
+TextObject.prototype.destroy = function(){
+  TC.LoopObject.prototype.destroy.call(this);
+};
+
+// TC.LoopObject functions implementation
+TextObject.prototype.draw = function(){
+  MAIN.TCS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
+  this.data.previous.x = this.data.x;
+  this.data.previous.y = this.data.y;
+  MAIN.TCS.insertText(this.data.x,this.data.y,this.data.text);
+};
+TextObject.prototype.calculate = function(){
+  this.patternFunc();
+};
 
 /******************************/
 /* Star                       */
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Blinking star
-function Star(data, speed){
+var Star = function(data, speed){
   this.autoStart = true;
-  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
     color: undefined,
     blink: 0,
   };
-  TC.LoopObject.call(this, data, this.speed, this.autoStart);
-}
+  TC.LoopObject.call(this, data, speed, this.autoStart);
+};
 Star.prototype = Object.create(TC.LoopObject.prototype);
 Star.prototype.constructor = Star;
+
+// TC.LoopObject functions inheritance
+Star.prototype.init = function(){
+  TC.LoopObject.prototype.init.call(this);
+};
+Star.prototype.destroy = function(){
+  MAIN.TCS.insertText(this.data.x,this.data.y,'  ');
+  TC.LoopObject.prototype.destroy.call(this);
+};
 
 // TC.LoopObject functions implementation
 Star.prototype.calculate = function(){
@@ -58,19 +71,14 @@ Star.prototype.draw = function(){
   let text = this.data.blink%2===0?'★':'☆';
   MAIN.TCS.insertText(this.data.x,this.data.y,text,this.data.color);
 };
-Star.prototype.destroy = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,'  ');
-  TC.LoopObject.prototype.destroy.call(this);
-};
 
 /******************************/
 /* PausePopup                      */
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Pause Popup box
-function PausePopup(data, speed){
+var PausePopup = function(data, speed){
   this.autoStart = true;
-  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
@@ -78,16 +86,21 @@ function PausePopup(data, speed){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TC.LoopObject.call(this, data, this.speed, this.autoStart);
-}
+  TC.LoopObject.call(this, data, speed, this.autoStart);
+};
 PausePopup.prototype = Object.create(TC.LoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
 
-// TC.LoopObject functions implementation
+// TC.LoopObject functions inheritance
 PausePopup.prototype.init = function(){
   this.drawFrame();
   TC.LoopObject.prototype.init.call(this);
 };
+PausePopup.prototype.destroy = function(){
+  TC.LoopObject.prototype.destroy.call(this);
+};
+
+// TC.LoopObject functions implementation
 PausePopup.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
@@ -110,9 +123,8 @@ PausePopup.prototype.drawFrame = function(){
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Create a Game Over Popup box
-function GameOverPopup(data, speed){
+var GameOverPopup = function(data, speed){
   this.autoStart = true;
-  this.speed = speed;
   this.data = {
     x: undefined,
     y: undefined,
@@ -122,17 +134,22 @@ function GameOverPopup(data, speed){
     score: 0,
     scoreText: '',
   };
-  TC.LoopObject.call(this, data, this.speed, this.autoStart);
-}
+  TC.LoopObject.call(this, data, speed, this.autoStart);
+};
 GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
 
-// TC.LoopObject functions implementation
+// TC.LoopObject functions inheritance
 GameOverPopup.prototype.init = function(){
   this.data.scoreText = Status.convertScore(this.data.score);
   this.drawFrame();
   TC.LoopObject.prototype.init.call(this);
 };
+GameOverPopup.prototype.destroy = function(){
+  TC.LoopObject.prototype.destroy.call(this);
+};
+
+// TC.LoopObject functions implementation
 GameOverPopup.prototype.calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
@@ -161,18 +178,29 @@ GameOverPopup.prototype.drawFrame = function(){
 /******************************/
 // Object Type: TC.Object
 // Description: Display Tetris game status
-function Status(data){
+var Status = function(data){
   this.data = {
     x: undefined,
     y: undefined,
     COLORSET: MAIN.SETTINGS.COLORSET,
   };
   TC.Object.call(this, data);
-}
+};
 Status.prototype = Object.create(TC.Object.prototype);
 Status.prototype.constructor = Status;
 
-// Static functions
+// TC.Object functions inheritance
+Status.prototype.init = function(){
+  this.drawFrame();
+  this.drawLastScore(MAIN.data.scores.lastScore);
+  this.drawBestScore(MAIN.data.scores.bestScore);
+  TC.Object.prototype.init.call(this);
+};
+Status.prototype.destroy = function(){
+  TC.Object.prototype.destroy.call(this);
+};
+
+// Custom functions - Static functions
 Status.convertScore = function(score){
   let string = Math.floor(score).toString();
   let formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
@@ -180,13 +208,6 @@ Status.convertScore = function(score){
   let padding = '';
   for(let i=offset;i>0;i--) padding+=' ';
   return padding+ formatted;
-};
-
-// TC.Object functions
-Status.prototype.init = function(){
-  this.drawFrame();
-  this.drawLastScore(MAIN.data.scores.lastScore);
-  this.drawBestScore(MAIN.data.scores.bestScore);
 };
 
 // Custom functions
@@ -261,7 +282,7 @@ Status.prototype.updateBestScore = function(score){
 /******************************/
 // Object Type: TC.LoopObject
 // Description: Main Tetris game
-function Tetris(data){
+var Tetris = function(data){
   this.autoStart = true;
   this.speed = 10;
   this.data = {
@@ -288,7 +309,7 @@ function Tetris(data){
     },
   };
   TC.LoopObject.call(this, data, this.speed, this.autoStart);
-}
+};
 Tetris.prototype = Object.create(TC.LoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
@@ -309,7 +330,7 @@ Tetris.BLOCKS = [
   [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
 ];
 
-// TC.LoopObject functions implementation
+// TC.LoopObject functions inheritance
 Tetris.prototype.init = function(){
   this.resetDataArray();
   this.createNewBlock();
@@ -319,6 +340,13 @@ Tetris.prototype.init = function(){
   this.data.refStatus.drawScore(this.data.score);
   TC.LoopObject.prototype.init.call(this);
 };
+Tetris.prototype.destroy = function(blockType) {
+  MAIN.TCD.delete('test');
+  if(this.gameOverPopup) this.gameOverPopup.destroy();
+  TC.LoopObject.prototype.destroy.call(this);
+};
+
+// TC.LoopObject functions implementation
 Tetris.prototype.draw = function(){
   var activeBlock = this.data.activeBlock;
   const COLORSET = this.data.COLORSET;
@@ -385,11 +413,6 @@ Tetris.prototype.calculate = function(){
       'inactivate2.count': activeBlockData.inactivate2.count,
       'speed': this.data.autoDropCountMax
     });
-};
-Tetris.prototype.destroy = function (blockType) {
-  MAIN.TCD.delete('test');
-  if(this.gameOverPopup) this.gameOverPopup.destroy();
-  TC.LoopObject.prototype.destroy.call(this);
 };
 
 // Custom functions
@@ -565,7 +588,7 @@ Tetris.prototype.showGameOverPopup = function(){
 /******************************/
 // Object Type: TC.Object
 // Description: Contains active tetris block status and functions to control it
-function Tetris_ActiveBlock(data){
+var Tetris_ActiveBlock = function(data){
   this.data = {
     type: 0,
     rotation: 0,
@@ -583,11 +606,19 @@ function Tetris_ActiveBlock(data){
     },
   };
   TC.Object.call(this, data);
-}
+};
 Tetris_ActiveBlock.prototype = Object.create(TC.Object.prototype);
 Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 
-// Getters, Setters
+// TC.Object functions inheritance
+Tetris_ActiveBlock.prototype.init = function(){
+  TC.Object.prototype.init.call(this);
+};
+Tetris_ActiveBlock.prototype.destroy = function(){
+  TC.Object.prototype.destroy.call(this);
+};
+
+// Custom Functions - Getters, Setters
 Tetris_ActiveBlock.prototype.getType = function(){
   return this.data.type;
 };
