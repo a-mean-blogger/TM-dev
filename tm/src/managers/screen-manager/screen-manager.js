@@ -1,8 +1,8 @@
 console.log('TM.ScreenManager loaded');
 
-/******************************/
-/* TM.ScreenManager           */
-/******************************/
+//=============================
+// TM.ScreenManager
+//=============================
 // Object Type: TM.ILoopObject
 // Description: manages canvas screen
 TM.ScreenManager = function(customSreenSetting, customCharGroups){

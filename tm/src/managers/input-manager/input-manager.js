@@ -1,8 +1,8 @@
 console.log('TM.InputManager loaded');
 
-/******************************/
-/* TM.InputManager            */
-/******************************/
+//=============================
+// TM.InputManager
+//=============================
 // Object Type: TM.IObject
 // Description: manages input methods
 TM.InputManager = function(customTargetDomId){

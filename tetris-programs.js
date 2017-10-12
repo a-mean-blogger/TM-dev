@@ -1,8 +1,8 @@
 console.log("tetris-programs.js loaded");
 
-/******************************/
-/* Program_Intro              */
-/******************************/
+//=============================
+// Program_Intro
+//=============================
 // Object Type: TM.IProgram
 // Description: Display intro screen and move to Tetris game when any key entered
 var Program_Intro = function(speed, data){
@@ -51,9 +51,9 @@ Program_Intro.prototype._getInput = function(){
   }
 };
 
-/******************************/
-/* Program_Game              */
-/******************************/
+//=============================
+// Program_Game
+//=============================
 // Object Type: TM.IProgram
 // Description: control Tetris Games
 var Program_Game = function(speed, data){

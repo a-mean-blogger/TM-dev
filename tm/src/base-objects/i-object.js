@@ -1,8 +1,8 @@
 console.log('TM.IObject loaded');
 
-/******************************/
-/* TM.IObject                 */
-/******************************/
+//=============================
+// TM.IObject          
+//=============================
 // Description: create an Object that does not loop
 //             init is an function that can be inherited for additional initial behavior,
 //             destroy is an function that can be inherited for additional destroy behavior.

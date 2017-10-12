@@ -9,14 +9,14 @@ gulp.task('default', function() {
     './src/default-settings/default-settings.js',
     './src/common-functions/common.js',
     './src/base-objects/i-object.js',
-    './src/base-objects/i-loop-object_interval.js',
-    './src/base-objects/i-loop-object.js',
-    './src/base-objects/i-program.js',
-    './src/managers/screen-manager/screen-manager_char.js',
-    './src/managers/screen-manager/screen-manager.js',
-    './src/managers/input-manager/input-manager_keyboard.js',
-    './src/managers/input-manager/input-manager.js',
-    './src/managers/debug-manager/debug-manager.js'
+    // './src/base-objects/i-loop-object_interval.js',
+    // './src/base-objects/i-loop-object.js',
+    // './src/base-objects/i-program.js',
+    // './src/managers/screen-manager/screen-manager_char.js',
+    // './src/managers/screen-manager/screen-manager.js',
+    // './src/managers/input-manager/input-manager_keyboard.js',
+    // './src/managers/input-manager/input-manager.js',
+    // './src/managers/debug-manager/debug-manager.js'
   ])
   .pipe(concat('text-game-maker-1.0.0.js'))
   .pipe(header(headerText))
@@ -29,12 +29,9 @@ gulp.task('default', function() {
   .pipe(gulp.dest('./dist'));
 });
 
-var headerText = `/********************************************************/
-/*                                                      */
-/* Text Game Maker                                      */
-/*                                                      */
-/* https://github.com/a-mean-blogger/text-game-maker-js */
-/*                                                      */
-/********************************************************/
-
+var headerText = `/*
+ * Copyright 2017 a.mean.blogger@gmail.com
+ * GitHub: https://github.com/a-mean-blogger/text-game-maker-js
+ * license: MIT
+ */
 `;

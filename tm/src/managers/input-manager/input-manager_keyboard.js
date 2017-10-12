@@ -1,8 +1,8 @@
 console.log('TM.InputManager_Keyboard loaded');
 
-/******************************/
-/* TM.InputManager_Keyboard   */
-/******************************/
+//=============================
+// TM.InputManager_Keyboard
+//=============================
 // Object Type: TM.IObject
 // Description: manages Keyboard inputs
 // functions:

@@ -1,6 +1,5 @@
-Text Canvas
-=========
-HTML5 Canvas Library
+Text Game Maker
+=====
 
 ## Overview
-Text Canvas is a library that can create a console-like 
+Text Game Maker can create a console-like HTML5 canvas on browser that can be used to make text games

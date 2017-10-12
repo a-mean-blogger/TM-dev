@@ -30,9 +30,9 @@ TextObject.prototype._draw = function(){
   MAIN.TMS.insertText(this.data.x,this.data.y,this.data.text);
 };
 
-/******************************/
-/* Star                       */
-/******************************/
+//=============================
+// Star
+//=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Blinking star
 var Star = function(data, speed){
@@ -61,9 +61,9 @@ Star.prototype._draw = function(){
   MAIN.TMS.insertText(this.data.x,this.data.y,text,this.data.color);
 };
 
-/******************************/
-/* PausePopup                      */
-/******************************/
+//=============================
+// PausePopup
+//=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Pause Popup box
 var PausePopup = function(data, speed){
@@ -102,9 +102,9 @@ PausePopup.prototype.drawFrame = function(){
   MAIN.TMS.insertText(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
 
-/******************************/
-/* GameOverPopup              */
-/******************************/
+//=============================
+// GameOverPopup
+//=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Game Over Popup box
 var GameOverPopup = function(data, speed){
@@ -152,9 +152,9 @@ GameOverPopup.prototype.drawFrame = function(){
   MAIN.TMS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
-/******************************/
-/* Status                     */
-/******************************/
+//=============================
+// Status
+//=============================
 // Object Type: TM.IObject
 // Description: Display Tetris game status
 var Status = function(data){
@@ -251,9 +251,9 @@ Status.prototype.updateBestScore = function(score){
   this.drawBestScore(score);
 };
 
-/******************************/
-/* Tetris                     */
-/******************************/
+//=============================
+// Tetris
+//=============================
 // Object Type: TM.ILoopObject
 // Description: Main Tetris game
 var Tetris = function(data){
@@ -556,9 +556,9 @@ Tetris.prototype.showGameOverPopup = function(){
   this.gameOverPopup = new GameOverPopup({x:19,y:5,bgColor:'#444',score:this.data.score},800);
 };
 
-/******************************/
-/* Tetris_ActiveBlock         */
-/******************************/
+//=============================
+// Tetris_ActiveBlock
+//=============================
 // Object Type: TM.IObject
 // Description: Contains active tetris block status and functions to control it
 var Tetris_ActiveBlock = function(data){

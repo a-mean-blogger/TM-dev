@@ -1,8 +1,8 @@
 console.log('TM.ILoopObject loaded');
 
-/******************************/
-/* TM.ILoopObject             */
-/******************************/
+//=============================
+// TM.ILoopObject
+//=============================
 // Description: create an Object that does loop.
 //             speed is the interval(millisecond), caculate and draw are functions that loop.
 //             calculate is an interface function that need to be implemented and calculate values in data,

@@ -1,8 +1,8 @@
 console.log('TM.DebugManager loaded');
 
-/******************************/
-/* TM.DebugManager            */
-/******************************/
+//=============================
+// TM.DebugManager
+//=============================
 // Object Type: TM.IObject
 // Description: print data for debugging
 // functions:
