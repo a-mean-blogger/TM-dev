@@ -26,9 +26,9 @@ var charGroups = {
 };
 
 var MAIN = {
-  TCS: new TC.ScreenManager(screenSetting, charGroups),
-  TCD: new TC.DebugManager({devMode: true}),
-  TCI: new TC.InputManager(),
+  TMS: new TM.ScreenManager(screenSetting, charGroups),
+  TMD: new TM.DebugManager({devMode: true}),
+  TMI: new TM.InputManager(),
   SETTINGS: {
     COL_NUM: 11,
     ROW_NUM: 23,
@@ -68,8 +68,8 @@ var MAIN = {
     this.programs.intro.init();
   },
   destroy: function(){
-    for(let i in this.programs){
-      let program = this.programs[i];
+    for(var i in this.programs){
+      var program = this.programs[i];
       program.destroy();
     }
   },

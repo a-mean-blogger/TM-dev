@@ -1,1 +1,2 @@
-test.js
+tm/dist/*
+tm/node_modules/*

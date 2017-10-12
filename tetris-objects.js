@@ -12,34 +12,28 @@ var TextObject = function(data, speed, patternFunc){
     },
   };
   this.patternFunc = patternFunc;
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed, this.autoStart);
 };
-TextObject.prototype = Object.create(TC.LoopObject.prototype);
+TextObject.prototype = Object.create(TM.ILoopObject.prototype);
 TextObject.prototype.constructor = TextObject;
 
-// TC.LoopObject functions inheritance
-TextObject.prototype.init = function(){
-  TC.LoopObject.prototype.init.call(this);
+// TM.ILoopObject functions implementation
+TextObject.prototype._init = function(){};
+TextObject.prototype._destroy = function(){};
+TextObject.prototype._calculate = function(){
+  this.patternFunc();
 };
-TextObject.prototype.destroy = function(){
-  TC.LoopObject.prototype.destroy.call(this);
-};
-
-// TC.LoopObject functions implementation
-TextObject.prototype.draw = function(){
-  MAIN.TCS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
+TextObject.prototype._draw = function(){
+  MAIN.TMS.devareText(this.data.previous.x,this.data.previous.y,this.data.text);
   this.data.previous.x = this.data.x;
   this.data.previous.y = this.data.y;
-  MAIN.TCS.insertText(this.data.x,this.data.y,this.data.text);
-};
-TextObject.prototype.calculate = function(){
-  this.patternFunc();
+  MAIN.TMS.insertText(this.data.x,this.data.y,this.data.text);
 };
 
 /******************************/
 /* Star                       */
 /******************************/
-// Object Type: TC.LoopObject
+// Object Type: TM.ILoopObject
 // Description: Create a Blinking star
 var Star = function(data, speed){
   this.autoStart = true;
@@ -49,33 +43,28 @@ var Star = function(data, speed){
     color: undefined,
     blink: 0,
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed, this.autoStart);
 };
-Star.prototype = Object.create(TC.LoopObject.prototype);
+Star.prototype = Object.create(TM.ILoopObject.prototype);
 Star.prototype.constructor = Star;
 
-// TC.LoopObject functions inheritance
-Star.prototype.init = function(){
-  TC.LoopObject.prototype.init.call(this);
+// TM.ILoopObject functions implementation
+Star.prototype._init = function(){};
+Star.prototype._destroy = function(){
+  MAIN.TMS.insertText(this.data.x,this.data.y,'  ');
 };
-Star.prototype.destroy = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,'  ');
-  TC.LoopObject.prototype.destroy.call(this);
-};
-
-// TC.LoopObject functions implementation
-Star.prototype.calculate = function(){
+Star.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
-Star.prototype.draw = function(){
-  let text = this.data.blink%2===0?'★':'☆';
-  MAIN.TCS.insertText(this.data.x,this.data.y,text,this.data.color);
+Star.prototype._draw = function(){
+  var text = this.data.blink%2===0?'★':'☆';
+  MAIN.TMS.insertText(this.data.x,this.data.y,text,this.data.color);
 };
 
 /******************************/
 /* PausePopup                      */
 /******************************/
-// Object Type: TC.LoopObject
+// Object Type: TM.ILoopObject
 // Description: Create a Pause Popup box
 var PausePopup = function(data, speed){
   this.autoStart = true;
@@ -86,42 +75,37 @@ var PausePopup = function(data, speed){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed, this.autoStart);
 };
-PausePopup.prototype = Object.create(TC.LoopObject.prototype);
+PausePopup.prototype = Object.create(TM.ILoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
 
-// TC.LoopObject functions inheritance
-PausePopup.prototype.init = function(){
+// TM.ILoopObject functions implementation
+PausePopup.prototype._init = function(){
   this.drawFrame();
-  TC.LoopObject.prototype.init.call(this);
 };
-PausePopup.prototype.destroy = function(){
-  TC.LoopObject.prototype.destroy.call(this);
-};
-
-// TC.LoopObject functions implementation
-PausePopup.prototype.calculate = function(){
+PausePopup.prototype._destroy = function(){};
+PausePopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
-PausePopup.prototype.draw = function(){
-  let color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TCS.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
+PausePopup.prototype._draw = function(){
+  var color = this.data.blink%2===0?'#fff':'gray';
+  MAIN.TMS.insertText(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
 
 /******************************/
 /* GameOverPopup              */
 /******************************/
-// Object Type: TC.LoopObject
+// Object Type: TM.ILoopObject
 // Description: Create a Game Over Popup box
 var GameOverPopup = function(data, speed){
   this.autoStart = true;
@@ -134,49 +118,44 @@ var GameOverPopup = function(data, speed){
     score: 0,
     scoreText: '',
   };
-  TC.LoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed, this.autoStart);
 };
-GameOverPopup.prototype = Object.create(TC.LoopObject.prototype);
+GameOverPopup.prototype = Object.create(TM.ILoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
 
-// TC.LoopObject functions inheritance
-GameOverPopup.prototype.init = function(){
+// TM.ILoopObject functions implementation
+GameOverPopup.prototype._init = function(){
   this.data.scoreText = Status.convertScore(this.data.score);
   this.drawFrame();
-  TC.LoopObject.prototype.init.call(this);
 };
-GameOverPopup.prototype.destroy = function(){
-  TC.LoopObject.prototype.destroy.call(this);
-};
-
-// TC.LoopObject functions implementation
-GameOverPopup.prototype.calculate = function(){
+GameOverPopup.prototype._destroy = function(){};
+GameOverPopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
-GameOverPopup.prototype.draw = function(){
-  let color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TCS.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
+GameOverPopup.prototype._draw = function(){
+  var color = this.data.blink%2===0?'#fff':'gray';
+  MAIN.TMS.insertText(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
-  MAIN.TCS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  MAIN.TMS.insertText(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
 /******************************/
 /* Status                     */
 /******************************/
-// Object Type: TC.Object
+// Object Type: TM.IObject
 // Description: Display Tetris game status
 var Status = function(data){
   this.data = {
@@ -184,89 +163,84 @@ var Status = function(data){
     y: undefined,
     COLORSET: MAIN.SETTINGS.COLORSET,
   };
-  TC.Object.call(this, data);
+  TM.IObject.call(this, data);
 };
-Status.prototype = Object.create(TC.Object.prototype);
+Status.prototype = Object.create(TM.IObject.prototype);
 Status.prototype.constructor = Status;
 
-// TC.Object functions inheritance
-Status.prototype.init = function(){
+// TM.IObject functions implementation
+Status.prototype._init = function(){
   this.drawFrame();
   this.drawLastScore(MAIN.data.scores.lastScore);
   this.drawBestScore(MAIN.data.scores.bestScore);
-  TC.Object.prototype.init.call(this);
 };
-Status.prototype.destroy = function(){
-  TC.Object.prototype.destroy.call(this);
-};
+Status.prototype._destroy = function(){};
 
 // Custom functions - Static functions
 Status.convertScore = function(score){
-  let string = Math.floor(score).toString();
-  let formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
-  let offset = 10 - formatted.length;
-  let padding = '';
-  for(let i=offset;i>0;i--) padding+=' ';
+  var string = Math.floor(score).toString();
+  var formatted = string.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
+  var offset = 10 - formatted.length;
+  var padding = '';
+  for(var i=offset; i>0; i--) padding+=' ';
   return padding+ formatted;
 };
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 0, ' LEVEL :');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 1, ' GOAL  :');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 2, '┍      ┑');
-  MAIN.TCS.insertText(this.data.x+4, this.data.y+ 2, 'N E X T');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 3, '│      │');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 4, '│      │');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 5, '│      │');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 6, '│      │');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+10, ' LAST SCORE :');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+12, ' BEST SCORE :');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
-  MAIN.TCS.insertText(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 0, ' LEVEL :');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 1, ' GOAL  :');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 2, '┍      ┑');
+  MAIN.TMS.insertText(this.data.x+4, this.data.y+ 2, 'N E X T');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 3, '│      │');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 4, '│      │');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 5, '│      │');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 6, '│      │');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+10, ' LAST SCORE :');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+12, ' BEST SCORE :');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
+  MAIN.TMS.insertText(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
 };
 Status.prototype.drawNextBlock = function(blockType){
-  let xOffset = (blockType === 0 || blockType === 1)?-1:0;
-  let color = this.data.COLORSET.BLOCKS[blockType];
-  let xAdj = this.data.x+5;
-  let yAdj = this.data.y+3;
-  for(let i=1;i<3;i++){
-    for(let j=0;j<5;j++){
-      let x = xAdj-2+j*2;
-      let y = yAdj+i;
-      MAIN.TCS.insertText(x,y,'  ');
-    }
-  }
-  for(let i=1;i<3;i++){
-    for(let j=0;j<4;j++){
-      let x = xAdj+j*2+xOffset;
-      let y = yAdj+i;
-      if(Tetris.BLOCKS[blockType][0][i][j]==1) {
-        MAIN.TCS.insertText(x,y,'■', color);
+  var xOffset = (blockType === 0 || blockType === 1)?0:1;
+  var color = this.data.COLORSET.BLOCKS[blockType];
+  var xAdj = this.data.x+2+xOffset;
+  var yAdj = this.data.y+3;
+  var width = 6-xOffset;
+  var height = 3;
+  for(var i=1; i<height; i++){
+    for(var j=0; j<width; j++){
+      var x = xAdj+j*2;
+      var y = yAdj+i;
+      if(j>0 && Tetris.BLOCKS[blockType][0][i][j-1]==1) {
+        MAIN.TMS.insertText(x,y,'■', color);
+      }
+      else {
+        MAIN.TMS.insertText(x,y,'  ');
       }
     }
   }
 };
 Status.prototype.drawLevel = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TCS.insertText(this.data.x+9, this.data.y, num);
+  MAIN.TMS.insertText(this.data.x+9, this.data.y, num);
 };
 Status.prototype.drawGoal = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TCS.insertText(this.data.x+9, this.data.y+1, num);
+  MAIN.TMS.insertText(this.data.x+9, this.data.y+1, num);
 };
 Status.prototype.drawScore = function(score){
-  MAIN.TCS.insertText(this.data.x+7, this.data.y+9, Status.convertScore(score));
+  MAIN.TMS.insertText(this.data.x+7, this.data.y+9, Status.convertScore(score));
 };
 Status.prototype.drawLastScore = function(score){
-  MAIN.TCS.insertText(this.data.x+7, this.data.y+11, Status.convertScore(score));
+  MAIN.TMS.insertText(this.data.x+7, this.data.y+11, Status.convertScore(score));
 };
 Status.prototype.drawBestScore = function(score){
-  MAIN.TCS.insertText(this.data.x+7, this.data.y+13, Status.convertScore(score));
+  MAIN.TMS.insertText(this.data.x+7, this.data.y+13, Status.convertScore(score));
 };
 Status.prototype.updateLastScore = function(score){
   MAIN.data.scores.lastScore = score;
@@ -280,7 +254,7 @@ Status.prototype.updateBestScore = function(score){
 /******************************/
 /* Tetris                     */
 /******************************/
-// Object Type: TC.LoopObject
+// Object Type: TM.ILoopObject
 // Description: Main Tetris game
 var Tetris = function(data){
   this.autoStart = true;
@@ -299,7 +273,7 @@ var Tetris = function(data){
     autoDropCountMax: 80,
     autoDropCount: 0,
     dataArray: null,
-    activeBlock: undefined,
+    activeBlock: null,
     nextBlockType: null,
     gameOver: {
       flag: false,
@@ -308,9 +282,9 @@ var Tetris = function(data){
       popup: false,
     },
   };
-  TC.LoopObject.call(this, data, this.speed, this.autoStart);
+  TM.ILoopObject.call(this, data, this.speed, this.autoStart);
 };
-Tetris.prototype = Object.create(TC.LoopObject.prototype);
+Tetris.prototype = Object.create(TM.ILoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
 
 // Static properties
@@ -330,33 +304,53 @@ Tetris.BLOCKS = [
   [[[0,0,0,0],[0,1,0,0],[1,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,0,0],[0,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,1,0,0]],[[0,0,0,0],[0,1,0,0],[1,1,0,0],[0,1,0,0]]]
 ];
 
-// TC.LoopObject functions inheritance
-Tetris.prototype.init = function(){
+// TM.ILoopObject functions inheritance
+Tetris.prototype._init = function(){
   this.resetDataArray();
   this.createNewBlock();
   this.setSpeed(this.data.level);
   this.data.refStatus.drawLevel(this.data.level);
   this.data.refStatus.drawGoal(this.data.goalCount);
   this.data.refStatus.drawScore(this.data.score);
-  TC.LoopObject.prototype.init.call(this);
 };
-Tetris.prototype.destroy = function(blockType) {
-  MAIN.TCD.delete('test');
+Tetris.prototype._destroy = function(blockType){
+  MAIN.TMD.delete('test');
   if(this.gameOverPopup) this.gameOverPopup.destroy();
-  TC.LoopObject.prototype.destroy.call(this);
 };
+Tetris.prototype._calculate = function(){
+  if(this.data.gameOver.flag) return ;
 
-// TC.LoopObject functions implementation
-Tetris.prototype.draw = function(){
+  var activeBlock = this.data.activeBlock;
+  this.updateCeilling();
+  this.autoDrop();
+  activeBlock.updateOnTetrisDataArray(this.data.dataArray);
+  if(activeBlock.isInactivate1On()) this.inactivateBlock();
+
+
+  var activeBlockData = this.data.activeBlock.data;
+  MAIN.TMD.print('test',{
+    'activeBlock.type': activeBlockData.type,
+    'activeBlock.rotation': activeBlockData.rotation,
+    'activeBlock.x': activeBlockData.x,
+    'activeBlock.y': activeBlockData.y,
+    'nextBlockType': this.data.nextBlockType,
+    'inactivate1.flag': activeBlockData.inactivate1.flag,
+    'inactivate1.count': activeBlockData.inactivate1.count,
+    'inactivate2.flag': activeBlockData.inactivate2.flag,
+    'inactivate2.count': activeBlockData.inactivate2.count,
+    'speed': this.data.autoDropCountMax
+  });
+};
+Tetris.prototype._draw = function(){
   var activeBlock = this.data.activeBlock;
   const COLORSET = this.data.COLORSET;
 
   if(this.data.gameOver.popup) return;
 
-  for(let i=0;i<this.data.ROW_NUM;i++){
-    for(let j=0;j<this.data.COL_NUM;j++){
-      let blockChar;
-      let color;
+  for(var i=0; i<this.data.ROW_NUM; i++){
+    for(var j=0; j<this.data.COL_NUM; j++){
+      var blockChar;
+      var color;
       switch(this.data.dataArray[i][j]){
         case Tetris.ACTIVE_BLOCK: //-2
           blockChar='□';
@@ -387,60 +381,38 @@ Tetris.prototype.draw = function(){
           color = COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
           break;
       }
-      MAIN.TCS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
+      MAIN.TMS.insertText(this.data.x+j*2,this.data.y+i,blockChar,color);
     }
   }
-};
-Tetris.prototype.calculate = function(){
-  let activeBlock = this.data.activeBlock;
-  if(!this.data.gameOver.flag){
-    this.updateCeilling();
-    this.autoDrop();
-    activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-    if(activeBlock.isInactivate1On()) this.inactivateBlock();
-  }
-
-  var activeBlockData = this.data.activeBlock.data;
-  MAIN.TCD.print('test',{
-      'activeBlock.type': activeBlockData.type,
-      'activeBlock.rotation': activeBlockData.rotation,
-      'activeBlock.x': activeBlockData.x,
-      'activeBlock.y': activeBlockData.y,
-      'nextBlockType': this.data.nextBlockType,
-      'inactivate1.flag': activeBlockData.inactivate1.flag,
-      'inactivate1.count': activeBlockData.inactivate1.count,
-      'inactivate2.flag': activeBlockData.inactivate2.flag,
-      'inactivate2.count': activeBlockData.inactivate2.count,
-      'speed': this.data.autoDropCountMax
-    });
 };
 
 // Custom functions
 Tetris.prototype.resetDataArray = function(){
-  this.data.dataArray=[];
-  for(let i=0;i<this.data.ROW_NUM;i++){
-    this.data.dataArray[i]=[];
-    for(let j=0;j<this.data.COL_NUM;j++){
-      this.data.dataArray[i][j]=0;
+  this.data.dataArray = [];
+  for(var i=0; i<this.data.ROW_NUM; i++){
+    this.data.dataArray[i] = [];
+    for(var j=0; j<this.data.COL_NUM; j++){
+      if(i == this.data.ROW_NUM-1){
+        this.data.dataArray[i][j] = Tetris.WALL;
+      }
+      else if(j == 0 || j == this.data.COL_NUM-1){
+        this.data.dataArray[i][j] = Tetris.WALL;
+      }
+      else {
+        this.data.dataArray[i][j] = Tetris.EMPTY;
+      }
     }
-  }
-  for(let i=1;i<this.data.ROW_NUM-1;i++){
-    this.data.dataArray[i][0]=Tetris.WALL;
-    this.data.dataArray[i][this.data.COL_NUM-1]=Tetris.WALL;
-  }
-  for(let j=0;j<this.data.COL_NUM;j++){
-    this.data.dataArray[this.data.ROW_NUM-1][j]=Tetris.WALL;
   }
 };
 Tetris.prototype.updateCeilling = function(){
-  for(let j=1;j<this.data.COL_NUM-1;j++){
-    if(this.data.dataArray[3][j]<=0) this.data.dataArray[3][j]=Tetris.CEILING;
+  for(var j=1; j<this.data.COL_NUM-1; j++){
+    if(this.data.dataArray[3][j] <= 0) this.data.dataArray[3][j] = Tetris.CEILING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
     x: Math.floor(this.data.COL_NUM/2)-1,
-    type: TC.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7)
+    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7)
   };
 
   this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
@@ -486,7 +458,7 @@ Tetris.prototype.autoDrop = function(){
   }
 };
 Tetris.prototype.inactivateBlock = function(){
-  let activeBlock = this.data.activeBlock;
+  var activeBlock = this.data.activeBlock;
 
   if(activeBlock.checkInactivate2Ready() && !activeBlock.checkMoveDown(this.data.dataArray)){
     activeBlock.startInactivate2();
@@ -506,23 +478,23 @@ Tetris.prototype.inactivateBlock = function(){
   }
 };
 Tetris.prototype.changeFullLinesToStar = function(){
-  for(let i=this.data.ROW_NUM-2;i>=0;i--){
-    let occupiedCount = 0;
-    for(let j=1;j<this.data.COL_NUM-1;j++){
+  for(var i=this.data.ROW_NUM-2; i>=0; i--){
+    var occupiedCount = 0;
+    for(var j=1; j<this.data.COL_NUM-1; j++){
       if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
     if(occupiedCount == this.data.COL_NUM-2){
-      for(let j=1;j<this.data.COL_NUM-1;j++){
+      for(j=1; j<this.data.COL_NUM-1; j++){
         this.data.dataArray[i][j] = Tetris.STAR;
       }
     }
   }
 };
 Tetris.prototype.removeFullLines = function(){
-  let removedLineNum = 0;
-  for(let i=this.data.ROW_NUM-2;i>=0;i--){
-    let occupiedCount = 0;
-    for(let j=1;j<this.data.COL_NUM-1;j++){
+  var removedLineNum = 0;
+  for(var i=this.data.ROW_NUM-2; i>=0; i--){
+    var occupiedCount = 0;
+    for(var j=1; j<this.data.COL_NUM-1; j++){
       if(removedLineNum){
         if(i<removedLineNum) this.data.dataArray[i][j] = 0;
         else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == Tetris.CEILING) this.data.dataArray[i][j] = Tetris.EMPTY;
@@ -559,7 +531,7 @@ Tetris.prototype.levelUp = function(){
   this.data.refStatus.drawLevel(this.data.level);
 };
 Tetris.prototype.checkGameOver = function(){
-  for(let j=1;j<this.data.COL_NUM-1;j++){
+  for(var j=1; j<this.data.COL_NUM-1; j++){
     if(this.data.dataArray[3][j]>0) return true;
   }
 };
@@ -567,13 +539,14 @@ Tetris.prototype.gameOver = function(){
   this.data.gameOver.flag = true;
   this.data.refStatus.updateBestScore(this.data.score);
   this.data.refStatus.updateLastScore(this.data.score);
-  let i = this.data.ROW_NUM-2;
-  let interval = setInterval(_=>{
-    for(let j=1;j<this.data.COL_NUM-1;j++){
-      if(this.data.dataArray[i][j]>0) this.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
+  var i = this.data.ROW_NUM-2;
+  var _self = this;
+  var interval = setInterval(function(){
+    for(var j=1; j<_self.data.COL_NUM-1; j++){
+      if(_self.data.dataArray[i][j]>0) _self.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
-      this.showGameOverPopup();
+      _self.showGameOverPopup();
       clearInterval(interval);
     }
   },100);
@@ -586,7 +559,7 @@ Tetris.prototype.showGameOverPopup = function(){
 /******************************/
 /* Tetris_ActiveBlock         */
 /******************************/
-// Object Type: TC.Object
+// Object Type: TM.IObject
 // Description: Contains active tetris block status and functions to control it
 var Tetris_ActiveBlock = function(data){
   this.data = {
@@ -605,18 +578,14 @@ var Tetris_ActiveBlock = function(data){
       countMax: 10,
     },
   };
-  TC.Object.call(this, data);
+  TM.IObject.call(this, data);
 };
-Tetris_ActiveBlock.prototype = Object.create(TC.Object.prototype);
+Tetris_ActiveBlock.prototype = Object.create(TM.IObject.prototype);
 Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 
-// TC.Object functions inheritance
-Tetris_ActiveBlock.prototype.init = function(){
-  TC.Object.prototype.init.call(this);
-};
-Tetris_ActiveBlock.prototype.destroy = function(){
-  TC.Object.prototype.destroy.call(this);
-};
+// TM.IObject functions implementation
+Tetris_ActiveBlock.prototype._init = function(){};
+Tetris_ActiveBlock.prototype._destroy = function(){};
 
 // Custom Functions - Getters, Setters
 Tetris_ActiveBlock.prototype.getType = function(){
@@ -625,8 +594,8 @@ Tetris_ActiveBlock.prototype.getType = function(){
 
 // Custom Functions - Update ActiveBlock to dataArray
 Tetris_ActiveBlock.prototype.transFormTo = function(dataArray,to){
-  for(let i=0;i<dataArray.length;i++){
-    for(let j=0;j<dataArray[i].length;j++){
+  for(var i=0; i<dataArray.length; i++){
+    for(var j=0; j<dataArray[i].length; j++){
       if(dataArray[i][j]==Tetris.ACTIVE_BLOCK)
         dataArray[i][j]=to;
     }
@@ -639,8 +608,8 @@ Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
   if(!this.data.inactivate2.flag){
     this.transFormTo(dataArray, Tetris.EMPTY);
 
-    for(let i=0;i<4;i++){
-      for(let j=0;j<4;j++){
+    for(var i=0; i<4; i++){
+      for(var j=0; j<4; j++){
         if(Tetris.BLOCKS[this.data.type][this.data.rotation][i][j]==1)
           dataArray[this.data.y+i][this.data.x+j]=Tetris.ACTIVE_BLOCK;
       }
@@ -650,8 +619,8 @@ Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
 
 // Custom Functions - Check and move ActiveBLock
 Tetris_ActiveBlock.prototype.checkMove = function(dataArray,type,rN,xN,yN){
-  for(let i=0;i<4;i++){
-    for(let j=0;j<4;j++){
+  for(var i=0; i<4; i++){
+    for(var j=0; j<4; j++){
       if(Tetris.BLOCKS[type][rN][i][j]==1
       && dataArray[yN+i][xN+j] > 0){
         return false;
@@ -664,9 +633,9 @@ Tetris_ActiveBlock.prototype.checkMoveDown = function(dataArray){
   return this.checkMove(dataArray,this.data.type,this.data.rotation,this.data.x,this.data.y+1);
 };
 Tetris_ActiveBlock.prototype.move = function(dataArray,x,y){
-  let xN = this.data.x+x;
-  let yN = this.data.y+y;
-  let moved = false;
+  var xN = this.data.x+x;
+  var yN = this.data.y+y;
+  var moved = false;
   if(this.checkMove(dataArray,this.data.type,this.data.rotation,xN,yN)){
     this.data.x = xN;
     this.data.y = yN;
@@ -681,7 +650,7 @@ Tetris_ActiveBlock.prototype.moveLeft = function(dataArray){
   this.move(dataArray,-1,0);
 };
 Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
-  let moved = this.move(dataArray,0,1);
+  var moved = this.move(dataArray,0,1);
   if(moved){
     this.data.inactivate1.count = 0;
     if(this.checkMoveDown(dataArray)){
@@ -694,8 +663,8 @@ Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
   return moved;
 };
 Tetris_ActiveBlock.prototype.rotate = function(dataArray){
-  let rN = (this.data.rotation+1)%4;
-  let moved = false;
+  var rN = (this.data.rotation+1)%4;
+  var moved = false;
   if(this.checkMove(dataArray,this.data.type,rN,this.data.x,this.data.y)){
     this.data.rotation = rN;
     moved = true;

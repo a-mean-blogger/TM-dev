@@ -4,19 +4,26 @@
     <meta charset="utf-8">
     <title></title>
     <style>
-      #text-canvas, #devOutput{
+      #tm-canvas, #tm-debug-output{
         float:left;
       }
     </style>
+    <script type="text/javascript" src="./tm/src/default-settings/default-settings.js"></script>
+    <script type="text/javascript" src="./tm/src/common-functions/common.js"></script>
+    <script type="text/javascript" src="./tm/src/base-objects/i-object.js"></script>
+    <script type="text/javascript" src="./tm/src/base-objects/i-loop-object_interval.js"></script>
+    <script type="text/javascript" src="./tm/src/base-objects/i-loop-object.js"></script>
+    <script type="text/javascript" src="./tm/src/base-objects/i-program.js"></script>
+    <script type="text/javascript" src="./tm/src/managers/screen-manager/screen-manager_char.js"></script>
+    <script type="text/javascript" src="./tm/src/managers/screen-manager/screen-manager.js"></script>
+    <script type="text/javascript" src="./tm/src/managers/input-manager/input-manager_keyboard.js"></script>
+    <script type="text/javascript" src="./tm/src/managers/input-manager/input-manager.js"></script>
+    <script type="text/javascript" src="./tm/src/managers/debug-manager/debug-manager.js"></script>
   </head>
   <body>
-    <canvas id="text-canvas"></canvas>
-    <div id="text-canvas-debug-output"></div>
-    <script type="text/javascript" src="text-canvas-1-defaultSettings-and-common.js"></script>
-    <script type="text/javascript" src="text-canvas-2-base-objects.js"></script>
-    <script type="text/javascript" src="text-canvas-3-screen-manager.js"></script>
-    <script type="text/javascript" src="text-canvas-4-input-manager.js"></script>
-    <script type="text/javascript" src="text-canvas-5-debug-manager.js"></script>
+    <canvas id="tm-canvas"></canvas>
+    <div id="tm-debug-output"></div>
+
     <script type="text/javascript" src="tetris-objects.js"></script>
     <script type="text/javascript" src="tetris-programs.js"></script>
     <script type="text/javascript" src="tetris-main.js"></script>

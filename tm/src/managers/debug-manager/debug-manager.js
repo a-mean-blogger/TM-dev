@@ -1,16 +1,16 @@
-console.log('text-canvas-5-debug-manager.js loaded');
+console.log('TM.DebugManager loaded');
 
 /******************************/
-/* TC.DebugManager            */
+/* TM.DebugManager            */
 /******************************/
-// Object Type: TC.Object
+// Object Type: TM.IObject
 // Description: print data for debugging
 // functions:
 // - print: print data. 'name' should be unique otherwise it will replace the existing data
 // - delete: delete printed data with the name
 // - deleteAll: remove All printed data
-TC.DebugManager = function(debugSetting){
-  this.debugSetting = TC.common.mergeObjects(TC.defaultSettings.debug, debugSetting);
+TM.DebugManager = function(debugSetting){
+  this.debugSetting = TM.common.mergeObjects(TM.defaultSettings.debug, debugSetting);
 
   try{
     this.outputDom = document.querySelector('#'+this.debugSetting.outputDomId);
@@ -20,24 +20,24 @@ TC.DebugManager = function(debugSetting){
   }
   catch(errorMessage){
     this.devMode = false;
-    console.error('new TC.DebugManager ERROR: '+errorMessage+' TC.DebugManager is not created.');
+    console.error('new TM.DebugManager ERROR: '+errorMessage+' TM.DebugManager is not created.');
     return;
   }
 
   this.doms = {};
-  TC.Object.call(this);
+  TM.IObject.call(this);
 };
-TC.DebugManager.prototype = Object.create(TC.Object.prototype);
-TC.DebugManager.prototype.constructor = TC.DebugManager;
+TM.DebugManager.prototype = Object.create(TM.IObject.prototype);
+TM.DebugManager.prototype.constructor = TM.DebugManager;
 
-// TC.Object functions implementation
-TC.DebugManager.prototype.destroy = function(){
+// TM.IObject functions implementation
+TM.DebugManager.prototype._init = function(){};
+TM.DebugManager.prototype._destroy = function(){
   this.deleteAll();
-  TC.Object.prototype.destroy.call(this);
 };
 
-// TC.DebugManager pulbic functions
-TC.DebugManager.prototype.print = function(name,data){
+// TM.DebugManager pulbic functions
+TM.DebugManager.prototype.print = function(name,data){
   if(this.debugSetting.devMode){
     if(!this.doms[name]){
       this.doms[name] = document.createElement('div');
@@ -53,13 +53,13 @@ TC.DebugManager.prototype.print = function(name,data){
     this.delete(name);
   }
 };
-TC.DebugManager.prototype.delete = function(name){
+TM.DebugManager.prototype.delete = function(name){
   if(this.doms[name]){
-    this.doms[name].remove();
+    this.doms[name].remove?this.doms[name].remove():this.doms[name].parentElement.removeChild(this.doms[name]);
     delete this.doms[name];
   }
 };
-TC.DebugManager.prototype.deleteAll = function(){
+TM.DebugManager.prototype.deleteAll = function(){
   for(var task in this.doms){
     this.delete(task);
   }
