@@ -50,16 +50,36 @@ TM.ScreenManager.prototype.constructor = TM.ScreenManager;
 // TM.ILoopObject functions implementation
 TM.ScreenManager.prototype._init = function () {
   this.initScreenData();
-  if(this.screenSetting.fontSource && !document.querySelector('link[href="'+this.screenSetting.fontSource+'"][rel="stylesheet"]')){
-    var link = document.createElement('link');
-    link.href = this.screenSetting.fontSource;
-    link.rel = 'stylesheet';
-    document.getElementsByTagName('head')[0].appendChild(link);
+  if(this.screenSetting.fontSource && !TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
+    this.applyFont();
   }
 };
+TM.ScreenManager.prototype.applyFont = function(){
+  if(!window.WebFont){
+    TM.common.includeScript(this.screenSetting.webFontJsPath,this.loadWebFont());
+  }
+  else {
+    this.loadWebFont();
+  }
+}
+TM.ScreenManager.prototype.loadWebFont = function(){
+  var _self = this;
+  return function(){
+    WebFont.load({
+      custom: {
+        families: [_self.screenSetting.fontFamily],
+        urls : [_self.screenSetting.fontSource]
+      }
+    });
+  }
+}
+
 TM.ScreenManager.prototype._destroy = function(){};
 TM.ScreenManager.prototype._calculate = function() {
-  if(!this.isFontLoaded) this.checkFontLoaded();
+  if(!this.isFontLoaded && TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
+    this.isFontLoaded = true;
+    this.refreshScreen();
+  }
 };
 TM.ScreenManager.prototype._draw = function() {
   var ctx = this.ctx;
@@ -132,12 +152,6 @@ TM.ScreenManager.prototype.refreshScreen = function(){
     for(var j=0; j<this.screenSettingData[i].length; j++){
       this.screenSettingData[i][j].isNew = true;
     }
-  }
-};
-TM.ScreenManager.prototype.checkFontLoaded = function(){
-  if(document.fonts && document.fonts.check('1em '+this.screenSetting.fontFamily)){
-    this.isFontLoaded = true;
-    this.refreshScreen();
   }
 };
 TM.ScreenManager.prototype.isInCanvas = function(x,y){
