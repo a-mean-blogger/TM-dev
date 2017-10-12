@@ -58,7 +58,7 @@ TM.common.getFullwidthRegex = function(charGroups){
 TM.common.mergeObjects = function(object1, object2){
   var object = {};
   var objects = [object1, object2];
-  for(var i= 0; i<objects.length; i++){
+  for(var i=0; i<objects.length; i++){
     for(var p in objects[i]){
       object[p] = objects[i][p];
     }

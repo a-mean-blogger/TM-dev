@@ -36,8 +36,8 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
   this.canvas.style.border = this.screenSetting.backgroundColor+' 1px solid';
   this.canvas.style.borderRadius = '5px';
   this.canvas.style.backgroundColor = this.screenSetting.backgroundColor;
-  this.canvas.style.width = this.canvas.width * this.screenSetting.zoom + 'px';
-  this.canvas.style.height = this.canvas.height * this.screenSetting.zoom + 'px';
+  this.canvas.style.width = this.canvas.width * this.screenSetting.zoom+'px';
+  this.canvas.style.height = this.canvas.height * this.screenSetting.zoom+'px';
   this.canvas.tabIndex = 1; // for input keydown event
   this.canvas.style.outline = 'none'; // for input keydown event
   this.ctx = this.canvas.getContext('2d');
@@ -50,7 +50,7 @@ TM.ScreenManager.prototype.constructor = TM.ScreenManager;
 // TM.ILoopObject functions implementation
 TM.ScreenManager.prototype._init = function () {
   this.initScreenData();
-  if(this.screenSetting.fontSource && !document.querySelector('link[href="'+this.screenSetting.fontSource + '"][rel="stylesheet"]')){
+  if(this.screenSetting.fontSource && !document.querySelector('link[href="'+this.screenSetting.fontSource+'"][rel="stylesheet"]')){
     var link = document.createElement('link');
     link.href = this.screenSetting.fontSource;
     link.rel = 'stylesheet';
@@ -68,8 +68,8 @@ TM.ScreenManager.prototype._draw = function() {
   // bgUpdateMap indicates if bg updated or not at the grid in this draw iteration.
   var bgUpdateMap = this.getInitialBgUpdateMap();
 
-  for(var i = 0; i<this.screenSetting.row; i++){
-    for(var j = 0; j<this.screenSetting.column; j++){
+  for(var i=0; i<this.screenSetting.row; i++){
+    for(var j=0; j<this.screenSetting.column; j++){
       if(this.screenSettingData[i][j].isNew === true){
 
         //draw backgroundColor
@@ -109,9 +109,9 @@ TM.ScreenManager.prototype._draw = function() {
 // TM.ScreenManager private functions
 TM.ScreenManager.prototype.getInitialBgUpdateMap = function(){
   var bgUpdateMap = [];
-  for(var i = 0; i <this.screenSetting.row; i++){
+  for(var i=0; i<this.screenSetting.row; i++){
     bgUpdateMap[i] = [];
-    for(var j = 0; j<this.screenSetting.column; j++){
+    for(var j=0; j<this.screenSetting.column; j++){
       bgUpdateMap[i][j] = false;
     }
   }
@@ -128,8 +128,8 @@ TM.ScreenManager.prototype.getBackgroundWidthRecursive = function(i,j,bgUpdateMa
   }
 };
 TM.ScreenManager.prototype.refreshScreen = function(){
-  for(var i= 0; i <this.screenSettingData.length; i++){
-    for(var j = 0; j<this.screenSettingData[i].length; j++){
+  for(var i=0; i<this.screenSettingData.length; i++){
+    for(var j=0; j<this.screenSettingData[i].length; j++){
       this.screenSettingData[i][j].isNew = true;
     }
   }
@@ -146,16 +146,14 @@ TM.ScreenManager.prototype.isInCanvas = function(x,y){
 };
 TM.ScreenManager.prototype.initScreenData = function(){
   this.screenSettingData = [];
-  for(var i= 0; i <this.screenSetting.row; i++){
+  for(var i=0; i<this.screenSetting.row; i++){
     this.screenSettingData[i]=[];
-    for(var j = 0; j<this.screenSetting.column; j++){
+    for(var j=0; j<this.screenSetting.column; j++){
       this.screenSettingData[i][j]=new TM.ScreenManager_Char(this.screenSetting, ' ');
     }
   }
 };
 TM.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor){
-  if(char.constructor != String) return console.error(char+' is invalid');
-
   if(this.isInCanvas(x,y)
   && (this.screenSettingData[y][x].char != char
     || this.screenSettingData[y][x].color != (color?color:this.screenSetting.defalutFontColor)
@@ -181,9 +179,9 @@ TM.ScreenManager.prototype.deleteChar = function(x,y){
 TM.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
   if(typeof char != 'string') char = ' ';
   this.screenSettingData = [];
-  for(var i= 0; i <this.screenSetting.row; i++){
+  for(var i=0; i<this.screenSetting.row; i++){
     this.screenSettingData[i]=[];
-    for(var j = 0; j<this.screenSetting.column; j++){
+    for(var j=0; j<this.screenSetting.column; j++){
       this.screenSettingData[i][j]=new TM.ScreenManager_Char(this.screenSetting, char, false, color, backgroundColor);
     }
   }
@@ -195,7 +193,7 @@ TM.ScreenManager.prototype.insertText = function(x,y,text,color,backgroundColor)
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
   if(y<0 || y>=this.screenSettingData.length) return;
-  for(var i= 0; i<text.length; i++){
+  for(var i=0; i<text.length; i++){
     if(x+i>=0 && x+i <this.screenSetting.column){
       this.insertChar(x+i,y,text[i],color,backgroundColor);
       var fullwidth = regex.test(text[i]);
@@ -223,9 +221,9 @@ TM.ScreenManager.prototype.pasteScreen = function(canvas){
   this.ctx.drawImage(canvas, 0, 0);
 };
 TM.ScreenManager.prototype.consoleScreenData = function(canvas){
-  for(var i= 0; i <this.screenSetting.row; i++){
+  for(var i=0; i<this.screenSetting.row; i++){
     var row = '';
-    for(var j = 0; j<this.screenSetting.column; j++){
+    for(var j=0; j<this.screenSetting.column; j++){
       row += this.screenSettingData[i][j].char[0]+(this.screenSettingData[i][j].isNew?'!':' ');
     }
     console.log(row);

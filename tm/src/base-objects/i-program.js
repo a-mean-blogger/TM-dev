@@ -23,7 +23,7 @@ TM.IProgram.prototype.init = function(){
 };
 TM.IProgram.prototype.destroy = function(){
   TM.ILoopObject.prototype.destroy.call(this);
-  for(var i= this.objects.length-1; i >= 0; i--){
+  for(var i=this.objects.length-1; i>= 0; i--){
     this.objects[i].destroy();
   }
   for(var key in this.uniqueObjects){
