@@ -48,40 +48,29 @@ TM.ScreenManager.prototype = Object.create(TM.ILoopObject.prototype);
 TM.ScreenManager.prototype.constructor = TM.ScreenManager;
 
 // TM.ILoopObject functions implementation
-TM.ScreenManager.prototype._init = function () {
+TM.ScreenManager.prototype._init = function(){
   this.initScreenData();
   if(this.screenSetting.fontSource && !TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
-    this.applyFont();
+    this.startLoadingFont();
   }
 };
-TM.ScreenManager.prototype.applyFont = function(){
-  if(!window.WebFont){
-    TM.common.includeScript(this.screenSetting.webFontJsPath,this.loadWebFont());
-  }
-  else {
-    this.loadWebFont();
-  }
-}
-TM.ScreenManager.prototype.loadWebFont = function(){
-  var _self = this;
-  return function(){
-    WebFont.load({
-      custom: {
-        families: [_self.screenSetting.fontFamily],
-        urls : [_self.screenSetting.fontSource]
-      }
-    });
-  }
-}
-
 TM.ScreenManager.prototype._destroy = function(){};
-TM.ScreenManager.prototype._calculate = function() {
+TM.ScreenManager.prototype._calculate = function(){
   if(!this.isFontLoaded && TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
     this.isFontLoaded = true;
     this.refreshScreen();
   }
+  if(this.checkReady()){
+    if(this.onReadyFunc){
+      this.onReadyFunc();
+      delete this.onReadyFunc;
+    }
+  }
+  else {
+    this.showLoading();
+  }
 };
-TM.ScreenManager.prototype._draw = function() {
+TM.ScreenManager.prototype._draw = function(){
   var ctx = this.ctx;
   ctx.textBaseline = 'buttom';
 
@@ -127,6 +116,27 @@ TM.ScreenManager.prototype._draw = function() {
 };
 
 // TM.ScreenManager private functions
+TM.ScreenManager.prototype.startLoadingFont = function(){
+  if(!this.screenSetting.webFontJsPath) return console.error("TM.ScreenManager ERROR: 'webFontJsPath' is required to load font from 'fontSource'!");
+
+  if(!window.WebFont){
+    TM.common.includeScript(this.screenSetting.webFontJsPath,this.loadWebFont());
+  }
+  else {
+    this.loadWebFont();
+  }
+}
+TM.ScreenManager.prototype.loadWebFont = function(){
+  var _self = this;
+  return function(){
+    WebFont.load({
+      custom: {
+        families: [_self.screenSetting.fontFamily],
+        urls : [_self.screenSetting.fontSource]
+      }
+    });
+  };
+}
 TM.ScreenManager.prototype.getInitialBgUpdateMap = function(){
   var bgUpdateMap = [];
   for(var i=0; i<this.screenSetting.row; i++){
@@ -188,8 +198,27 @@ TM.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor)
 TM.ScreenManager.prototype.deleteChar = function(x,y){
   this.insertChar(x,y,' ');
 };
+TM.ScreenManager.prototype.showLoading = function(){
+  this.insertText(0,0,"Loading ...");
+}
 
 // TM.ScreenManager public functions
+TM.ScreenManager.prototype.onReady = function(func){
+  if(this.checkReady()){
+    this.onReadyFunc();
+  }
+  else {
+    this.onReadyFunc = func;
+  }
+}
+TM.ScreenManager.prototype.checkReady = function(){
+  var isReady = false;
+
+  var isFontReady = this.screenSetting.fontSource?this.isFontLoaded:true;
+
+  isReady = isFontReady;
+  return isReady;
+}
 TM.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
   if(typeof char != 'string') char = ' ';
   this.screenSettingData = [];

@@ -5,7 +5,8 @@ var screenSetting = {
   column: 70,
   row: 25,
   fontFamily: 'Nanum Gothic Coding',
-  fontSource: 'https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css'
+  webFontJsPath: '',
+  fontSource: 'https://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css',
 };
 
 var charGroups = {
@@ -22,7 +23,7 @@ var charGroups = {
     sizeAdj: 0.95,
     xAdj: 0,
     yAdj: 0,
-  }
+  },
 };
 
 var MAIN = {
@@ -79,4 +80,6 @@ var MAIN = {
   },
 };
 
-MAIN.init();
+MAIN.TMS.onReady(function(){
+  MAIN.init();
+});
