@@ -1,6 +1,7 @@
 console.log('tetris-main.js loaded');
 
 var screenSetting = {
+  fontSize: 30,
   zoom: 0.6,
   column: 70,
   row: 25,

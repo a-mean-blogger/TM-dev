@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      #tm-canvas, #tm-debug-output{
+        float:left;
+      }
+    </style>
+    <script type="text/javascript" src="../dist/text-game-maker-1.0.0.min.js"></script>
+  </head>
+  <body>
+    <canvas id="tm-canvas"></canvas>
+    <div id="tm-debug-output"></div>
+    <script>
+      var TMS = new TM.ScreenManager();
+      var TMI = new TM.InputManager();
+      var TMD = new TM.DebugManager();
+      TMS.insertText(1,1,"TMS: new TM.ScreenManager() instance");
+      TMS.insertText(1,2,"TMI: new TM.InputManager() instance");
+      TMS.insertText(1,3,"TMD: new TM.DebugManager() instance");
+    </script>
+  </body>
+</html>

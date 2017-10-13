@@ -9,19 +9,16 @@ gulp.task('default', function() {
     './src/default-settings/default-settings.js',
     './src/common-functions/common.js',
     './src/base-objects/i-object.js',
-    // './src/base-objects/i-loop-object_interval.js',
-    // './src/base-objects/i-loop-object.js',
-    // './src/base-objects/i-program.js',
-    // './src/managers/screen-manager/screen-manager_char.js',
-    // './src/managers/screen-manager/screen-manager.js',
-    // './src/managers/input-manager/input-manager_keyboard.js',
-    // './src/managers/input-manager/input-manager.js',
-    // './src/managers/debug-manager/debug-manager.js'
+    './src/base-objects/i-loop-object_interval.js',
+    './src/base-objects/i-loop-object.js',
+    './src/base-objects/i-program.js',
+    './src/managers/screen-manager/screen-manager_char.js',
+    './src/managers/screen-manager/screen-manager.js',
+    './src/managers/input-manager/input-manager_keyboard.js',
+    './src/managers/input-manager/input-manager.js',
+    './src/managers/debug-manager/debug-manager.js'
   ])
-  .pipe(concat('text-game-maker-1.0.0.js'))
-  .pipe(header(headerText))
-  .pipe(gulp.dest('./dist'))
-  .pipe(rename({ suffix: '.min' }))
+  .pipe(concat('text-game-maker-1.0.0.min.js'))
   .pipe(uglify({
     compress: { drop_console: true }
   }))
