@@ -42,6 +42,15 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
   this.canvas.style.outline = 'none'; // for input keydown event
   this.ctx = this.canvas.getContext('2d');
 
+  this.cursor = new TM.ScreenManager_Cursor({
+    x:0,
+    y:0,
+    color:"gray",
+    width:this.blockWidth,
+    size:0.1,
+    isHidden:false,
+  });
+
   TM.ILoopObject.call(this, null, this.speed, this.autoStart);
 };
 TM.ScreenManager.prototype = Object.create(TM.ILoopObject.prototype);
@@ -113,6 +122,18 @@ TM.ScreenManager.prototype._draw = function(){
       }
     }
   }
+
+  //draw.cursor
+  if(!this.cursor.data.isHidden){
+    var cursorWidth = this.cursor.data.width;
+    var cursorHeight = this.blockHeight*this.cursor.data.size;
+    var cursorX = this.blockWidth*this.cursor.data.x;
+    var cursorY = (this.blockHeight)*(this.cursor.data.y)+(this.blockHeight-cursorHeight);
+    ctx.fillStyle = this.cursor.data.color;
+    ctx.fillRect(cursorX,cursorY,cursorWidth,cursorHeight);
+    this.screenSettingData[this.cursor.data.y][this.cursor.data.x].isNew = true;
+  }
+
 };
 
 // TM.ScreenManager private functions
@@ -125,7 +146,7 @@ TM.ScreenManager.prototype.startLoadingFont = function(){
   else {
     this.loadWebFont();
   }
-}
+};
 TM.ScreenManager.prototype.loadWebFont = function(){
   var _self = this;
   return function(){
@@ -136,7 +157,7 @@ TM.ScreenManager.prototype.loadWebFont = function(){
       }
     });
   };
-}
+};
 TM.ScreenManager.prototype.getInitialBgUpdateMap = function(){
   var bgUpdateMap = [];
   for(var i=0; i<this.screenSetting.row; i++){
@@ -177,7 +198,8 @@ TM.ScreenManager.prototype.initScreenData = function(){
     }
   }
 };
-TM.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor){
+TM.ScreenManager.prototype.insertCharAt = function(x,y,char,color,backgroundColor){
+  this.cursor.move(x+1,y);
   if(this.isInCanvas(x,y)
   && (this.screenSettingData[y][x].char != char
     || this.screenSettingData[y][x].color != (color?color:this.screenSetting.defalutFontColor)
@@ -195,12 +217,12 @@ TM.ScreenManager.prototype.insertChar = function(x,y,char,color,backgroundColor)
     if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screenSettingData[y][x+(fullwidth?2:1)].draw = true;
   }
 };
-TM.ScreenManager.prototype.deleteChar = function(x,y){
-  this.insertChar(x,y,' ');
+TM.ScreenManager.prototype.deleteCharAt = function(x,y){
+  this.insertCharAt(x,y,' ');
 };
 TM.ScreenManager.prototype.showLoading = function(){
-  this.insertText(0,0,"Loading ...");
-}
+  this.insertTextAt(0,0,"Loading...");
+};
 
 // TM.ScreenManager public functions
 TM.ScreenManager.prototype.onReady = function(func){
@@ -210,7 +232,7 @@ TM.ScreenManager.prototype.onReady = function(func){
   else {
     this.onReadyFunc = func;
   }
-}
+};
 TM.ScreenManager.prototype.checkReady = function(){
   var isReady = false;
 
@@ -218,7 +240,7 @@ TM.ScreenManager.prototype.checkReady = function(){
 
   isReady = isFontReady;
   return isReady;
-}
+};
 TM.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
   if(typeof char != 'string') char = ' ';
   this.screenSettingData = [];
@@ -232,25 +254,32 @@ TM.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
 TM.ScreenManager.prototype.clearScreen = function(){
   this.fillScreen(' ');
 };
-TM.ScreenManager.prototype.insertText = function(x,y,text,color,backgroundColor){
+TM.ScreenManager.prototype.nextLine = function(x){
+  this.cursor.nextLine(x);
+};
+TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
+  this.insertTextAt(this.cursor.data.x,this.cursor.data.y,text,color,backgroundColor);
+};
+TM.ScreenManager.prototype.insertTextAt = function(x,y,text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
-  if(y<0 || y>=this.screenSettingData.length) return;
   for(var i=0; i<text.length; i++){
+    if(y<0 || y>=this.screenSettingData.length) break;
     if(x+i>=0 && x+i <this.screenSetting.column){
-      this.insertChar(x+i,y,text[i],color,backgroundColor);
+      this.insertCharAt(x+i,y,text[i],color,backgroundColor);
       var fullwidth = regex.test(text[i]);
       if(fullwidth){
         i++;
-        this.insertChar(x+i,y,'$fullwidthFiller',color,backgroundColor);
+        this.insertCharAt(x+i,y,'$fullwidthFiller',color,backgroundColor);
       }
     }
   }
+
 };
-TM.ScreenManager.prototype.deleteText = function(x,y,text){
+TM.ScreenManager.prototype.deleteTextAt = function(x,y,text){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
-  this.insertText(x,y,text.replace(/./g,' '));
+  this.insertTextAt(x,y,text.replace(/./g,' '));
 };
 TM.ScreenManager.prototype.copyScreen = function(){
   var copyToCanvas = document.createElement('canvas');

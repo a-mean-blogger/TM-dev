@@ -5,9 +5,9 @@ var TM = {};
 TM.defaultSettings = {
   screen: {
     canvasId: 'tm-canvas',
-    fontSize: 15,
+    fontSize: 30,
     frameSpeed: 10,
-    zoom: 1,
+    zoom: 0.5,
     column: 60,
     row: 20,
     backgroundColor: '#151617',

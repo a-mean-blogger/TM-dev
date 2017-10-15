@@ -13,6 +13,7 @@ gulp.task('default', function() {
     './src/base-objects/i-loop-object.js',
     './src/base-objects/i-program.js',
     './src/managers/screen-manager/screen-manager_char.js',
+    './src/managers/screen-manager/screen-manager_cursor.js',
     './src/managers/screen-manager/screen-manager.js',
     './src/managers/input-manager/input-manager_keyboard.js',
     './src/managers/input-manager/input-manager.js',

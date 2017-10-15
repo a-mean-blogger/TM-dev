@@ -65,6 +65,7 @@ var MAIN = {
     }
   },
   init: function(){
+    MAIN.TMS.cursor.hide();
     this.destroy();
     this.programs.intro.init();
   },

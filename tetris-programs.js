@@ -25,24 +25,24 @@ Program_Intro.prototype._destroy = function(){
 Program_Intro.prototype._calculate = function(){};
 Program_Intro.prototype._draw = function(){};
 Program_Intro.prototype._timeline = function(){
-  if(this.loopCount ==  10) MAIN.TMS.insertText(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
-  if(this.loopCount ==  20) MAIN.TMS.insertText(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
-  if(this.loopCount ==  30) MAIN.TMS.insertText(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
-  if(this.loopCount ==  40) MAIN.TMS.insertText(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
-  if(this.loopCount ==  50) MAIN.TMS.insertText(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
-  if(this.loopCount ==  60) MAIN.TMS.insertText(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
-  if(this.loopCount ==  70) MAIN.TMS.insertText(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.loopCount ==  10) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
+  if(this.loopCount ==  20) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
+  if(this.loopCount ==  30) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
+  if(this.loopCount ==  40) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
+  if(this.loopCount ==  50) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
+  if(this.loopCount ==  60) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
+  if(this.loopCount ==  70) MAIN.TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(this.loopCount ==  70){
     this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
     this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
-    MAIN.TMS.insertText(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
-    MAIN.TMS.insertText(this.data.x,this.data.y+9, "  △   : Shift","#fff");
-    MAIN.TMS.insertText(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
-    MAIN.TMS.insertText(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
-    MAIN.TMS.insertText(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
-    MAIN.TMS.insertText(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
-    MAIN.TMS.insertText(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
-    MAIN.TMS.insertText(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+9, "  △   : Shift","#fff");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
+    MAIN.TMS.insertTextAt(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
   }
 };
 Program_Intro.prototype._getInput = function(){
