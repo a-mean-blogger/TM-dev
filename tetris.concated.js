@@ -1,3 +1,5 @@
+(function(){
+  
 console.log('tetris-object.js loaded');
 
 var TextObject = function(data, speed, patternFunc){
@@ -922,3 +924,5 @@ var MAIN = {
 MAIN.TMS.onReady(function(){
   MAIN.init();
 });
+
+})();
