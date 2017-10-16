@@ -95,11 +95,11 @@ PausePopup.prototype._draw = function(){
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
+  TMS.cursor.move(this.data.x,this.data.y);
+  TMS.insertText('┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃            [ PAUSED ]              ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃                                    ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
 };
 
 //=============================
@@ -139,16 +139,15 @@ GameOverPopup.prototype._draw = function(){
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  TMS.cursor.move(this.data.x,this.data.y);
+  TMS.insertText('┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃      [ GAME OVER ]       ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃                          ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃    YOUR SCORE:           ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃                          ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃                          ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┃                          ┃','#fff',this.data.bgColor); TMS.nextLine(this.data.x);
+  TMS.insertText('┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
   TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
@@ -188,22 +187,26 @@ Status.convertScore = function(score){
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
-  TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
-  TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
-  TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
-  TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
+  TMS.cursor.move(this.data.x, this.data.y);
+  TMS.insertText(' LEVEL :'); TMS.nextLine(this.data.x);
+  TMS.insertText(' GOAL  :'); TMS.nextLine(this.data.x);
+  TMS.insertText('┍ N E X T  ┑'); TMS.nextLine(this.data.x);
+  TMS.insertText('│      │'); TMS.nextLine(this.data.x);
+  TMS.insertText('│      │'); TMS.nextLine(this.data.x);
+  TMS.insertText('│      │'); TMS.nextLine(this.data.x);
+  TMS.insertText('│      │'); TMS.nextLine(this.data.x);
+  TMS.insertText('┕━━━━━━┙'); TMS.nextLine(this.data.x);
+  TMS.insertText(' YOUR SCORE :'); TMS.nextLine(this.data.x);
+  TMS.nextLine(this.data.x);
+  TMS.insertText(' LAST SCORE :');TMS.nextLine(this.data.x);
+  TMS.nextLine(this.data.x);
+  TMS.insertText(' BEST SCORE :');TMS.nextLine(this.data.x);
+  TMS.nextLine(this.data.x); TMS.nextLine(this.data.x);
+  TMS.insertText('  △   : Shift        SPACE : Hard Drop');TMS.nextLine(this.data.x);
+  TMS.insertText('◁  ▷ : Left / Right   P   : Pause');TMS.nextLine(this.data.x);
+  TMS.insertText('  ▽   : Soft Drop     ESC  : Quit');TMS.nextLine(this.data.x);
+  TMS.nextLine(this.data.x); TMS.nextLine(this.data.x);
+  TMS.insertText('www.A-MEAN-Blog.com');TMS.nextLine(this.data.x);
 };
 Status.prototype.drawNextBlock = function(blockType){
   var xOffset = (blockType === 0 || blockType === 1)?0:1;

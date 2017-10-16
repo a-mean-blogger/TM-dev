@@ -31,18 +31,23 @@ Program_Intro.prototype._timeline = function(){
   if(this.loopCount ==  40) TMS.insertTextAt(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
   if(this.loopCount ==  50) TMS.insertTextAt(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
   if(this.loopCount ==  60) TMS.insertTextAt(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
-  if(this.loopCount ==  70) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(this.loopCount ==  70){
     this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
     this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
-    TMS.insertTextAt(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
-    TMS.insertTextAt(this.data.x,this.data.y+9, "  △   : Shift","#fff");
-    TMS.insertTextAt(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
-    TMS.insertTextAt(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
-    TMS.insertTextAt(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
-    TMS.insertTextAt(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
-    TMS.insertTextAt(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
-    TMS.insertTextAt(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
+  }
+  if(this.loopCount ==  80) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.loopCount ==  90){
+    TMS.cursor.move(this.data.x,this.data.y+7);
+    TMS.insertText("Please Enter Any Key to Start..","#fff"); TMS.nextLine(this.data.x);
+    TMS.nextLine(this.data.x);
+    TMS.insertText("  △   : Shift","#fff"); TMS.nextLine(this.data.x);
+    TMS.insertText("◁  ▷ : Left / Right","#eee"); TMS.nextLine(this.data.x);
+    TMS.insertText("  ▽   : Soft Drop","#ddd"); TMS.nextLine(this.data.x);
+    TMS.insertText(" SPACE : Hard Drop","#ccc"); TMS.nextLine(this.data.x);
+    TMS.insertText("   P   : Pause","#bbb"); TMS.nextLine(this.data.x);
+    TMS.insertText("  ESC  : Quit","#aaa"); TMS.nextLine(this.data.x);
+    TMS.nextLine(this.data.x);
+    TMS.insertText("BONUS FOR HARD DROPS / COMBOS","#aaa"); TMS.nextLine(this.data.x);
   }
 };
 Program_Intro.prototype._getInput = function(){
