@@ -43,6 +43,11 @@ TM.InputManager_Keyboard.prototype._init = function(){
 };
 TM.InputManager_Keyboard.prototype._destroy = function(){};
 
+// TM.InputManager_Keyboard functions - getInput
+TM.InputManager_Keyboard.prototype.getInput = function(question){
+  return prompt(question);
+};
+
 // TM.InputManager_Keyboard functions - keyState
 TM.InputManager_Keyboard.prototype.checkKeyState = function(keyCode){
   // console.log('keyCode: ', keyCode);
