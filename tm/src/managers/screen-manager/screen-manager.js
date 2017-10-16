@@ -301,12 +301,32 @@ TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
 
+  var initX = this.cursor.data.x;
+
   for(var i=0; i<text.length; i++){
-    var fullwidth = regex.test(text[i]);
-    this.insertChar(text[i],color,backgroundColor);
-    if(fullwidth){
-      i++;
-      this.insertChar('$fullwidthFiller',color,backgroundColor);
+    switch(text[i]){
+      case "\n":
+        var cursorData = this.cursor.data;
+        if(cursorData.y+1<this.screenSetting.row){
+          this.cursor.move(initX,cursorData.y+1);
+        }
+        else{
+          this.cursor.move(initX,cursorData.y);
+          this.scrollDown();
+        }
+        break;
+      case "\r":
+        var cursorData = this.cursor.data;
+        this.cursor.move(0,cursorData.y);
+        break;
+      default:
+        var fullwidth = regex.test(text[i]);
+        this.insertChar(text[i],color,backgroundColor);
+        if(fullwidth){
+          i++;
+          this.insertChar('$fullwidthFiller',color,backgroundColor);
+        }
+        break;
     }
   }
 };
