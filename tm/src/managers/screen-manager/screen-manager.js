@@ -44,12 +44,12 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
 
   this.scrollNum = 0;
   this.cursor = new TM.ScreenManager_Cursor({
-    x:0,
-    y:0,
-    color:"gray",
-    width:this.blockWidth,
-    size:0.1,
-    isHidden:false,
+    xMax: this.screenSetting.column-1,
+    yMax: this.screenSetting.row-1,
+    color: "gray",
+    width: this.blockWidth,
+    size: 0.1,
+    isHidden: false,
   });
 
   TM.ILoopObject.call(this, null, this.speed, this.autoStart);
@@ -186,7 +186,7 @@ TM.ScreenManager.prototype.refreshScreen = function(){
     }
   }
 };
-TM.ScreenManager.prototype.isInCanvas = function(x,y){
+TM.ScreenManager.prototype.isInScreenData = function(x,y){
   if(x>=0 && y>=0 && y<this.screenData.length && x<this.screenData[y].length) return true;
   else return false;
 };
@@ -201,21 +201,21 @@ TM.ScreenManager.prototype.initScreenData = function(){
 };
 TM.ScreenManager.prototype.insertCharAt = function(x,y,char,color,backgroundColor){
   this.cursor.move(x+1,y);
-  if(this.isInCanvas(x,y)
-  && (this.screenData[y][x].char != char
-    || this.screenData[y][x].color != (color?color:this.screenSetting.defalutFontColor)
-    || this.screenData[y][x].backgroundColor != (backgroundColor?backgroundColor:this.screenSetting.backgroundColor)
-    || (this.screenData[y][x].char[0] == '$' && this.screenData[y][x-1].isNew)
+  if(this.isInScreenData(x,y+this.scrollNum)
+  && (this.screenData[y+this.scrollNum][x].char != char
+    || this.screenData[y+this.scrollNum][x].color != (color?color:this.screenSetting.defalutFontColor)
+    || this.screenData[y+this.scrollNum][x].backgroundColor != (backgroundColor?backgroundColor:this.screenSetting.backgroundColor)
+    || (this.screenData[y+this.scrollNum][x].char[0] == '$' && this.screenData[y][x-1].isNew)
     )
   ){
     var regex = TM.common.getFullwidthRegex(this.charGroups);
     var fullwidth = regex.test(char);
 
-    this.screenData[y][x] = new TM.ScreenManager_Char(this.screenSetting, char,fullwidth,color,backgroundColor);
+    this.screenData[y+this.scrollNum][x] = new TM.ScreenManager_Char(this.screenSetting, char,fullwidth,color,backgroundColor);
 
     // to clean background outliner
-    if(this.isInCanvas(x-1,y)) this.screenData[y][x-1].draw = true;
-    if(this.isInCanvas(x+(fullwidth?2:1),y)) this.screenData[y][x+(fullwidth?2:1)].draw = true;
+    if(this.isInScreenData(x-1,y+this.scrollNum)) this.screenData[y+this.scrollNum][x-1].draw = true;
+    if(this.isInScreenData(x+(fullwidth?2:1),y+this.scrollNum)) this.screenData[y+this.scrollNum][x+(fullwidth?2:1)].draw = true;
   }
 };
 TM.ScreenManager.prototype.deleteCharAt = function(x,y){
@@ -276,23 +276,35 @@ TM.ScreenManager.prototype.nextLine = function(x){
   this.cursor.nextLine(x);
 };
 TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
-  this.insertTextAt(this.cursor.data.x,this.cursor.data.y,text,color,backgroundColor);
-};
-TM.ScreenManager.prototype.insertTextAt = function(x,y,text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
-  for(var i=0; i<text.length; i++){
-    if(y<0 || y>=this.screenData.length) break;
-    if(x+i>=0 && x+i <this.screenSetting.column){
-      this.insertCharAt(x+i,y,text[i],color,backgroundColor);
-      var fullwidth = regex.test(text[i]);
-      if(fullwidth){
-        i++;
-        this.insertCharAt(x+i,y,'$fullwidthFiller',color,backgroundColor);
+
+  for(
+    var i = 0, x = this.cursor.data.x, y = this.cursor.data.y;
+    x>=0 && i<text.length;
+    i++, x++
+  ){
+    var fullwidth = regex.test(text[i]);
+    if(x>=this.screenSetting.column){
+      if(y<this.screenData.length-1) {
+        y++;
       }
+      else{
+        this.scrollDown();
+      }
+      x = 0;
+    }
+    this.insertCharAt(x,y,text[i],color,backgroundColor);
+    if(fullwidth){
+      x++, i++;
+      this.insertCharAt(x,y,'$fullwidthFiller',color,backgroundColor);
     }
   }
-
+};
+TM.ScreenManager.prototype.insertTextAt = function(x,y,text,color,backgroundColor){
+  if(this.cursor.move(x,y)){
+    this.insertText(text,color,backgroundColor);
+  }
 };
 TM.ScreenManager.prototype.deleteTextAt = function(x,y,text){
   var regex = TM.common.getFullwidthRegex(this.charGroups);

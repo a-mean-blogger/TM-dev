@@ -26,34 +26,36 @@ var charGroups = {
   },
 };
 
-var MAIN = {
-  TMS: new TM.ScreenManager(screenSetting, charGroups),
-  TMD: new TM.DebugManager({devMode: true}),
-  TMI: new TM.InputManager(),
-  SETTINGS: {
-    COL_NUM: 11,
-    ROW_NUM: 23,
-    SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
-    KEYSET: {
-      QUIT: 27, // esc key
-      PAUSE: 80, // 'p';
-    },
-    COLORSET: {
-      WALL: '#F5F7FA',
-      CEILING: '#656D78',
-      BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
-      GAME_OVER_BLOCK: '#AAB2BD',
-    },
-    PLAYER1: {
-      KEYSET: {
-        RIGHT: 39,
-        LEFT: 37,
-        ROTATE: 38,
-        DOWN: 40,
-        DROP: 32, //space key
-      }
-    },
+var TMS = new TM.ScreenManager(screenSetting, charGroups),
+    TMD = new TM.DebugManager({devMode: true}),
+    TMI = new TM.InputManager();
+
+var GAME_SETTINGS = {
+  COL_NUM: 11,
+  ROW_NUM: 23,
+  SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
+  KEYSET: {
+    QUIT: 27, // esc key
+    PAUSE: 80, // 'p';
   },
+  COLORSET: {
+    WALL: '#F5F7FA',
+    CEILING: '#656D78',
+    BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
+    GAME_OVER_BLOCK: '#AAB2BD',
+  },
+  PLAYER1: {
+    KEYSET: {
+      RIGHT: 39,
+      LEFT: 37,
+      ROTATE: 38,
+      DOWN: 40,
+      DROP: 32, //space key
+    }
+  },
+};
+
+var MAIN = {
   programs: {
     intro: new Program_Intro(10,{x:5,y:3}),
     game: new Program_Game(100),
@@ -65,7 +67,7 @@ var MAIN = {
     }
   },
   init: function(){
-    MAIN.TMS.cursor.hide();
+    TMS.cursor.hide();
     this.destroy();
     this.programs.intro.init();
   },
@@ -81,6 +83,6 @@ var MAIN = {
   },
 };
 
-MAIN.TMS.onReady(function(){
+TMS.onReady(function(){
   MAIN.init();
 });

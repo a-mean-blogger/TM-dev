@@ -10,6 +10,8 @@ TM.ScreenManager_Cursor = function(data){
   this.data = {
     x: 0,
     y: 0,
+    xMax: undefined,
+    yMax: undefined,
     color: "gray",
     width: this.blockWidth,
     size: 0.1,
@@ -31,8 +33,13 @@ TM.ScreenManager_Cursor.prototype._draw = function(){};
 
 // TM.ScreenManager_Cursor functions
 TM.ScreenManager_Cursor.prototype.move = function(x,y){
-  this.data.x = x;
-  this.data.y = y;
+  var isMoved = false;
+  if(x>=0 && x<= this.data.xMax && y>=0 && y<= this.data.yMax){
+    isMoved = true;
+    this.data.x = x;
+    this.data.y = y;
+  }
+  return isMoved;
 };
 TM.ScreenManager_Cursor.prototype.nextLine = function(x){
   this.data.x = x?x:0;

@@ -24,10 +24,10 @@ TextObject.prototype._calculate = function(){
   this.patternFunc();
 };
 TextObject.prototype._draw = function(){
-  MAIN.TMS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
+  TMS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
   this.data.previous.x = this.data.x;
   this.data.previous.y = this.data.y;
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,this.data.text);
+  TMS.insertTextAt(this.data.x,this.data.y,this.data.text);
 };
 
 //=============================
@@ -51,14 +51,14 @@ Star.prototype.constructor = Star;
 // TM.ILoopObject functions implementation
 Star.prototype._init = function(){};
 Star.prototype._destroy = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,'  ');
+  TMS.insertTextAt(this.data.x,this.data.y,'  ');
 };
 Star.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
 Star.prototype._draw = function(){
   var text = this.data.blink%2===0?'★':'☆';
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,text,this.data.color);
+  TMS.insertTextAt(this.data.x,this.data.y,text,this.data.color);
 };
 
 //=============================
@@ -90,16 +90,16 @@ PausePopup.prototype._calculate = function(){
 };
 PausePopup.prototype._draw = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TMS.insertTextAt(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
+  TMS.insertTextAt(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
 
 //=============================
@@ -134,22 +134,22 @@ GameOverPopup.prototype._calculate = function(){
 };
 GameOverPopup.prototype._draw = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TMS.insertTextAt(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
+  TMS.insertTextAt(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
 //=============================
@@ -161,7 +161,7 @@ var Status = function(data){
   this.data = {
     x: undefined,
     y: undefined,
-    COLORSET: MAIN.SETTINGS.COLORSET,
+    COLORSET: GAME_SETTINGS.COLORSET,
   };
   TM.IObject.call(this, data);
 };
@@ -188,22 +188,22 @@ Status.convertScore = function(score){
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
-  MAIN.TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
+  TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
+  TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
+  TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
+  TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
 };
 Status.prototype.drawNextBlock = function(blockType){
   var xOffset = (blockType === 0 || blockType === 1)?0:1;
@@ -217,30 +217,30 @@ Status.prototype.drawNextBlock = function(blockType){
       var x = xAdj+j*2;
       var y = yAdj+i;
       if(j>0 && Tetris.BLOCKS[blockType][0][i][j-1]==1) {
-        MAIN.TMS.insertTextAt(x,y,'■', color);
+        TMS.insertTextAt(x,y,'■', color);
       }
       else {
-        MAIN.TMS.insertTextAt(x,y,'  ');
+        TMS.insertTextAt(x,y,'  ');
       }
     }
   }
 };
 Status.prototype.drawLevel = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TMS.insertTextAt(this.data.x+9, this.data.y, num);
+  TMS.insertTextAt(this.data.x+9, this.data.y, num);
 };
 Status.prototype.drawGoal = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TMS.insertTextAt(this.data.x+9, this.data.y+1, num);
+  TMS.insertTextAt(this.data.x+9, this.data.y+1, num);
 };
 Status.prototype.drawScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(score));
 };
 Status.prototype.drawLastScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(score));
 };
 Status.prototype.drawBestScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(score));
 };
 Status.prototype.updateLastScore = function(score){
   MAIN.data.scores.lastScore = score;
@@ -263,9 +263,9 @@ var Tetris = function(data){
     x: undefined,
     y: undefined,
     refStatus: undefined,
-    COL_NUM: MAIN.SETTINGS.COL_NUM,
-    ROW_NUM: MAIN.SETTINGS.ROW_NUM,
-    COLORSET: MAIN.SETTINGS.COLORSET,
+    COL_NUM: GAME_SETTINGS.COL_NUM,
+    ROW_NUM: GAME_SETTINGS.ROW_NUM,
+    COLORSET: GAME_SETTINGS.COLORSET,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -314,7 +314,7 @@ Tetris.prototype._init = function(){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype._destroy = function(blockType){
-  MAIN.TMD.delete('test');
+  TMD.delete('test');
   if(this.gameOverPopup) this.gameOverPopup.destroy();
 };
 Tetris.prototype._calculate = function(){
@@ -328,7 +328,7 @@ Tetris.prototype._calculate = function(){
 
 
   var activeBlockData = this.data.activeBlock.data;
-  MAIN.TMD.print('test',{
+  TMD.print('test',{
     'activeBlock.type': activeBlockData.type,
     'activeBlock.rotation': activeBlockData.rotation,
     'activeBlock.x': activeBlockData.x,
@@ -381,7 +381,7 @@ Tetris.prototype._draw = function(){
           color = COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
           break;
       }
-      MAIN.TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
+      TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
     }
   }
 };
@@ -517,10 +517,10 @@ Tetris.prototype.addScore = function(score){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
-  if(level<=MAIN.SETTINGS.SPEED_LOOKUP.length){
-    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[this.data.level-1];
+  if(level<=GAME_SETTINGS.SPEED_LOOKUP.length){
+    this.data.autoDropCountMax = GAME_SETTINGS.SPEED_LOOKUP[this.data.level-1];
   }else{
-    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[MAIN.SETTINGS.SPEED_LOOKUP.length-1];
+    this.data.autoDropCountMax = GAME_SETTINGS.SPEED_LOOKUP[GAME_SETTINGS.SPEED_LOOKUP.length-1];
   }
 };
 Tetris.prototype.levelUp = function(){

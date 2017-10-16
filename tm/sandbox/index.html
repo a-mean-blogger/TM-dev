@@ -14,9 +14,10 @@
     <canvas id="tm-canvas"></canvas>
     <div id="tm-debug-output"></div>
     <script>
-      var TMS = new TM.ScreenManager();
-      var TMI = new TM.InputManager();
-      var TMD = new TM.DebugManager();
+      var TMS = new TM.ScreenManager(),
+          TMI = new TM.InputManager(),
+          TMD = new TM.DebugManager();
+          
       TMS.cursor.move(1,1);
       TMS.insertText("TMS: new TM.ScreenManager() instance");
       TMS.nextLine(1);

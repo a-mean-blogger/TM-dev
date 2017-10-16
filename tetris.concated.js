@@ -26,10 +26,10 @@ TextObject.prototype._calculate = function(){
   this.patternFunc();
 };
 TextObject.prototype._draw = function(){
-  MAIN.TMS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
+  TMS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
   this.data.previous.x = this.data.x;
   this.data.previous.y = this.data.y;
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,this.data.text);
+  TMS.insertTextAt(this.data.x,this.data.y,this.data.text);
 };
 
 //=============================
@@ -53,14 +53,14 @@ Star.prototype.constructor = Star;
 // TM.ILoopObject functions implementation
 Star.prototype._init = function(){};
 Star.prototype._destroy = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,'  ');
+  TMS.insertTextAt(this.data.x,this.data.y,'  ');
 };
 Star.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
 Star.prototype._draw = function(){
   var text = this.data.blink%2===0?'★':'☆';
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,text,this.data.color);
+  TMS.insertTextAt(this.data.x,this.data.y,text,this.data.color);
 };
 
 //=============================
@@ -92,16 +92,16 @@ PausePopup.prototype._calculate = function(){
 };
 PausePopup.prototype._draw = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TMS.insertTextAt(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
+  TMS.insertTextAt(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
 };
 
 //=============================
@@ -136,22 +136,22 @@ GameOverPopup.prototype._calculate = function(){
 };
 GameOverPopup.prototype._draw = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
-  MAIN.TMS.insertTextAt(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
+  TMS.insertTextAt(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
 };
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
-  MAIN.TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
 //=============================
@@ -163,7 +163,7 @@ var Status = function(data){
   this.data = {
     x: undefined,
     y: undefined,
-    COLORSET: MAIN.SETTINGS.COLORSET,
+    COLORSET: GAME_SETTINGS.COLORSET,
   };
   TM.IObject.call(this, data);
 };
@@ -190,22 +190,22 @@ Status.convertScore = function(score){
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
-  MAIN.TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
-  MAIN.TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
+  TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
+  TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
+  TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
+  TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
+  TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
+  TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
 };
 Status.prototype.drawNextBlock = function(blockType){
   var xOffset = (blockType === 0 || blockType === 1)?0:1;
@@ -219,30 +219,30 @@ Status.prototype.drawNextBlock = function(blockType){
       var x = xAdj+j*2;
       var y = yAdj+i;
       if(j>0 && Tetris.BLOCKS[blockType][0][i][j-1]==1) {
-        MAIN.TMS.insertTextAt(x,y,'■', color);
+        TMS.insertTextAt(x,y,'■', color);
       }
       else {
-        MAIN.TMS.insertTextAt(x,y,'  ');
+        TMS.insertTextAt(x,y,'  ');
       }
     }
   }
 };
 Status.prototype.drawLevel = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TMS.insertTextAt(this.data.x+9, this.data.y, num);
+  TMS.insertTextAt(this.data.x+9, this.data.y, num);
 };
 Status.prototype.drawGoal = function(num){
   num = (num>9)?num:' '+num;
-  MAIN.TMS.insertTextAt(this.data.x+9, this.data.y+1, num);
+  TMS.insertTextAt(this.data.x+9, this.data.y+1, num);
 };
 Status.prototype.drawScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(score));
 };
 Status.prototype.drawLastScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(score));
 };
 Status.prototype.drawBestScore = function(score){
-  MAIN.TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(score));
+  TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(score));
 };
 Status.prototype.updateLastScore = function(score){
   MAIN.data.scores.lastScore = score;
@@ -265,9 +265,9 @@ var Tetris = function(data){
     x: undefined,
     y: undefined,
     refStatus: undefined,
-    COL_NUM: MAIN.SETTINGS.COL_NUM,
-    ROW_NUM: MAIN.SETTINGS.ROW_NUM,
-    COLORSET: MAIN.SETTINGS.COLORSET,
+    COL_NUM: GAME_SETTINGS.COL_NUM,
+    ROW_NUM: GAME_SETTINGS.ROW_NUM,
+    COLORSET: GAME_SETTINGS.COLORSET,
     level: 1,
     goalCount: 10,
     goalCountMax: 10,
@@ -316,7 +316,7 @@ Tetris.prototype._init = function(){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype._destroy = function(blockType){
-  MAIN.TMD.delete('test');
+  TMD.delete('test');
   if(this.gameOverPopup) this.gameOverPopup.destroy();
 };
 Tetris.prototype._calculate = function(){
@@ -330,7 +330,7 @@ Tetris.prototype._calculate = function(){
 
 
   var activeBlockData = this.data.activeBlock.data;
-  MAIN.TMD.print('test',{
+  TMD.print('test',{
     'activeBlock.type': activeBlockData.type,
     'activeBlock.rotation': activeBlockData.rotation,
     'activeBlock.x': activeBlockData.x,
@@ -383,7 +383,7 @@ Tetris.prototype._draw = function(){
           color = COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
           break;
       }
-      MAIN.TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
+      TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
     }
   }
 };
@@ -519,10 +519,10 @@ Tetris.prototype.addScore = function(score){
   this.data.refStatus.drawScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
-  if(level<=MAIN.SETTINGS.SPEED_LOOKUP.length){
-    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[this.data.level-1];
+  if(level<=GAME_SETTINGS.SPEED_LOOKUP.length){
+    this.data.autoDropCountMax = GAME_SETTINGS.SPEED_LOOKUP[this.data.level-1];
   }else{
-    this.data.autoDropCountMax = MAIN.SETTINGS.SPEED_LOOKUP[MAIN.SETTINGS.SPEED_LOOKUP.length-1];
+    this.data.autoDropCountMax = GAME_SETTINGS.SPEED_LOOKUP[GAME_SETTINGS.SPEED_LOOKUP.length-1];
   }
 };
 Tetris.prototype.levelUp = function(){
@@ -728,36 +728,36 @@ Program_Intro.prototype.constructor = Program_Intro;
 
 // TM.IProgram functions implementation
 Program_Intro.prototype._init = function(){
-  MAIN.TMI.keyboard.clearKey();
+  TMI.keyboard.clearKey();
 };
 Program_Intro.prototype._destroy = function(){
-  MAIN.TMS.clearScreen();
+  TMS.clearScreen();
 };
 Program_Intro.prototype._calculate = function(){};
 Program_Intro.prototype._draw = function(){};
 Program_Intro.prototype._timeline = function(){
-  if(this.loopCount ==  10) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
-  if(this.loopCount ==  20) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
-  if(this.loopCount ==  30) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
-  if(this.loopCount ==  40) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
-  if(this.loopCount ==  50) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
-  if(this.loopCount ==  60) MAIN.TMS.insertTextAt(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
-  if(this.loopCount ==  70) MAIN.TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.loopCount ==  10) TMS.insertTextAt(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
+  if(this.loopCount ==  20) TMS.insertTextAt(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
+  if(this.loopCount ==  30) TMS.insertTextAt(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
+  if(this.loopCount ==  40) TMS.insertTextAt(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
+  if(this.loopCount ==  50) TMS.insertTextAt(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
+  if(this.loopCount ==  60) TMS.insertTextAt(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
+  if(this.loopCount ==  70) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(this.loopCount ==  70){
     this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
     this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+9, "  △   : Shift","#fff");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
-    MAIN.TMS.insertTextAt(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
+    TMS.insertTextAt(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
+    TMS.insertTextAt(this.data.x,this.data.y+9, "  △   : Shift","#fff");
+    TMS.insertTextAt(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
+    TMS.insertTextAt(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
+    TMS.insertTextAt(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
+    TMS.insertTextAt(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
+    TMS.insertTextAt(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
+    TMS.insertTextAt(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
   }
 };
 Program_Intro.prototype._getInput = function(){
-  if(!MAIN.TMI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.QUIT) &&  MAIN.TMI.keyboard.checkKeyAny()){
+  if(!TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.QUIT) &&  TMI.keyboard.checkKeyAny()){
     MAIN.changeProgram(MAIN.programs.game);
   }
 };
@@ -783,58 +783,58 @@ Program_Game.prototype.constructor = Program_Game;
 
 // TM.IProgram functions implementation
 Program_Game.prototype._init = function(){
-  MAIN.TMI.keyboard.clearKey();
+  TMI.keyboard.clearKey();
   this.data.isPaused = false;
   this.uniqueObjects.status = new Status({x:28,y:3});
   this.uniqueObjects.player1Game = new Tetris({x:3,y:1,refStatus:this.uniqueObjects.status});
 };
 Program_Game.prototype._destroy = function(){
-  MAIN.TMS.clearScreen();
+  TMS.clearScreen();
 };
 Program_Game.prototype._calculate = function(){};
 Program_Game.prototype._draw = function(){};
 Program_Game.prototype._timeline = function(){};
 Program_Game.prototype._getInput = function(){
-  if(MAIN.TMI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.QUIT)){
+  if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.QUIT)){
     MAIN.changeProgram(MAIN.programs.intro);
   }
-  if(MAIN.TMI.keyboard.checkKey(MAIN.SETTINGS.KEYSET.PAUSE)){
+  if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.PAUSE)){
     if(this.data.isPaused){
       this.data.isPaused = false;
       this.uniqueObjects.player1Game.interval.start();
       this.uniqueObjects.pausePopup.destroy();
-      MAIN.TMS.pasteScreen(this.data.pausedScreen);
-      MAIN.TMI.keyboard.clearKey();
+      TMS.pasteScreen(this.data.pausedScreen);
+      TMI.keyboard.clearKey();
     }
     else {
       this.data.isPaused = true;
       this.uniqueObjects.player1Game.interval.stop();
-      this.data.pausedScreen = MAIN.TMS.copyScreen();
-      MAIN.TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
+      this.data.pausedScreen = TMS.copyScreen();
+      TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.uniqueObjects.pausePopup = new PausePopup({x:15,y:11,bgColor:"#444"},800);
     }
   }
 
   if(!this.data.isPaused){
-    this.checkTetrisInput(this.uniqueObjects.player1Game, MAIN.SETTINGS.PLAYER1.KEYSET);
+    this.checkTetrisInput(this.uniqueObjects.player1Game, GAME_SETTINGS.PLAYER1.KEYSET);
   }
 };
 
 // Custom functions
 Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET){
-  if(MAIN.TMI.keyboard.checkKey(KEYSET.RIGHT)){
+  if(TMI.keyboard.checkKey(KEYSET.RIGHT)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.RIGHT);
   }
-  if(MAIN.TMI.keyboard.checkKey(KEYSET.LEFT)){
+  if(TMI.keyboard.checkKey(KEYSET.LEFT)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.LEFT);
   }
-  if(MAIN.TMI.keyboard.checkKey(KEYSET.DOWN)){
+  if(TMI.keyboard.checkKey(KEYSET.DOWN)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.DOWN);
   }
-  if(MAIN.TMI.keyboard.checkKey(KEYSET.ROTATE)){
+  if(TMI.keyboard.checkKey(KEYSET.ROTATE)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.ROTATE);
   }
-  if(MAIN.TMI.keyboard.checkKey(KEYSET.DROP)){
+  if(TMI.keyboard.checkKey(KEYSET.DROP)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.DROP);
   }
 };
@@ -905,7 +905,7 @@ var MAIN = {
     }
   },
   init: function(){
-    MAIN.TMS.cursor.hide();
+    TMS.cursor.hide();
     this.destroy();
     this.programs.intro.init();
   },
@@ -921,7 +921,7 @@ var MAIN = {
   },
 };
 
-MAIN.TMS.onReady(function(){
+TMS.onReady(function(){
   MAIN.init();
 });
 
