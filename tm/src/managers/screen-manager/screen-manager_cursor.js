@@ -8,6 +8,7 @@ TM.ScreenManager_Cursor = function(data){
   this.autoStart = true;
   this.speed = 500;
   this.data = {
+    refScreenManager: undefined,
     x: 0,
     y: 0,
     xMax: undefined,
@@ -16,6 +17,7 @@ TM.ScreenManager_Cursor = function(data){
     width: this.blockWidth,
     size: 0.1,
     isHidden: false,
+    isUpdated: true,
   };
   TM.ILoopObject.call(this, data, this.speed, this.autoStart);
 };
@@ -28,6 +30,7 @@ TM.ScreenManager_Cursor.prototype._init = function(){};
 TM.ScreenManager_Cursor.prototype._destroy = function(){};
 TM.ScreenManager_Cursor.prototype._calculate = function(){
   this.data.isHidden = !this.data.isHidden;
+  this.data.isUpdated = true;
 };
 TM.ScreenManager_Cursor.prototype._draw = function(){};
 
@@ -35,6 +38,8 @@ TM.ScreenManager_Cursor.prototype._draw = function(){};
 TM.ScreenManager_Cursor.prototype.move = function(x,y){
   var isMoved = false;
   if(x>=0 && x<= this.data.xMax && y>=0 && y<= this.data.yMax){
+    var screenMgr = this.data.refScreenManager;
+    screenMgr.screenData[this.data.y+screenMgr.scrollOffsetY][this.data.x].isNew = true;
     isMoved = true;
     this.data.x = x;
     this.data.y = y;

@@ -44,12 +44,12 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
 
   this.scrollOffsetY = 0;
   this.cursor = new TM.ScreenManager_Cursor({
+    refScreenManager: this,
     xMax: this.screenSetting.column-1,
     yMax: this.screenSetting.row-1,
     color: "gray",
     width: this.blockWidth,
     size: 0.1,
-    isHidden: false,
   });
 
   TM.ILoopObject.call(this, null, this.speed, this.autoStart);
@@ -126,14 +126,20 @@ TM.ScreenManager.prototype._draw = function(){
   }
 
   //draw.cursor
-  if(!this.cursor.data.isHidden){
-    var cursorWidth = this.cursor.data.width;
-    var cursorHeight = this.blockHeight*this.cursor.data.size;
-    var cursorX = this.blockWidth*this.cursor.data.x;
-    var cursorY = (this.blockHeight)*(this.cursor.data.y)+(this.blockHeight-cursorHeight);
-    ctx.fillStyle = this.cursor.data.color;
-    ctx.fillRect(cursorX,cursorY,cursorWidth,cursorHeight);
-    this.screenData[this.cursor.data.y][this.cursor.data.x].isNew = true;
+  var cursorData = this.cursor.data;
+  if(cursorData.isUpdated){
+    cursorData.isUpdated = false;
+    if(cursorData.isHidden){
+      this.screenData[cursorData.y+this.scrollOffsetY][cursorData.x].isNew = true;
+    }
+    else {
+      var cursorWidth = cursorData.width;
+      var cursorHeight = this.blockHeight*cursorData.size;
+      var cursorX = this.blockWidth*cursorData.x;
+      var cursorY = (this.blockHeight)*(cursorData.y)+(this.blockHeight-cursorHeight);
+      ctx.fillStyle = cursorData.color;
+      ctx.fillRect(cursorX,cursorY,cursorWidth,cursorHeight);
+    }
   }
 
 };
@@ -219,7 +225,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
       var regex = TM.common.getFullwidthRegex(this.charGroups);
       var fullwidth = regex.test(char);
 
-      this.screenData[dataY][dataX] = new TM.ScreenManager_Char(this.screenSetting, char,fullwidth,color,backgroundColor);
+      this.screenData[dataY][dataX] = new TM.ScreenManager_Char(this.screenSetting,char,fullwidth,color,backgroundColor);
 
       // to clean background outliner
       if(this.isInScreen(screenX-1,screenY)) this.screenData[dataY][dataX-1].draw = true;
