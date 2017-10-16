@@ -1,5 +1,5 @@
 (function(){
-  
+
 console.log('tetris-object.js loaded');
 
 var TextObject = function(data, speed, patternFunc){
@@ -97,11 +97,11 @@ PausePopup.prototype._draw = function(){
 
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+1,'┃                  ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+2,'┃                  ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+3,'┗━━━━━━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+14,this.data.y+1,'[ PAUSED ]','#fff',this.data.bgColor);
+  TMS.cursor.move(this.data.x,this.data.y);
+  TMS.insertText('┏━━━━━━━━━━━━━━━━━━┓\n','#fff',this.data.bgColor);
+  TMS.insertText('┃            [ PAUSED ]              ┃\n','#fff',this.data.bgColor);
+  TMS.insertText('┃                                    ┃\n','#fff',this.data.bgColor);
+  TMS.insertText('┗━━━━━━━━━━━━━━━━━━┛\n','#fff',this.data.bgColor);
 };
 
 //=============================
@@ -141,16 +141,15 @@ GameOverPopup.prototype._draw = function(){
 
 // Custom functions
 GameOverPopup.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,this.data.y,  '┏━━━━━━━━━━━━━┓','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+1,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+2,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+3,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+4,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+5,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+6,'┃             ┃','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x,this.data.y+7,'┗━━━━━━━━━━━━━┛','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+8,this.data.y+1,'[ GAME OVER ]','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+6,this.data.y+3,'YOUR SCORE: ','#fff',this.data.bgColor);
+  TMS.cursor.move(this.data.x,this.data.y);
+  TMS.insertText('┏━━━━━━━━━━━━━┓\n','#fff',this.data.bgColor)
+  TMS.insertText('┃      [ GAME OVER ]       ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┃    YOUR SCORE:           ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
+  TMS.insertText('┗━━━━━━━━━━━━━┛\n','#fff',this.data.bgColor);
   TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
 };
 
@@ -190,22 +189,22 @@ Status.convertScore = function(score){
 
 // Custom functions
 Status.prototype.drawFrame = function(){
-  TMS.insertTextAt(this.data.x,   this.data.y+ 0, ' LEVEL :');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 1, ' GOAL  :');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 2, '┍      ┑');
-  TMS.insertTextAt(this.data.x+4, this.data.y+ 2, 'N E X T');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 3, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 4, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 5, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 6, '│      │');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 7, '┕━━━━━━┙');
-  TMS.insertTextAt(this.data.x,   this.data.y+ 8, ' YOUR SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+10, ' LAST SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+12, ' BEST SCORE :');
-  TMS.insertTextAt(this.data.x,   this.data.y+15, '  △   : Shift        SPACE : Hard Drop');
-  TMS.insertTextAt(this.data.x,   this.data.y+16, '◁  ▷ : Left / Right   P   : Pause');
-  TMS.insertTextAt(this.data.x,   this.data.y+17, '  ▽   : Soft Drop     ESC  : Quit');
-  TMS.insertTextAt(this.data.x,   this.data.y+20, 'www.A-MEAN-Blog.com');
+  TMS.cursor.move(this.data.x, this.data.y);
+  TMS.insertText(' LEVEL :\n');
+  TMS.insertText(' GOAL  :\n');
+  TMS.insertText('┍ N E X T  ┑\n');
+  TMS.insertText('│      │\n');
+  TMS.insertText('│      │\n');
+  TMS.insertText('│      │\n');
+  TMS.insertText('│      │\n');
+  TMS.insertText('┕━━━━━━┙\n');
+  TMS.insertText(' YOUR SCORE :\n\n');
+  TMS.insertText(' LAST SCORE :\n\n');
+  TMS.insertText(' BEST SCORE :\n\n\n');
+  TMS.insertText('  △   : Shift        SPACE : Hard Drop\n');
+  TMS.insertText('◁  ▷ : Left / Right   P   : Pause\n');
+  TMS.insertText('  ▽   : Soft Drop     ESC  : Quit\n\n\n');
+  TMS.insertText('www.A-MEAN-Blog.com\n');
 };
 Status.prototype.drawNextBlock = function(blockType){
   var xOffset = (blockType === 0 || blockType === 1)?0:1;
@@ -327,7 +326,6 @@ Tetris.prototype._calculate = function(){
   this.autoDrop();
   activeBlock.updateOnTetrisDataArray(this.data.dataArray);
   if(activeBlock.isInactivate1On()) this.inactivateBlock();
-
 
   var activeBlockData = this.data.activeBlock.data;
   TMD.print('test',{
@@ -736,24 +734,27 @@ Program_Intro.prototype._destroy = function(){
 Program_Intro.prototype._calculate = function(){};
 Program_Intro.prototype._draw = function(){};
 Program_Intro.prototype._timeline = function(){
-  if(this.loopCount ==  10) TMS.insertTextAt(this.data.x,    this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
-  if(this.loopCount ==  20) TMS.insertTextAt(this.data.x,    this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
-  if(this.loopCount ==  30) TMS.insertTextAt(this.data.x,    this.data.y+2, "□□□■       □■ ■","#ddd");
-  if(this.loopCount ==  40) TMS.insertTextAt(this.data.x,    this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
-  if(this.loopCount ==  50) TMS.insertTextAt(this.data.x,    this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
-  if(this.loopCount ==  60) TMS.insertTextAt(this.data.x,    this.data.y+5, "           www.A-MEAN-Blog.com","#aaa");
-  if(this.loopCount ==  70) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.loopCount ==  10) TMS.insertTextAt(this.data.x, this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
+  if(this.loopCount ==  20) TMS.insertTextAt(this.data.x, this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
+  if(this.loopCount ==  30) TMS.insertTextAt(this.data.x, this.data.y+2, "□□□■       □■ ■","#ddd");
+  if(this.loopCount ==  40) TMS.insertTextAt(this.data.x, this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
+  if(this.loopCount ==  50) TMS.insertTextAt(this.data.x, this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
+  if(this.loopCount ==  60) TMS.insertTextAt(this.data.x+11, this.data.y+5, "www.A-MEAN-Blog.com","#aaa");
   if(this.loopCount ==  70){
     this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
     this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
-    TMS.insertTextAt(this.data.x,this.data.y+7, "Please Enter Any Key to Start..","#fff");
-    TMS.insertTextAt(this.data.x,this.data.y+9, "  △   : Shift","#fff");
-    TMS.insertTextAt(this.data.x,this.data.y+10,"◁  ▷ : Left / Right","#eee");
-    TMS.insertTextAt(this.data.x,this.data.y+11,"  ▽   : Soft Drop","#ddd");
-    TMS.insertTextAt(this.data.x,this.data.y+12," SPACE : Hard Drop","#ccc");
-    TMS.insertTextAt(this.data.x,this.data.y+13,"   P   : Pause","#bbb");
-    TMS.insertTextAt(this.data.x,this.data.y+14,"  ESC  : Quit","#aaa");
-    TMS.insertTextAt(this.data.x,this.data.y+16,"BONUS FOR HARD DROPS / COMBOS","#aaa");
+  }
+  if(this.loopCount ==  80) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(this.loopCount ==  90){
+    TMS.cursor.move(this.data.x,this.data.y+7);
+    TMS.insertText("Please Enter Any Key to Start..\n\n","#fff");
+    TMS.insertText("  △   : Shift\n","#fff");
+    TMS.insertText("◁  ▷ : Left / Right\n","#eee");
+    TMS.insertText("  ▽   : Soft Drop\n","#ddd");
+    TMS.insertText(" SPACE : Hard Drop\n","#ccc");
+    TMS.insertText("   P   : Pause\n","#bbb");
+    TMS.insertText("  ESC  : Quit\n\n","#aaa");
+    TMS.insertText("BONUS FOR HARD DROPS / COMBOS\n","#aaa");
   }
 };
 Program_Intro.prototype._getInput = function(){
@@ -866,34 +867,36 @@ var charGroups = {
   },
 };
 
-var MAIN = {
-  TMS: new TM.ScreenManager(screenSetting, charGroups),
-  TMD: new TM.DebugManager({devMode: true}),
-  TMI: new TM.InputManager(),
-  SETTINGS: {
-    COL_NUM: 11,
-    ROW_NUM: 23,
-    SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
-    KEYSET: {
-      QUIT: 27, // esc key
-      PAUSE: 80, // 'p';
-    },
-    COLORSET: {
-      WALL: '#F5F7FA',
-      CEILING: '#656D78',
-      BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
-      GAME_OVER_BLOCK: '#AAB2BD',
-    },
-    PLAYER1: {
-      KEYSET: {
-        RIGHT: 39,
-        LEFT: 37,
-        ROTATE: 38,
-        DOWN: 40,
-        DROP: 32, //space key
-      }
-    },
+var TMS = new TM.ScreenManager(screenSetting, charGroups),
+    TMD = new TM.DebugManager({devMode: true}),
+    TMI = new TM.InputManager();
+
+var GAME_SETTINGS = {
+  COL_NUM: 11,
+  ROW_NUM: 23,
+  SPEED_LOOKUP: [80, 60, 40, 20, 10, 8, 4, 2, 1, 0],
+  KEYSET: {
+    QUIT: 27, // esc key
+    PAUSE: 80, // 'p';
   },
+  COLORSET: {
+    WALL: '#F5F7FA',
+    CEILING: '#656D78',
+    BLOCKS: ['#48CFAD', '#FFCE54', '#FC6E51', '#EC87C0', '#AC92EC', '#4FC1E9', '#A0D468'],
+    GAME_OVER_BLOCK: '#AAB2BD',
+  },
+  PLAYER1: {
+    KEYSET: {
+      RIGHT: 39,
+      LEFT: 37,
+      ROTATE: 38,
+      DOWN: 40,
+      DROP: 32, //space key
+    }
+  },
+};
+
+var MAIN = {
   programs: {
     intro: new Program_Intro(10,{x:5,y:3}),
     game: new Program_Game(100),
