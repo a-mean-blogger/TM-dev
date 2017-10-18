@@ -11,7 +11,7 @@ TM.defaultSettings = {
     column: 60,
     row: 20,
     backgroundColor: '#151617',
-    defalutFontColor: '#F5F7FA',
+    defaultFontColor: '#F5F7FA',
     webFontJsPath: 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js',
     fontFamily: 'monospace',
     fontSource: null,

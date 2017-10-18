@@ -217,7 +217,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
   if(this.isInScreen(screenX,screenY)){
 
     if(this.screenData[dataY][dataX].char != char
-      || this.screenData[dataY][dataX].color != (color?color:this.screenSetting.defalutFontColor)
+      || this.screenData[dataY][dataX].color != (color?color:this.screenSetting.defaultFontColor)
       || this.screenData[dataY][dataX].backgroundColor != (backgroundColor?backgroundColor:this.screenSetting.backgroundColor)
       || (this.screenData[dataY][dataX].char[0] == '$' && this.screenData[dataY][dataX-1].isNew)
     ){
