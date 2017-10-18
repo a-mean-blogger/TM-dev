@@ -4,11 +4,6 @@ console.log('TM.DebugManager loaded');
 // TM.DebugManager
 //=============================
 // Object Type: TM.IObject
-// Description: print data for debugging
-// functions:
-// - print: print data. 'name' should be unique otherwise it will replace the existing data
-// - delete: delete printed data with the name
-// - deleteAll: remove All printed data
 TM.DebugManager = function(debugSetting){
   this.debugSetting = TM.common.mergeObjects(TM.defaultSettings.debug, debugSetting);
 

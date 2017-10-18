@@ -3,8 +3,6 @@ console.log('TM.IProgram loaded');
 //=============================
 // TM.IProgram
 //=============================
-// Description: an object to control multiple TM.IObjects and/or TM.ILoopObjects
-//
 TM.IProgram = function(data, speed){
   this.autoStart = false;
   this.speed = speed;

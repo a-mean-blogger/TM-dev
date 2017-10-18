@@ -1,9 +1,8 @@
 console.log('TM.ILoopObject_Interval loaded');
 
 //=============================
-/* TM.ILoopObject_Interval    */
+// TM.ILoopObject_Interval
 //=============================
-// Description : control interval
 TM.ILoopObject_Interval = function(){
   this.id = undefined;
   this.func = undefined;

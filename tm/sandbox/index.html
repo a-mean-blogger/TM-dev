@@ -8,20 +8,22 @@
         float:left;
       }
     </style>
-    <script type="text/javascript" src="../dist/text-game-maker-1.0.0.min.js"></script>
+    <script type="text/javascript" src="../src/default-settings/default-settings.js"></script>
+    <script type="text/javascript" src="../src/common-functions/common.js"></script>
+    <script type="text/javascript" src="../src/base-objects/i-object.js"></script>
+    <script type="text/javascript" src="../src/base-objects/i-loop-object_interval.js"></script>
+    <script type="text/javascript" src="../src/base-objects/i-loop-object.js"></script>
+    <script type="text/javascript" src="../src/base-objects/i-program.js"></script>
+    <script type="text/javascript" src="../src/managers/screen-manager/screen-manager_char.js"></script>
+    <script type="text/javascript" src="../src/managers/screen-manager/screen-manager_cursor.js"></script>
+    <script type="text/javascript" src="../src/managers/screen-manager/screen-manager.js"></script>
+    <script type="text/javascript" src="../src/managers/input-manager/input-manager_keyboard.js"></script>
+    <script type="text/javascript" src="../src/managers/input-manager/input-manager.js"></script>
+    <script type="text/javascript" src="../src/managers/debug-manager/debug-manager.js"></script>
   </head>
   <body>
     <canvas id="tm-canvas"></canvas>
-    <div id="tm-debug-output"></div>
-    <script>
-      var TMS = new TM.ScreenManager(),
-          TMI = new TM.InputManager(),
-          TMD = new TM.DebugManager();
-
-      TMS.cursor.move(1,1);
-      TMS.insertText("TMS: new TM.ScreenManager() instance\n");
-      TMS.insertText("TMI: new TM.InputManager() instance\n");
-      TMS.insertText("TMD: new TM.DebugManager() instance\n\r");
-    </script>
+    <div id="tm-debug-output"></div>>
+    <script type="text/javascript" src="main.js"></script>
   </body>
 </html>

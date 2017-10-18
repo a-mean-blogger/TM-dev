@@ -3,10 +3,6 @@ console.log('TM.ILoopObject loaded');
 //=============================
 // TM.ILoopObject
 //=============================
-// Description: create an Object that does loop.
-//             speed is the interval(millisecond), caculate and draw are functions that loop.
-//             calculate is an interface function that need to be implemented and calculate values in data,
-//             draw is is an interface function that need to be implemented and display the values on screen,
 TM.ILoopObject = function(data, speed, autoStart){
   this.isActive = true; // need this to tell this object is not destroyed even though it's not autoStarted
   this.createWithOutInit = !autoStart;

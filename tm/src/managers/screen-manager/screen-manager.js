@@ -4,7 +4,6 @@ console.log('TM.ScreenManager loaded');
 // TM.ScreenManager
 //=============================
 // Object Type: TM.ILoopObject
-// Description: manages canvas screen
 TM.ScreenManager = function(customSreenSetting, customCharGroups){
   this.screenSetting = TM.common.mergeObjects(TM.defaultSettings.screen, customSreenSetting);
   this.charGroups = TM.common.mergeObjects(TM.defaultSettings.charGroups, customCharGroups);
@@ -335,10 +334,15 @@ TM.ScreenManager.prototype.insertTextAt = function(x,y,text,color,backgroundColo
     this.insertText(text,color,backgroundColor);
   }
 };
-TM.ScreenManager.prototype.deleteTextAt = function(x,y,text){
+TM.ScreenManager.prototype.deleteText = function(text){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
-  this.insertTextAt(x,y,text.replace(/./g,' '));
+  this.insertText(text.replace(/./g,' '));
+};
+TM.ScreenManager.prototype.deleteTextAt = function(x,y,text){
+  if(this.cursor.move(x,y)){
+    this.deleteText(text);
+  }
 };
 TM.ScreenManager.prototype.copyScreen = function(){
   var copyToCanvas = document.createElement('canvas');

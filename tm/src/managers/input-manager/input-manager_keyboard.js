@@ -4,12 +4,6 @@ console.log('TM.InputManager_Keyboard loaded');
 // TM.InputManager_Keyboard
 //=============================
 // Object Type: TM.IObject
-// Description: manages Keyboard inputs
-// functions:
-// - checkKeyState: check if key is pressed at the moment of checking
-// - checkKeyPressed: check if key is ever pressed since last check
-// - checkKeyState: checkKeyState+checkKeyPressed
-//                 (check if key is pressed at the moment of checking or if key is ever pressed since last check)
 TM.InputManager_Keyboard = function(inputManager){
   this.isAllowed = true;
   this.inputManager = inputManager;

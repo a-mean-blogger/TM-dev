@@ -1,9 +1,9 @@
-console.log('TM.ScreenManager_Char loaded');
+console.log('TM.ScreenManager_Cursor loaded');
 
 //=============================
-// TM.ScreenManager_Char
+// TM.ScreenManager_Cursor
 //=============================
-// Description: Contains char block information of screen.
+// Object Type: TM.ILoopObject
 TM.ScreenManager_Cursor = function(data){
   this.autoStart = true;
   this.speed = 500;

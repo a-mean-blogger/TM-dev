@@ -1,35 +1,5 @@
 console.log('tetris-object.js loaded');
 
-var TextObject = function(data, speed, patternFunc){
-  this.autoStart = true;
-  this.data = {
-    x: undefined,
-    y: undefined,
-    text: '',
-    previous: {
-      x: undefined,
-      y: undefined,
-    },
-  };
-  this.patternFunc = patternFunc;
-  TM.ILoopObject.call(this, data, speed, this.autoStart);
-};
-TextObject.prototype = Object.create(TM.ILoopObject.prototype);
-TextObject.prototype.constructor = TextObject;
-
-// TM.ILoopObject functions implementation
-TextObject.prototype._init = function(){};
-TextObject.prototype._destroy = function(){};
-TextObject.prototype._calculate = function(){
-  this.patternFunc();
-};
-TextObject.prototype._draw = function(){
-  TMS.deleteText(this.data.previous.x,this.data.previous.y,this.data.text);
-  this.data.previous.x = this.data.x;
-  this.data.previous.y = this.data.y;
-  TMS.insertTextAt(this.data.x,this.data.y,this.data.text);
-};
-
 //=============================
 // Star
 //=============================
