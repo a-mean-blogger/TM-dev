@@ -1,6 +1,3 @@
-console.log('TM.ILoopObject_Interval loaded');
-
-//=============================
 // TM.ILoopObject_Interval
 //=============================
 TM.ILoopObject_Interval = function(){

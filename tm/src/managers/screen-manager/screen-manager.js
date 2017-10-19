@@ -1,5 +1,3 @@
-console.log('TM.ScreenManager loaded');
-
 //=============================
 // TM.ScreenManager
 //=============================

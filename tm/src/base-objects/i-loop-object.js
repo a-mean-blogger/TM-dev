@@ -1,5 +1,3 @@
-console.log('TM.ILoopObject loaded');
-
 //=============================
 // TM.ILoopObject
 //=============================

@@ -1,5 +1,3 @@
-console.log('TM.InputManager loaded');
-
 //=============================
 // TM.InputManager
 //=============================

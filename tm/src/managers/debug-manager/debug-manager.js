@@ -1,5 +1,3 @@
-console.log('TM.DebugManager loaded');
-
 //=============================
 // TM.DebugManager
 //=============================

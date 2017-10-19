@@ -1,6 +1,5 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
-    rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
     header = require('gulp-header');
 
@@ -20,9 +19,7 @@ gulp.task('default', function() {
     './src/managers/debug-manager/debug-manager.js'
   ])
   .pipe(concat('text-game-maker-1.0.0.min.js'))
-  .pipe(uglify({
-    compress: { drop_console: true }
-  }))
+  .pipe(uglify())
   .pipe(header(headerText))
   .pipe(gulp.dest('./dist'));
 });

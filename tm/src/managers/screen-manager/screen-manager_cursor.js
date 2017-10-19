@@ -1,5 +1,3 @@
-console.log('TM.ScreenManager_Cursor loaded');
-
 //=============================
 // TM.ScreenManager_Cursor
 //=============================

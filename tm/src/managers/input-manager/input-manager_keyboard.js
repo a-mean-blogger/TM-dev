@@ -1,5 +1,3 @@
-console.log('TM.InputManager_Keyboard loaded');
-
 //=============================
 // TM.InputManager_Keyboard
 //=============================

@@ -1,5 +1,3 @@
-console.log('TM.defaultSettings loaded');
-
 var TM = {};
 
 TM.defaultSettings = {

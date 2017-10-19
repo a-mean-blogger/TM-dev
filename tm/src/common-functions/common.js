@@ -1,5 +1,3 @@
-console.log('TM.common loaded');
-
 TM.common = {};
 
 TM.common.getBlockWidth = function(fontSize){

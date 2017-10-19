@@ -1,5 +1,3 @@
-console.log('TM.ScreenManager_Char loaded');
-
 //=============================
 // TM.ScreenManager_Char
 //=============================
