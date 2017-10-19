@@ -6,14 +6,13 @@ console.log('tetris-object.js loaded');
 // Object Type: TM.ILoopObject
 // Description: Create a Blinking star
 var Star = function(data, speed){
-  this.autoStart = true;
   this.data = {
     x: undefined,
     y: undefined,
     color: undefined,
     blink: 0,
   };
-  TM.ILoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed);
 };
 Star.prototype = Object.create(TM.ILoopObject.prototype);
 Star.prototype.constructor = Star;
@@ -37,7 +36,6 @@ Star.prototype._draw = function(){
 // Object Type: TM.ILoopObject
 // Description: Create a Pause Popup box
 var PausePopup = function(data, speed){
-  this.autoStart = true;
   this.data = {
     x: undefined,
     y: undefined,
@@ -45,7 +43,7 @@ var PausePopup = function(data, speed){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TM.ILoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed);
 };
 PausePopup.prototype = Object.create(TM.ILoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
@@ -78,7 +76,6 @@ PausePopup.prototype.drawFrame = function(){
 // Object Type: TM.ILoopObject
 // Description: Create a Game Over Popup box
 var GameOverPopup = function(data, speed){
-  this.autoStart = true;
   this.data = {
     x: undefined,
     y: undefined,
@@ -88,7 +85,7 @@ var GameOverPopup = function(data, speed){
     score: 0,
     scoreText: '',
   };
-  TM.ILoopObject.call(this, data, speed, this.autoStart);
+  TM.ILoopObject.call(this, data, speed);
 };
 GameOverPopup.prototype = Object.create(TM.ILoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
@@ -226,7 +223,6 @@ Status.prototype.updateBestScore = function(score){
 // Object Type: TM.ILoopObject
 // Description: Main Tetris game
 var Tetris = function(data){
-  this.autoStart = true;
   this.speed = 10;
   this.data = {
     x: undefined,
@@ -251,7 +247,7 @@ var Tetris = function(data){
       popup: false,
     },
   };
-  TM.ILoopObject.call(this, data, this.speed, this.autoStart);
+  TM.ILoopObject.call(this, data, this.speed);
 };
 Tetris.prototype = Object.create(TM.ILoopObject.prototype);
 Tetris.prototype.constructor = Tetris;

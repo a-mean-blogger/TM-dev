@@ -5,7 +5,6 @@ console.log('TM.ScreenManager_Cursor loaded');
 //=============================
 // Object Type: TM.ILoopObject
 TM.ScreenManager_Cursor = function(data){
-  this.autoStart = true;
   this.speed = 500;
   this.data = {
     refScreenManager: undefined,
@@ -19,7 +18,7 @@ TM.ScreenManager_Cursor = function(data){
     isHidden: false,
     isUpdated: true,
   };
-  TM.ILoopObject.call(this, data, this.speed, this.autoStart);
+  TM.ILoopObject.call(this, data, this.speed);
 };
 TM.ScreenManager_Cursor.prototype = Object.create(TM.ILoopObject.prototype);
 TM.ScreenManager_Cursor.prototype.constructor = TM.ScreenManager_Cursor;

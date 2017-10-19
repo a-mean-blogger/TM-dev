@@ -3,12 +3,10 @@ console.log('TM.ILoopObject loaded');
 //=============================
 // TM.ILoopObject
 //=============================
-TM.ILoopObject = function(data, speed, autoStart){
-  this.isActive = true; // need this to tell this object is not destroyed even though it's not autoStarted
-  this.createWithOutInit = !autoStart;
+TM.ILoopObject = function(data, speed, postponeInit){
   this.speed = speed;
   this.interval = new TM.ILoopObject_Interval();
-  TM.IObject.call(this, data, this.createWithOutInit);
+  TM.IObject.call(this, data, postponeInit);
 };
 TM.ILoopObject.prototype = Object.create(TM.IObject.prototype);
 TM.ILoopObject.prototype.constructor = TM.ILoopObject;

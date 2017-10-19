@@ -4,9 +4,9 @@ console.log('TM.ILoopObject_Interval loaded');
 // TM.ILoopObject_Interval
 //=============================
 TM.ILoopObject_Interval = function(){
-  this.id = undefined;
-  this.func = undefined;
-  this.speed = undefined;
+  this.id = null;
+  this.func = null;
+  this.speed = null;
 };
 TM.ILoopObject_Interval.prototype.stop = function () {
   if(this.id) window.clearInterval(this.id);

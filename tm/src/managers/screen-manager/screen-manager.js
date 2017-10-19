@@ -7,8 +7,6 @@ console.log('TM.ScreenManager loaded');
 TM.ScreenManager = function(customSreenSetting, customCharGroups){
   this.screenSetting = TM.common.mergeObjects(TM.defaultSettings.screen, customSreenSetting);
   this.charGroups = TM.common.mergeObjects(TM.defaultSettings.charGroups, customCharGroups);
-
-  this.autoStart = true;
   this.speed = this.screenSetting.frameSpeed;
 
   try{
@@ -51,7 +49,7 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
     size: 0.1,
   });
 
-  TM.ILoopObject.call(this, null, this.speed, this.autoStart);
+  TM.ILoopObject.call(this, null, this.speed);
 };
 TM.ScreenManager.prototype = Object.create(TM.ILoopObject.prototype);
 TM.ScreenManager.prototype.constructor = TM.ScreenManager;

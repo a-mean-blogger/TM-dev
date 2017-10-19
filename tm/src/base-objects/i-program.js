@@ -4,12 +4,12 @@ console.log('TM.IProgram loaded');
 // TM.IProgram
 //=============================
 TM.IProgram = function(data, speed){
-  this.autoStart = false;
+  var postponeInit = true;
   this.speed = speed;
   this.objects = [];
   this.uniqueObjects = {};
   this.loopCount = 0;
-  TM.ILoopObject.call(this, data, this.speed, this.autoStart);
+  TM.ILoopObject.call(this, data, this.speed, postponeInit);
 };
 TM.IProgram.prototype = Object.create(TM.ILoopObject.prototype);
 TM.IProgram.prototype.constructor = TM.IProgram;
@@ -31,7 +31,7 @@ TM.IProgram.prototype.destroy = function(){
 TM.IProgram.prototype.calculate = function(){
   TM.ILoopObject.prototype.calculate.call(this);
   this.loopCount++;
-  this.timeline();
+  this.timeline(this.loopCount);
   this.getInput();
 };
 TM.IProgram.prototype.draw = function(){
@@ -40,8 +40,8 @@ TM.IProgram.prototype.draw = function(){
 };
 
 // TM.IProgram functions
-TM.IProgram.prototype.timeline = function(){
-  this._timeline();
+TM.IProgram.prototype.timeline = function(loopCount){
+  this._timeline(loopCount);
 };
 TM.IProgram.prototype.getInput = function(){
   this._getInput();
@@ -58,5 +58,5 @@ TM.IProgram.prototype._init = function(){};
 TM.IProgram.prototype._destroy = function(){};
 TM.IProgram.prototype._calculate = function(){};
 TM.IProgram.prototype._draw = function(){};
-TM.IProgram.prototype._timeline = function(){};
+TM.IProgram.prototype._timeline = function(loopCount){};
 TM.IProgram.prototype._getInput = function(){};

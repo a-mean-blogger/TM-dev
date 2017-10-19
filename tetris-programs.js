@@ -10,6 +10,9 @@ var Program_Intro = function(speed, data){
     x: undefined,
     y: undefined,
   };
+  this.uniqueObjects = {};
+  this.Objects = [];
+
   TM.IProgram.call(this, data, speed);
 };
 Program_Intro.prototype = Object.create(TM.IProgram.prototype);
@@ -24,19 +27,19 @@ Program_Intro.prototype._destroy = function(){
 };
 Program_Intro.prototype._calculate = function(){};
 Program_Intro.prototype._draw = function(){};
-Program_Intro.prototype._timeline = function(){
-  if(this.loopCount ==  10) TMS.insertTextAt(this.data.x, this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
-  if(this.loopCount ==  20) TMS.insertTextAt(this.data.x, this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
-  if(this.loopCount ==  30) TMS.insertTextAt(this.data.x, this.data.y+2, "□□□■       □■ ■","#ddd");
-  if(this.loopCount ==  40) TMS.insertTextAt(this.data.x, this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
-  if(this.loopCount ==  50) TMS.insertTextAt(this.data.x, this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
-  if(this.loopCount ==  60) TMS.insertTextAt(this.data.x+11, this.data.y+5, "www.A-MEAN-Blog.com","#aaa");
-  if(this.loopCount ==  70){
+Program_Intro.prototype._timeline = function(loopCount){
+  if(loopCount ==  10) TMS.insertTextAt(this.data.x, this.data.y+0, "■□□□■■■□□■■□□■■","#fff");
+  if(loopCount ==  20) TMS.insertTextAt(this.data.x, this.data.y+1, "■■■□ ■□□  ■■□□■","#eee");
+  if(loopCount ==  30) TMS.insertTextAt(this.data.x, this.data.y+2, "□□□■       □■ ■","#ddd");
+  if(loopCount ==  40) TMS.insertTextAt(this.data.x, this.data.y+3, "■■□■■ □ ■ □□■□□","#ccc");
+  if(loopCount ==  50) TMS.insertTextAt(this.data.x, this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
+  if(loopCount ==  60) TMS.insertTextAt(this.data.x+11, this.data.y+5, "www.A-MEAN-Blog.com","#aaa");
+  if(loopCount ==  70){
     this.addToObjects(new Star({x:this.data.x+8,y:this.data.y+1},500));
     this.addToObjects(new Star({x:this.data.x+26,y:this.data.y+2},700));
   }
-  if(this.loopCount ==  80) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
-  if(this.loopCount ==  90){
+  if(loopCount ==  80) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
+  if(loopCount ==  90){
     TMS.cursor.move(this.data.x,this.data.y+7);
     TMS.insertText("Please Enter Any Key to Start..\n\n","#fff");
     TMS.insertText("  △   : Shift\n","#fff");
@@ -68,6 +71,7 @@ var Program_Game = function(speed, data){
     player1Game : null,
     pausePopup: null,
   };
+  this.Objects = [];
   TM.IProgram.call(this, data, speed);
 };
 Program_Game.prototype = Object.create(TM.IProgram.prototype);
