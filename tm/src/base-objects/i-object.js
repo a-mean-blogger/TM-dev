@@ -3,9 +3,9 @@ console.log('TM.IObject loaded');
 //=============================
 // TM.IObject
 //=============================
-TM.IObject = function(data, postponeInit){
+TM.IObject = function(data, skipInit){
   this.data = TM.common.mergeObjects(this.data, data);
-  if(!postponeInit) this.init();
+  if(!skipInit) this.init();
 };
 
 // TM.IObject functions

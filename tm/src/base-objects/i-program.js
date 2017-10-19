@@ -4,12 +4,12 @@ console.log('TM.IProgram loaded');
 // TM.IProgram
 //=============================
 TM.IProgram = function(data, speed){
-  var postponeInit = true;
+  var skipInit = true;
   this.speed = speed;
   this.objects = [];
   this.uniqueObjects = {};
   this.loopCount = 0;
-  TM.ILoopObject.call(this, data, this.speed, postponeInit);
+  TM.ILoopObject.call(this, data, this.speed, skipInit);
 };
 TM.IProgram.prototype = Object.create(TM.ILoopObject.prototype);
 TM.IProgram.prototype.constructor = TM.IProgram;

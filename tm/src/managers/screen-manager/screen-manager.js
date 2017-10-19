@@ -56,7 +56,7 @@ TM.ScreenManager.prototype.constructor = TM.ScreenManager;
 
 // TM.ILoopObject functions implementation
 TM.ScreenManager.prototype._init = function(){
-  this.initScreenData();
+  this.resetScreenData();
   if(this.screenSetting.fontSource && !TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
     this.startLoadingFont();
   }
@@ -82,7 +82,7 @@ TM.ScreenManager.prototype._draw = function(){
   ctx.textBaseline = 'buttom';
 
   // bgUpdateMap indicates if bg updated or not at the grid in this draw iteration.
-  var bgUpdateMap = this.getInitialBgUpdateMap();
+  var bgUpdateMap = this.getNewBgUpdateMap();
 
   for(var i=this.scrollOffsetY; i<this.scrollOffsetY+this.screenSetting.row; i++){
     for(var j=0; j<this.screenSetting.column; j++){
@@ -163,7 +163,7 @@ TM.ScreenManager.prototype.loadWebFont = function(){
     });
   };
 };
-TM.ScreenManager.prototype.initScreenData = function(){
+TM.ScreenManager.prototype.resetScreenData = function(){
   this.screenData = [];
   for(var i=this.scrollOffsetY; i<this.scrollOffsetY+this.screenSetting.row; i++){
     this.screenData[i]=[];
@@ -172,7 +172,7 @@ TM.ScreenManager.prototype.initScreenData = function(){
     }
   }
 };
-TM.ScreenManager.prototype.getInitialBgUpdateMap = function(){
+TM.ScreenManager.prototype.getNewBgUpdateMap = function(){
   var bgUpdateMap = [];
   for(var i=this.scrollOffsetY; i<this.scrollOffsetY+this.screenSetting.row; i++){
     bgUpdateMap[i] = [];
@@ -298,17 +298,17 @@ TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');
 
-  var initX = this.cursor.data.x;
+  var sX = this.cursor.data.x; // store the starting x position
 
   for(var i=0; i<text.length; i++){
     switch(text[i]){
       case "\n":
         var cursorData = this.cursor.data;
         if(cursorData.y+1<this.screenSetting.row){
-          this.cursor.move(initX,cursorData.y+1);
+          this.cursor.move(sX,cursorData.y+1);
         }
         else{
-          this.cursor.move(initX,cursorData.y);
+          this.cursor.move(sX,cursorData.y);
           this.scrollDown();
         }
         break;

@@ -3,10 +3,10 @@ console.log('TM.ILoopObject loaded');
 //=============================
 // TM.ILoopObject
 //=============================
-TM.ILoopObject = function(data, speed, postponeInit){
+TM.ILoopObject = function(data, speed, skipInit){
   this.speed = speed;
   this.interval = new TM.ILoopObject_Interval();
-  TM.IObject.call(this, data, postponeInit);
+  TM.IObject.call(this, data, skipInit);
 };
 TM.ILoopObject.prototype = Object.create(TM.IObject.prototype);
 TM.ILoopObject.prototype.constructor = TM.ILoopObject;

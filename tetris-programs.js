@@ -11,7 +11,7 @@ var Program_Intro = function(speed, data){
     y: undefined,
   };
   this.uniqueObjects = {};
-  this.Objects = [];
+  this.objects = [];
 
   TM.IProgram.call(this, data, speed);
 };
@@ -71,7 +71,7 @@ var Program_Game = function(speed, data){
     player1Game : null,
     pausePopup: null,
   };
-  this.Objects = [];
+  this.objects = [];
   TM.IProgram.call(this, data, speed);
 };
 Program_Game.prototype = Object.create(TM.IProgram.prototype);

@@ -14,7 +14,7 @@ TM.DebugManager = function(debugSetting){
     }
   }
   catch(errorMessage){
-    this.devMode = false;
+    this.isActive = false;
     console.error('new TM.DebugManager ERROR: '+errorMessage+' TM.DebugManager is not created.');
     return;
   }
@@ -33,7 +33,7 @@ TM.DebugManager.prototype._destroy = function(){
 
 // TM.DebugManager pulbic functions
 TM.DebugManager.prototype.print = function(name,data){
-  if(this.debugSetting.devMode){
+  if(this.debugSetting.devMode && this.isActive){
     if(!this.doms[name]){
       this.doms[name] = document.createElement('div');
       this.outputDom.appendChild(this.doms[name]);
