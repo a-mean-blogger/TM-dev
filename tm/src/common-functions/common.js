@@ -73,12 +73,12 @@ TM.common.checkFontLoadedByWebFont = function(fontName){
 // TM.common.mergeObjects(object1, object2, ...):
 // Create an object with object1 and object2's properties and return it. object2 will overwrite object1 if there are same properties.
 TM.common.mergeObjects = function(object1, object2){
-  var object = {};
+  var mergedObject = {};
   var objects = [object1, object2];
   for(var i=0; i<objects.length; i++){
-    for(var p in objects[i]){
-      object[p] = objects[i][p];
+    for(var key in objects[i]){
+      mergedObject[key] = objects[i][key];
     }
   }
-  return object;
+  return mergedObject;
 };

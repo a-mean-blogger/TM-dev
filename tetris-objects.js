@@ -9,7 +9,7 @@ var Star = function(data, speed){
   this.data = {
     x: undefined,
     y: undefined,
-    color: undefined,
+    refContainer: undefined,
     blink: 0,
   };
   TM.ILoopObject.call(this, data, speed);
@@ -20,6 +20,7 @@ Star.prototype.constructor = Star;
 // TM.ILoopObject functions implementation
 Star.prototype._init = function(){};
 Star.prototype._destroy = function(){
+  this.data.refContainer.splice(this.data.refContainer.indexOf(this),1);
   TMS.insertTextAt(this.data.x,this.data.y,'  ');
 };
 Star.prototype._calculate = function(){
@@ -27,7 +28,7 @@ Star.prototype._calculate = function(){
 };
 Star.prototype._draw = function(){
   var text = this.data.blink%2===0?'★':'☆';
-  TMS.insertTextAt(this.data.x,this.data.y,text,this.data.color);
+  TMS.insertTextAt(this.data.x,this.data.y,text);
 };
 
 //=============================

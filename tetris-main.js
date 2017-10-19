@@ -57,8 +57,8 @@ var GAME_SETTINGS = {
 
 var MAIN = {
   programs: {
-    intro: new Program_Intro(10,{x:5,y:3}),
-    game: new Program_Game(100),
+    intro: new Program_Intro(),
+    game: new Program_Game(),
   },
   data: {
     scores: {

@@ -3,12 +3,11 @@ console.log('TM.IProgram loaded');
 //=============================
 // TM.IProgram
 //=============================
-TM.IProgram = function(data, speed){
+TM.IProgram = function(data, speed, objects){
   var skipInit = true;
   this.speed = speed;
-  this.objects = [];
-  this.uniqueObjects = {};
   this.loopCount = 0;
+  this.objects = TM.common.mergeObjects(this.objects, objects);
   TM.ILoopObject.call(this, data, this.speed, skipInit);
 };
 TM.IProgram.prototype = Object.create(TM.ILoopObject.prototype);
@@ -21,11 +20,15 @@ TM.IProgram.prototype.init = function(){
 };
 TM.IProgram.prototype.destroy = function(){
   TM.ILoopObject.prototype.destroy.call(this);
-  for(var i=this.objects.length-1; i>= 0; i--){
-    this.objects[i].destroy();
-  }
-  for(var key in this.uniqueObjects){
-    if(this.uniqueObjects[key])this.uniqueObjects[key].destroy();
+  for(var key in this.objects){
+    if(Array.isArray(this.objects[key])){
+      for (var i=0; i<this.objects[key].length; i++){
+        this.objects[key][i].destroy();
+      }
+    }
+    else if(this.objects[key]) {
+      this.objects[key].destroy();
+    }
   }
 };
 TM.IProgram.prototype.calculate = function(){
@@ -45,12 +48,6 @@ TM.IProgram.prototype.timeline = function(loopCount){
 };
 TM.IProgram.prototype.getInput = function(){
   this._getInput();
-};
-TM.IProgram.prototype.addToObjects = function(object){
-  this.objects = this.objects.filter(function(object){
-    return object.isActive;
-  }); // removed destroyed objects
-  this.objects.push(object);
 };
 
 // TM.IProgram interface functions
