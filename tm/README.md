@@ -6,21 +6,7 @@ Text Game Maker JS
 
 ## Overview
 
-Text Game Maker JS is a javascript library to make 'text games' on that can be played on internet browsers.
-
-## Components
-
-- **TM.ScreenManager**  
-Text Game Maker Screen Manager constructor.  
-The instance(TMS) creates a console-like HTML5 canvas and has functions to print text on the canvas
-
-- **TM.InputManager**  
-Text Game Maker Input Manager constructor.  
-The instance(TMI) captures user inputs and has functions to check inputs
-
-- **TM.DebugManager**  
-Text Game Maker Debug Manager constructor.  
-The instance(TMD) prints data on 'debug-output' section(selected dom) to debug game
+Text Game Maker JS is a library to make text games for web browsers. It can create a console-like HTML5 canvas on a web browser,  print text on it and get user's inputs.
 
 ## Demo
 
@@ -31,10 +17,6 @@ Tetris: [http://www.a-mean-blog.com/en/blog/Text-Game-Maker-JS/Games/tetris](htt
 한글: [http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS](http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS)
 
 English: [http://www.a-mean-blog.com/en/blog/Text-Game-Maker-JS](http://www.a-mean-blog.com/en/blog/Text-Game-Maker-JS)
-
-## Sandbox
-
-[https://a-mean-blogger.github.io/text-game-maker-js/sandbox](https://a-mean-blogger.github.io/text-game-maker-js/sandbox)
 
 ## Copyright
 
