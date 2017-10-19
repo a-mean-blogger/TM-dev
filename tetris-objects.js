@@ -5,14 +5,14 @@ console.log('tetris-object.js loaded');
 //=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Blinking star
-var Star = function(data, speed){
+var Star = function(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
     refContainer: undefined,
     blink: 0,
   };
-  TM.ILoopObject.call(this, data, speed);
+  TM.ILoopObject.call(this, speed, data);
 };
 Star.prototype = Object.create(TM.ILoopObject.prototype);
 Star.prototype.constructor = Star;
@@ -36,7 +36,7 @@ Star.prototype._draw = function(){
 //=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Pause Popup box
-var PausePopup = function(data, speed){
+var PausePopup = function(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
@@ -44,7 +44,7 @@ var PausePopup = function(data, speed){
     blink: 0,
     text: 'Please press <P> to return to game',
   };
-  TM.ILoopObject.call(this, data, speed);
+  TM.ILoopObject.call(this, speed, data);
 };
 PausePopup.prototype = Object.create(TM.ILoopObject.prototype);
 PausePopup.prototype.constructor = PausePopup;
@@ -76,7 +76,7 @@ PausePopup.prototype.drawFrame = function(){
 //=============================
 // Object Type: TM.ILoopObject
 // Description: Create a Game Over Popup box
-var GameOverPopup = function(data, speed){
+var GameOverPopup = function(speed, data){
   this.data = {
     x: undefined,
     y: undefined,
@@ -86,7 +86,7 @@ var GameOverPopup = function(data, speed){
     score: 0,
     scoreText: '',
   };
-  TM.ILoopObject.call(this, data, speed);
+  TM.ILoopObject.call(this, speed, data);
 };
 GameOverPopup.prototype = Object.create(TM.ILoopObject.prototype);
 GameOverPopup.prototype.constructor = GameOverPopup;
@@ -248,7 +248,7 @@ var Tetris = function(data){
       popup: false,
     },
   };
-  TM.ILoopObject.call(this, data, this.speed);
+  TM.ILoopObject.call(this, this.speed, data);
 };
 Tetris.prototype = Object.create(TM.ILoopObject.prototype);
 Tetris.prototype.constructor = Tetris;
@@ -518,7 +518,7 @@ Tetris.prototype.gameOver = function(){
 };
 Tetris.prototype.showGameOverPopup = function(){
   this.data.gameOver.popup = true;
-  this.gameOverPopup = new GameOverPopup({x:19,y:5,bgColor:'#444',score:this.data.score},800);
+  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
 };
 
 //=============================

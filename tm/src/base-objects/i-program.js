@@ -3,12 +3,11 @@ console.log('TM.IProgram loaded');
 //=============================
 // TM.IProgram
 //=============================
-TM.IProgram = function(data, speed, objects){
+TM.IProgram = function(speed, data, objects){
   var skipInit = true;
-  this.speed = speed;
   this.loopCount = 0;
   this.objects = TM.common.mergeObjects(this.objects, objects);
-  TM.ILoopObject.call(this, data, this.speed, skipInit);
+  TM.ILoopObject.call(this, speed, data, skipInit);
 };
 TM.IProgram.prototype = Object.create(TM.ILoopObject.prototype);
 TM.IProgram.prototype.constructor = TM.IProgram;
@@ -22,7 +21,7 @@ TM.IProgram.prototype.destroy = function(){
   TM.ILoopObject.prototype.destroy.call(this);
   for(var key in this.objects){
     if(Array.isArray(this.objects[key])){
-      for (var i=0; i<this.objects[key].length; i++){
+      for (var i=this.objects[key].length-1; i>=0; i--){
         this.objects[key][i].destroy();
       }
     }

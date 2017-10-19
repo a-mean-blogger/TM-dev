@@ -4,9 +4,9 @@ console.log('TM.InputManager_Keyboard loaded');
 // TM.InputManager_Keyboard
 //=============================
 // Object Type: TM.IObject
-TM.InputManager_Keyboard = function(inputManager){
+TM.InputManager_Keyboard = function(refInputManager){
   this.isAllowed = true;
-  this.inputManager = inputManager;
+  this.refInputManager = refInputManager;
   this.keyState = {};
   this.keyPressed = {};
 
@@ -14,10 +14,12 @@ TM.InputManager_Keyboard = function(inputManager){
   this.eventHandlers = {
     keydown: function(e){
       e.preventDefault();
-      if(_self.inputManager.isAllowed && _self.isAllowed){
+      if(_self.refInputManager.isAllowed && _self.isAllowed){
         _self.keyState[e.keyCode] = true;
         _self.keyPressed[e.keyCode] = true;
-        // console.log('e.keyCode: ', e.keyCode);
+      }
+      if(_self.refInputManager.devMode){
+        console.log('Keyboard Key Pressed keyCode: ', e.keyCode);
       }
     },
     keyup: function(e){
@@ -32,8 +34,8 @@ TM.InputManager_Keyboard.prototype.constructor = TM.InputManager_Keyboard;
 
 // TM.IObject functions implementation
 TM.InputManager_Keyboard.prototype._init = function(){
-  this.inputManager.targetDom.addEventListener('keydown', this.eventHandlers.keydown);
-  this.inputManager.targetDom.addEventListener('keyup', this.eventHandlers.keyup);
+  this.refInputManager.targetDom.addEventListener('keydown', this.eventHandlers.keydown);
+  this.refInputManager.targetDom.addEventListener('keyup', this.eventHandlers.keyup);
 };
 TM.InputManager_Keyboard.prototype._destroy = function(){};
 
@@ -44,8 +46,6 @@ TM.InputManager_Keyboard.prototype.getInput = function(question){
 
 // TM.InputManager_Keyboard functions - keyState
 TM.InputManager_Keyboard.prototype.checkKeyState = function(keyCode){
-  // console.log('keyCode: ', keyCode);
-  // console.log('this.keyState: ', this.keyState);
   if(this.keyState[keyCode]) {
     return true;
   }
@@ -53,7 +53,6 @@ TM.InputManager_Keyboard.prototype.checkKeyState = function(keyCode){
 };
 TM.InputManager_Keyboard.prototype.checkKeyStateAny = function(){
   if(Object.keys(this.keyState).length){
-    // console.log('this.keyState: ', this.keyState);
     return true;
   }
   else return false;
@@ -78,8 +77,6 @@ TM.InputManager_Keyboard.prototype.allow = function(keyCode){
 
 // TM.InputManager_Keyboard functions - keyPressed
 TM.InputManager_Keyboard.prototype.checkKeyPressed = function(keyCode){
-  // console.log('keyCode: ', keyCode);
-  // console.log('this.keyPressed: ', this.keyPressed);
   if(this.keyPressed[keyCode]) {
     delete this.keyPressed[keyCode];
     return true;

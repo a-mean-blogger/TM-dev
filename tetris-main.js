@@ -26,9 +26,13 @@ var charGroups = {
   },
 };
 
+var debug = {
+  devMode: true,
+};
+
 var TMS = new TM.ScreenManager(screenSetting, charGroups),
-    TMD = new TM.DebugManager({devMode: true}),
-    TMI = new TM.InputManager();
+    TMD = new TM.DebugManager(debug),
+    TMI = new TM.InputManager(null, debug.devMode);
 
 var GAME_SETTINGS = {
   COL_NUM: 11,

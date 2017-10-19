@@ -4,7 +4,7 @@ console.log('TM.InputManager loaded');
 // TM.InputManager
 //=============================
 // Object Type: TM.IObject
-TM.InputManager = function(customTargetDomId){
+TM.InputManager = function(customTargetDomId,devMode){
   var targetDomId = customTargetDomId?customTargetDomId:TM.defaultSettings.screen.canvasId;
   try{
     this.targetDom = document.querySelector('#'+targetDomId);
@@ -19,6 +19,7 @@ TM.InputManager = function(customTargetDomId){
   }
 
   this.isAllowed = true;
+  this.devMode = devMode;
   this.keyboard = new TM.InputManager_Keyboard(this);
   TM.IObject.call(this);
 };

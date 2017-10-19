@@ -18,7 +18,7 @@ TM.ScreenManager_Cursor = function(data){
     isHidden: false,
     isUpdated: true,
   };
-  TM.ILoopObject.call(this, data, this.speed);
+  TM.ILoopObject.call(this, this.speed, data);
 };
 TM.ScreenManager_Cursor.prototype = Object.create(TM.ILoopObject.prototype);
 TM.ScreenManager_Cursor.prototype.constructor = TM.ScreenManager_Cursor;

@@ -14,7 +14,7 @@ var Program_Intro = function(){
   this.objects = {
     stars:[],
   };
-  TM.IProgram.call(this, null, speed, this.objects);
+  TM.IProgram.call(this, speed);
 };
 Program_Intro.prototype = Object.create(TM.IProgram.prototype);
 Program_Intro.prototype.constructor = Program_Intro;
@@ -36,8 +36,8 @@ Program_Intro.prototype._timeline = function(loopCount){
   if(loopCount ==  50) TMS.insertTextAt(this.data.x, this.data.y+4, "■■ ■□□□■■■□■■□□","#bbb");
   if(loopCount ==  60) TMS.insertTextAt(this.data.x+11, this.data.y+5, "www.A-MEAN-Blog.com","#aaa");
   if(loopCount ==  70){
-    this.objects.stars.push(new Star({x:this.data.x+8, y:this.data.y+1,refContainer:this.objects.stars},500));
-    this.objects.stars.push(new Star({x:this.data.x+26,y:this.data.y+2,refContainer:this.objects.stars},700));
+    this.objects.stars.push(new Star(500,{x:this.data.x+8, y:this.data.y+1,refContainer:this.objects.stars}));
+    this.objects.stars.push(new Star(700,{x:this.data.x+26,y:this.data.y+2,refContainer:this.objects.stars}));
   }
   if(loopCount ==  80) TMS.insertTextAt(this.data.x+10, this.data.y+2, "T E T R I S","#fff");
   if(loopCount ==  90){
@@ -73,7 +73,7 @@ var Program_Game = function(){
     player1Game : null,
     pausePopup: null,
   };
-  TM.IProgram.call(this, null, speed, this.objects);
+  TM.IProgram.call(this, speed);
 };
 Program_Game.prototype = Object.create(TM.IProgram.prototype);
 Program_Game.prototype.constructor = Program_Game;
@@ -108,7 +108,7 @@ Program_Game.prototype._getInput = function(){
       this.objects.player1Game.interval.stop();
       this.data.pausedScreen = TMS.copyScreen();
       TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
-      this.objects.pausePopup = new PausePopup({x:15,y:11,bgColor:"#444"},800);
+      this.objects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
   }
 

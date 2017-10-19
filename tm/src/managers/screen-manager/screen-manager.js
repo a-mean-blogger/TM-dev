@@ -49,7 +49,7 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
     size: 0.1,
   });
 
-  TM.ILoopObject.call(this, null, this.speed);
+  TM.ILoopObject.call(this, this.speed);
 };
 TM.ScreenManager.prototype = Object.create(TM.ILoopObject.prototype);
 TM.ScreenManager.prototype.constructor = TM.ScreenManager;

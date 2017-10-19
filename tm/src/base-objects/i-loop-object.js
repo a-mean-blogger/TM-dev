@@ -3,7 +3,7 @@ console.log('TM.ILoopObject loaded');
 //=============================
 // TM.ILoopObject
 //=============================
-TM.ILoopObject = function(data, speed, skipInit){
+TM.ILoopObject = function(speed, data, skipInit){
   this.speed = speed;
   this.interval = new TM.ILoopObject_Interval();
   TM.IObject.call(this, data, skipInit);
