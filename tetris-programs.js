@@ -84,12 +84,11 @@ Program_Game.prototype._init = function(){
   this.objects.pausePopup = null;
   this.objects.gameOverPopup = null;
 };
-Program_Game.prototype._destroy = function(){
-  TMS.clearScreen();
-};
+Program_Game.prototype._destroy = function(){};
 Program_Game.prototype._calculate = function(){
   if(this.objects.player1Game.data.gameOver.popup && !this.objects.gameOverPopup){
-    this.objects.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
+    var player1GameData = this.objects.player1Game.data;
+    this.objects.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',currentScore:player1GameData.currentScore});
   }
 };
 Program_Game.prototype._draw = function(){};
