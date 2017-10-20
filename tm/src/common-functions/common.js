@@ -3,7 +3,6 @@ TM.common = {};
 TM.common.getBlockWidth = function(fontSize){
   return fontSize*0.6;
 };
-
 TM.common.getBlockHeight = function(fontSize){
   var blockHeight;
   if(fontSize < 3){
@@ -33,7 +32,6 @@ TM.common.isNumber = function(num){
   if(num === 0|| (num && num.constructor == Number)) return true;
   else return false;
 };
-
 TM.common.getCharGroup = function(charGroups, char){
 for(var group in charGroups){
   var charset = charGroups[group];
@@ -41,7 +39,6 @@ for(var group in charGroups){
     if(regex.test(char)) return charset;
   }
 };
-
 TM.common.getFullwidthRegex = function(charGroups){
   var string = '';
   for(var group in charGroups){
@@ -50,7 +47,6 @@ TM.common.getFullwidthRegex = function(charGroups){
   }
   if(string) return new RegExp('(['+string+'])','g');
 };
-
 TM.common.includeScript = function(ScriptPath, onload){
   if(!ScriptPath) return;
 
@@ -61,15 +57,12 @@ TM.common.includeScript = function(ScriptPath, onload){
     script.onload = onload;
     document.getElementsByTagName('head')[0].appendChild(script);
   }
-}
+};
 TM.common.checkFontLoadedByWebFont = function(fontName){
   var alteredFontName = fontName.replace(/ /g,'').toLowerCase();
   var fontAppliedDom = document.querySelector('.wf-'+alteredFontName+'-n4-active');
   return fontAppliedDom?true:false;
-}
-
-// TM.common.mergeObjects(object1, object2, ...):
-// Create an object with object1 and object2's properties and return it. object2 will overwrite object1 if there are same properties.
+};
 TM.common.mergeObjects = function(object1, object2){
   var mergedObject = {};
   var objects = [object1, object2];

@@ -200,8 +200,8 @@ TM.ScreenManager.prototype.refreshScreen = function(){
 TM.ScreenManager.prototype.isInScreen = function(x,y){
   var isInScreen = false;
   if(x>=0 && y>=0 && y<this.screenSetting.row && x<this.screenSetting.column){
-    isInScreen = true
-  };
+    isInScreen = true;
+  }
   return isInScreen;
 };
 TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
@@ -294,11 +294,11 @@ TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
   text = text.toString().replace(regex,'$1 ');
 
   var sX = this.cursor.data.x; // store the starting x position
+  var cursorData = this.cursor.data;
 
   for(var i=0; i<text.length; i++){
     switch(text[i]){
       case "\n":
-        var cursorData = this.cursor.data;
         if(cursorData.y+1<this.screenSetting.row){
           this.cursor.move(sX,cursorData.y+1);
         }
@@ -308,7 +308,6 @@ TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
         }
         break;
       case "\r":
-        var cursorData = this.cursor.data;
         this.cursor.move(0,cursorData.y);
         break;
       default:

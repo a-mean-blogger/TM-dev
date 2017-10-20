@@ -48,7 +48,8 @@ TM.DebugManager.prototype.print = function(name,data){
 };
 TM.DebugManager.prototype.delete = function(name){
   if(this.doms[name]){
-    this.doms[name].remove?this.doms[name].remove():this.doms[name].parentElement.removeChild(this.doms[name]);
+    if(this.doms[name].remove) this.doms[name].remove();
+    else this.doms[name].parentElement.removeChild(this.doms[name]); //for IE
     delete this.doms[name];
   }
 };
