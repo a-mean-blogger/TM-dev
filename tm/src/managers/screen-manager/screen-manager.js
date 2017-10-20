@@ -289,9 +289,6 @@ TM.ScreenManager.prototype.scrollUp = function(){
 TM.ScreenManager.prototype.clearScreen = function(){
   this.fillScreen(' ');
 };
-TM.ScreenManager.prototype.nextLine = function(x){
-  this.cursor.nextLine(x);
-};
 TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
   text = text.toString().replace(regex,'$1 ');

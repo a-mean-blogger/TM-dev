@@ -43,10 +43,6 @@ TM.ScreenManager_Cursor.prototype.move = function(x,y){
   }
   return isMoved;
 };
-TM.ScreenManager_Cursor.prototype.nextLine = function(x){
-  this.data.x = x?x:0;
-  this.data.y++;
-};
 TM.ScreenManager_Cursor.prototype.hide = function(){
   this.data.isHidden = true;
   this.interval.stop();

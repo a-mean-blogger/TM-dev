@@ -28,12 +28,12 @@ var x = 1;
     y = 1;
     blogUrl = 'http://a-mean-blog.com/en/blog/Text-Game-Maker-JS';
 
-TMS.insertTextAt(x,y,'Hello World!', 'white', '#4e4e4e');
-TMS.nextLine(x+4);
-TMS.insertText("I'm Text Game Maker JS!");
-TMS.cursor.move(x,y+3);
-TMS.insertText('Find more information of me at: \n');
-TMS.insertText(blogUrl);
+TMS.cursor.move(x,y);
+TMS.insertText('Hello World!\n\n', 'white', '#4e4e4e');
+TMS.insertText('I\'m Text Game Maker JS!');
+
+TMS.insertTextAt(x,y+5,'Find more information of me at:');
+TMS.insertTextAt(x+3,y+6, blogUrl);
 
 TMD.print('debug1',{
   x: x,
