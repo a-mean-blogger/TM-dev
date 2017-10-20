@@ -100,16 +100,17 @@ Program_Game.prototype._getInput = function(){
       this.data.isPaused = false;
       this.objects.player1Game.interval.start();
       this.objects.pausePopup.destroy();
-      TMS.pasteScreen(this.data.pausedScreen);
-      TMI.keyboard.clearKey();
+      TMS.clearScreen();
+      this.objects.status.refresh();
+      this.objects.player1Game.draw();
     }
     else {
       this.data.isPaused = true;
       this.objects.player1Game.interval.stop();
-      this.data.pausedScreen = TMS.copyScreen();
       TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.objects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
+    TMI.keyboard.clearKey();
   }
 
   if(!this.data.isPaused){

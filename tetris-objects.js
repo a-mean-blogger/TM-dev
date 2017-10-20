@@ -42,6 +42,12 @@ var PausePopup = function(speed, data){
     y: undefined,
     bgColor: undefined,
     blink: 0,
+    frame: [
+      '┏━━━━━━━━━━━━━━━━━━┓\n',
+      '┃            [ PAUSED ]              ┃\n',
+      '┃                                    ┃\n',
+      '┗━━━━━━━━━━━━━━━━━━┛\n',
+    ],
     text: 'Please press <P> to return to game',
   };
   TM.ILoopObject.call(this, speed, data);
@@ -53,7 +59,12 @@ PausePopup.prototype.constructor = PausePopup;
 PausePopup.prototype._init = function(){
   this.drawFrame();
 };
-PausePopup.prototype._destroy = function(){};
+PausePopup.prototype._destroy = function(){
+  TMS.cursor.move(this.data.x,this.data.y);
+  for(var i=0; i<this.data.frame.length; i++){
+    TMS.deleteText(this.data.frame[i]);
+  }
+};
 PausePopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
@@ -65,10 +76,9 @@ PausePopup.prototype._draw = function(){
 // Custom functions
 PausePopup.prototype.drawFrame = function(){
   TMS.cursor.move(this.data.x,this.data.y);
-  TMS.insertText('┏━━━━━━━━━━━━━━━━━━┓\n','#fff',this.data.bgColor);
-  TMS.insertText('┃            [ PAUSED ]              ┃\n','#fff',this.data.bgColor);
-  TMS.insertText('┃                                    ┃\n','#fff',this.data.bgColor);
-  TMS.insertText('┗━━━━━━━━━━━━━━━━━━┛\n','#fff',this.data.bgColor);
+  for(var i=0; i<this.data.frame.length; i++){
+    TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
+  }
 };
 
 //=============================
@@ -129,6 +139,10 @@ var Status = function(data){
     x: undefined,
     y: undefined,
     COLORSET: GAME_SETTINGS.COLORSET,
+    currentScore: 0,
+    nextBlockType: null,
+    level: null,
+    goal: null,
   };
   TM.IObject.call(this, data);
 };
@@ -173,8 +187,10 @@ Status.prototype.drawFrame = function(){
   TMS.insertText('www.A-MEAN-Blog.com\n');
 };
 Status.prototype.drawNextBlock = function(blockType){
-  var xOffset = (blockType === 0 || blockType === 1)?0:1;
-  var color = this.data.COLORSET.BLOCKS[blockType];
+  if(blockType) this.data.nextBlockType = blockType;
+  var nextBlockType = this.data.nextBlockType;
+  var xOffset = (nextBlockType === 0 || nextBlockType === 1)?0:1;
+  var color = this.data.COLORSET.BLOCKS[nextBlockType];
   var xAdj = this.data.x+2+xOffset;
   var yAdj = this.data.y+3;
   var width = 6-xOffset;
@@ -183,7 +199,7 @@ Status.prototype.drawNextBlock = function(blockType){
     for(var j=0; j<width; j++){
       var x = xAdj+j*2;
       var y = yAdj+i;
-      if(j>0 && Tetris.BLOCKS[blockType][0][i][j-1]==1) {
+      if(j>0 && Tetris.BLOCKS[nextBlockType][0][i][j-1]==1) {
         TMS.insertTextAt(x,y,'■', color);
       }
       else {
@@ -193,29 +209,37 @@ Status.prototype.drawNextBlock = function(blockType){
   }
 };
 Status.prototype.drawLevel = function(num){
-  num = (num>9)?num:' '+num;
-  TMS.insertTextAt(this.data.x+9, this.data.y, num);
+  if(num) this.data.level = num;
+  var level = this.data.level;
+  level = (level>9)?level:' '+level;
+  TMS.insertTextAt(this.data.x+9, this.data.y, level);
 };
 Status.prototype.drawGoal = function(num){
-  num = (num>9)?num:' '+num;
-  TMS.insertTextAt(this.data.x+9, this.data.y+1, num);
+  if(num) this.data.goal = num;
+  var goal = this.data.goal;
+  goal = (goal>9)?goal:' '+goal;
+  TMS.insertTextAt(this.data.x+9, this.data.y+1, goal);
 };
-Status.prototype.drawScore = function(score){
-  TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(score));
+Status.prototype.drawCurrentScore = function(score){
+  if(score) this.data.currentScore = score;
+  TMS.insertTextAt(this.data.x+7, this.data.y+9, Status.convertScore(this.data.currentScore));
 };
 Status.prototype.drawLastScore = function(score){
-  TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(score));
+  if(score) MAIN.data.scores.lastScore = score;
+  TMS.insertTextAt(this.data.x+7, this.data.y+11, Status.convertScore(MAIN.data.scores.lastScore));
 };
 Status.prototype.drawBestScore = function(score){
-  TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(score));
+  if(score) MAIN.data.scores.bestScore = Math.max(score,MAIN.data.scores.bestScore);
+  TMS.insertTextAt(this.data.x+7, this.data.y+13, Status.convertScore(MAIN.data.scores.bestScore));
 };
-Status.prototype.updateLastScore = function(score){
-  MAIN.data.scores.lastScore = score;
-  this.drawLastScore(score);
-};
-Status.prototype.updateBestScore = function(score){
-  MAIN.data.scores.bestScore = Math.max(score,MAIN.data.scores.bestScore);
-  this.drawBestScore(score);
+Status.prototype.refresh = function(){
+  this.drawFrame();
+  this.drawLevel();
+  this.drawGoal();
+  this.drawNextBlock();
+  this.drawCurrentScore();
+  this.drawLastScore();
+  this.drawBestScore();
 };
 
 //=============================
@@ -277,7 +301,7 @@ Tetris.prototype._init = function(){
   this.setSpeed(this.data.level);
   this.data.refStatus.drawLevel(this.data.level);
   this.data.refStatus.drawGoal(this.data.goalCount);
-  this.data.refStatus.drawScore(this.data.score);
+  this.data.refStatus.drawCurrentScore(this.data.score);
 };
 Tetris.prototype._destroy = function(blockType){
   TMD.delete('test');
@@ -479,7 +503,7 @@ Tetris.prototype.removeFullLines = function(){
 };
 Tetris.prototype.addScore = function(score){
   this.data.score += score;
-  this.data.refStatus.drawScore(this.data.score);
+  this.data.refStatus.drawCurrentScore(this.data.score);
 };
 Tetris.prototype.setSpeed = function(level){
   if(level<=GAME_SETTINGS.SPEED_LOOKUP.length){
@@ -502,8 +526,8 @@ Tetris.prototype.checkGameOver = function(){
 };
 Tetris.prototype.gameOver = function(){
   this.data.gameOver.flag = true;
-  this.data.refStatus.updateBestScore(this.data.score);
-  this.data.refStatus.updateLastScore(this.data.score);
+  this.data.refStatus.drawBestScore(this.data.score);
+  this.data.refStatus.drawLastScore(this.data.score);
   var i = this.data.ROW_NUM-2;
   var _self = this;
   var interval = setInterval(function(){
