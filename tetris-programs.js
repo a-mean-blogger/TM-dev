@@ -65,13 +65,11 @@ Program_Intro.prototype._getInput = function(){
 // Description: control Tetris Games
 var Program_Game = function(){
   var speed = 100;
-  this.data = {
-    isPaused: false,
-  };
   this.objects = {
     status : null,
     player1Game : null,
     pausePopup: null,
+    gameOverPopup: null,
   };
   TM.IProgram.call(this, speed);
 };
@@ -81,31 +79,35 @@ Program_Game.prototype.constructor = Program_Game;
 // TM.IProgram functions implementation
 Program_Game.prototype._init = function(){
   TMI.keyboard.clearKey();
-  this.data.isPaused = false;
   this.objects.status = new Status({x:28,y:3});
   this.objects.player1Game = new Tetris({x:3,y:1,refStatus:this.objects.status});
+  this.objects.pausePopup = null;
+  this.objects.gameOverPopup = null;
 };
 Program_Game.prototype._destroy = function(){
   TMS.clearScreen();
 };
-Program_Game.prototype._calculate = function(){};
+Program_Game.prototype._calculate = function(){
+  if(this.objects.player1Game.data.gameOver.popup && !this.objects.gameOverPopup){
+    this.objects.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
+  }
+};
 Program_Game.prototype._draw = function(){};
 Program_Game.prototype._timeline = function(){};
 Program_Game.prototype._getInput = function(){
   if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.QUIT)){
     MAIN.changeProgram(MAIN.programs.intro);
   }
-  if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.PAUSE)){
-    if(this.data.isPaused){
-      this.data.isPaused = false;
-      this.objects.player1Game.interval.start();
+  if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.PAUSE) && !this.objects.gameOverPopup){
+    if(this.objects.pausePopup){
       this.objects.pausePopup.destroy();
+      this.objects.pausePopup = null;
       TMS.clearScreen();
       this.objects.status.refresh();
       this.objects.player1Game.draw();
+      this.objects.player1Game.interval.start();
     }
     else {
-      this.data.isPaused = true;
       this.objects.player1Game.interval.stop();
       TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.objects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});

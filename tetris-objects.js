@@ -41,7 +41,6 @@ var PausePopup = function(speed, data){
     x: undefined,
     y: undefined,
     bgColor: undefined,
-    blink: 0,
     frame: [
       '┏━━━━━━━━━━━━━━━━━━┓\n',
       '┃            [ PAUSED ]              ┃\n',
@@ -49,6 +48,7 @@ var PausePopup = function(speed, data){
       '┗━━━━━━━━━━━━━━━━━━┛\n',
     ],
     text: 'Please press <P> to return to game',
+    blink: 0,
   };
   TM.ILoopObject.call(this, speed, data);
 };
@@ -91,10 +91,19 @@ var GameOverPopup = function(speed, data){
     x: undefined,
     y: undefined,
     bgColor: undefined,
-    blink: 0,
+    frame: [
+      '┏━━━━━━━━━━━━━┓\n',
+      '┃      [ GAME OVER ]       ┃\n',
+      '┃                          ┃\n',
+      '┃    YOUR SCORE:           ┃\n',
+      '┃                          ┃\n',
+      '┃                          ┃\n',
+      '┃                          ┃\n',
+      '┗━━━━━━━━━━━━━┛\n',
+    ],
     text: 'Please press <ESC>',
-    score: 0,
-    scoreText: '',
+    blink: 0,
+    score: null,
   };
   TM.ILoopObject.call(this, speed, data);
 };
@@ -103,10 +112,14 @@ GameOverPopup.prototype.constructor = GameOverPopup;
 
 // TM.ILoopObject functions implementation
 GameOverPopup.prototype._init = function(){
-  this.data.scoreText = Status.convertScore(this.data.score);
-  this.drawFrame();
+  this.drawFrame(Status.convertScore(this.data.score));
 };
-GameOverPopup.prototype._destroy = function(){};
+GameOverPopup.prototype._destroy = function(){
+  TMS.cursor.move(this.data.x,this.data.y);
+  for(var i=0; i<this.data.frame.length; i++){
+    TMS.deleteText(this.data.frame[i]);
+  }
+};
 GameOverPopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
 };
@@ -116,17 +129,12 @@ GameOverPopup.prototype._draw = function(){
 };
 
 // Custom functions
-GameOverPopup.prototype.drawFrame = function(){
+GameOverPopup.prototype.drawFrame = function(score){
   TMS.cursor.move(this.data.x,this.data.y);
-  TMS.insertText('┏━━━━━━━━━━━━━┓\n','#fff',this.data.bgColor)
-  TMS.insertText('┃      [ GAME OVER ]       ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┃    YOUR SCORE:           ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┃                          ┃\n','#fff',this.data.bgColor)
-  TMS.insertText('┗━━━━━━━━━━━━━┛\n','#fff',this.data.bgColor);
-  TMS.insertTextAt(this.data.x+14,this.data.y+4,this.data.scoreText,'#fff',this.data.bgColor);
+  for(var i=0; i<this.data.frame.length; i++){
+    TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
+  }
+  TMS.insertTextAt(this.data.x+14,this.data.y+4,score,'#fff',this.data.bgColor);
 };
 
 //=============================
@@ -535,14 +543,10 @@ Tetris.prototype.gameOver = function(){
       if(_self.data.dataArray[i][j]>0) _self.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
-      _self.showGameOverPopup();
+      _self.data.gameOver.popup = true;
       clearInterval(interval);
     }
   },100);
-};
-Tetris.prototype.showGameOverPopup = function(){
-  this.data.gameOver.popup = true;
-  this.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',score:this.data.score});
 };
 
 //=============================
