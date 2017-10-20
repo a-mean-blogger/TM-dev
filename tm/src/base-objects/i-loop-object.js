@@ -3,14 +3,14 @@
 //=============================
 TM.ILoopObject = function(speed, data, skipInit){
   this.speed = speed;
-  this.interval = new TM.ILoopObject_Interval();
+  this.interval = new TM.Interval();
   TM.IObject.call(this, data, skipInit);
 };
 TM.ILoopObject.prototype = Object.create(TM.IObject.prototype);
 TM.ILoopObject.prototype.constructor = TM.ILoopObject;
 
 // TM.IObject functions inheritance
-TM.ILoopObject.prototype.init = function (){
+TM.ILoopObject.prototype.init = function(){
   TM.IObject.prototype.init.call(this);
   var _self = this;
   this.interval.init(this.speed, function(){

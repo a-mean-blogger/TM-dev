@@ -4,11 +4,11 @@ var gulp = require('gulp'),
     header = require('gulp-header');
 
 gulp.task('default', function() {
-  var concated = gulp.src([
+  gulp.src([
     './src/default-settings/default-settings.js',
     './src/common-functions/common.js',
     './src/base-objects/i-object.js',
-    './src/base-objects/i-loop-object_interval.js',
+    './src/base-objects/interval.js',
     './src/base-objects/i-loop-object.js',
     './src/base-objects/i-program.js',
     './src/managers/screen-manager/screen-manager_char.js',
@@ -21,7 +21,12 @@ gulp.task('default', function() {
   .pipe(concat('text-game-maker-1.0.0.min.js'))
   .pipe(uglify())
   .pipe(header(headerText))
-  .pipe(gulp.dest('./dist'));
+  .pipe(gulp.dest('./dist/text-game-maker-1.0.0.min.js'))
+  .pipe(gulp.dest('./dist/text-game-maker-js-1.0.0-starter-package'));
+
+  gulp.src(['./readme.txt'])
+  .pipe(gulp.dest('./dist/text-game-maker-1.0.0.min.js'))
+  .pipe(gulp.dest('./dist/text-game-maker-js-1.0.0-starter-package'));
 });
 
 var headerText = `/*

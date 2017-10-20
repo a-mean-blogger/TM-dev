@@ -8,7 +8,7 @@ Text Game Maker JS
 
 Text Game Maker JS는 웹브라우저용 텍스트 게임 제작 라이브러리입니다. 콘솔(도스창)모양의 canvas를 생성하여 문자를 출력하고 사용자의 입력을 받을 수 있습니다.
 
-## Demo
+## 데모
 
 테트리스: [http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS/Games/테트리스](http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS/Games/테트리스)
 
@@ -17,6 +17,10 @@ Text Game Maker JS는 웹브라우저용 텍스트 게임 제작 라이브러리
 한글: [http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS](http://www.a-mean-blog.com/ko/blog/Text-Game-Maker-JS)
 
 English: [http://www.a-mean-blog.com/en/blog/Text-Game-Maker-JS](http://www.a-mean-blog.com/en/blog/Text-Game-Maker-JS)
+
+## 온라인 샌드박스
+
+[https://a-mean-blogger.github.io/text-game-maker-js/sandbox](https://a-mean-blogger.github.io/text-game-maker-js/sandbox)
 
 ## Copyright
 
