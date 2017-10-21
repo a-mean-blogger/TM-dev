@@ -15,8 +15,6 @@ TM.InputManager = function(customTargetDomId,devMode){
     console.error('new TM.InputManager ERROR: '+errorMessage+' TM.InputManager is not created.');
     return;
   }
-
-  this.isAllowed = true;
   this.devMode = devMode;
   this.keyboard = new TM.InputManager_Keyboard(this);
   TM.IObject.call(this);
@@ -27,14 +25,3 @@ TM.InputManager.prototype.constructor = TM.InputManager;
 // TM.IObject functions implementation
 TM.InputManager.prototype._init = function(){};
 TM.InputManager.prototype._destroy = function(){};
-
-// TM.InputManager functions - allow/disallow
-TM.InputManager.prototype.isAllowed = function(keyCode){
-  return this.isAllowed;
-};
-TM.InputManager.prototype.disAllow = function(keyCode){
-  this.isAllowed = false;
-};
-TM.InputManager.prototype.allow = function(keyCode){
-  this.isAllowed = true;
-};

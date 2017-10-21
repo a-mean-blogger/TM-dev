@@ -227,7 +227,7 @@ Status.prototype.deleteFrame = function(){
   }
 };
 Status.prototype.drawNextBlock = function(blockType){
-  if(blockType || blockType == 0) this.data.nextBlockType = blockType;
+  if(blockType || blockType === 0) this.data.nextBlockType = blockType;
   var nextBlockType = this.data.nextBlockType;
   var xOffset = (nextBlockType === 0 || nextBlockType === 1)?0:1;
   var color = this.data.COLORSET.BLOCKS[nextBlockType];
@@ -372,10 +372,10 @@ Tetris.prototype._calculate = function(){
   });
 };
 Tetris.prototype._draw = function(){
+  if(this.data.gameOver.popup) return;
+
   var activeBlock = this.data.activeBlock;
   const COLORSET = this.data.COLORSET;
-
-  if(this.data.gameOver.popup) return;
 
   for(var i=0; i<this.data.ROW_NUM; i++){
     for(var j=0; j<this.data.COL_NUM; j++){
@@ -425,7 +425,7 @@ Tetris.prototype.resetDataArray = function(){
       if(i == this.data.ROW_NUM-1){
         this.data.dataArray[i][j] = Tetris.WALL;
       }
-      else if(j == 0 || j == this.data.COL_NUM-1){
+      else if(j === 0 || j == this.data.COL_NUM-1){
         this.data.dataArray[i][j] = Tetris.WALL;
       }
       else {
@@ -442,7 +442,7 @@ Tetris.prototype.emptyDataArray = function(){
       this.data.dataArray[i][j] = Tetris.EMPTY;
     }
   }
-}
+};
 Tetris.prototype.updateCeilling = function(){
   for(var j=1; j<this.data.COL_NUM-1; j++){
     if(this.data.dataArray[3][j] <= 0) this.data.dataArray[3][j] = Tetris.CEILING;

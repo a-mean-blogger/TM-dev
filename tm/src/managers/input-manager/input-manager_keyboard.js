@@ -3,7 +3,6 @@
 //=============================
 // Object Type: TM.IObject
 TM.InputManager_Keyboard = function(refInputManager){
-  this.isAllowed = true;
   this.refInputManager = refInputManager;
   this.keyState = {};
   this.keyPressed = {};
@@ -12,7 +11,7 @@ TM.InputManager_Keyboard = function(refInputManager){
   this.eventHandlers = {
     keydown: function(e){
       e.preventDefault();
-      if(_self.refInputManager.isAllowed && _self.isAllowed){
+      if(_self.refInputManager.isActive && _self.isActive){
         _self.keyState[e.keyCode] = true;
         _self.keyPressed[e.keyCode] = true;
       }
@@ -60,17 +59,6 @@ TM.InputManager_Keyboard.prototype.removeKeyState = function(keyCode){
 };
 TM.InputManager_Keyboard.prototype.clearKeyState = function(){
   this.keyState = {};
-};
-
-// TM.InputManager_Keyboard functions - allow/disallow
-TM.InputManager_Keyboard.prototype.isAllowed = function(keyCode){
-  return this.isAllowed;
-};
-TM.InputManager_Keyboard.prototype.disAllow = function(keyCode){
-  this.isAllowed = false;
-};
-TM.InputManager_Keyboard.prototype.allow = function(keyCode){
-  this.isAllowed = true;
 };
 
 // TM.InputManager_Keyboard functions - keyPressed
