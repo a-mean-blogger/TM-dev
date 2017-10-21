@@ -45,9 +45,9 @@ TM.ScreenManager_Cursor.prototype.move = function(x,y){
 };
 TM.ScreenManager_Cursor.prototype.hide = function(){
   this.data.isHidden = true;
-  this.interval.stop();
+  this.interval.destroy();
 };
 TM.ScreenManager_Cursor.prototype.show = function(){
   this.data.isHidden = false;
-  this.interval.start();
+  this.interval.init();
 };
