@@ -111,12 +111,12 @@ Program_Game.prototype._getInput = function(){
       TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.objects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }
+    TMI.keyboard.clearKey();
   }
 
   if(!this.data.isPaused){
     this.checkTetrisInput(this.objects.player1Game, GAME_SETTINGS.PLAYER1.KEYSET);
   }
-  TMI.keyboard.clearKey();
 };
 
 // Custom functions
