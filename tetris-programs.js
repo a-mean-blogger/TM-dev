@@ -86,7 +86,7 @@ Program_Game.prototype._init = function(){
 };
 Program_Game.prototype._destroy = function(){};
 Program_Game.prototype._calculate = function(){
-  if(this.objects.player1Game.data.isGameOverFinished && !this.objects.gameOverPopup){
+  if(this.objects.player1Game.data.isGameOver && !this.objects.gameOverPopup){
     var player1GameData = this.objects.player1Game.data;
     this.objects.gameOverPopup = new GameOverPopup(800,{x:19,y:5,bgColor:'#444',currentScore:player1GameData.currentScore});
   }
