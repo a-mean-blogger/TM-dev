@@ -296,16 +296,16 @@ var Tetris = function(data){
     COL_NUM: GAME_SETTINGS.COL_NUM,
     ROW_NUM: GAME_SETTINGS.ROW_NUM,
     COLORSET: GAME_SETTINGS.COLORSET,
-    level: 1,
-    goalCount: 10,
-    goalCountMax: 10,
-    currentScore: 0,
-    autoDropCountMax: 80,
-    autoDropCount: 0,
     dataArray: null,
     activeBlock: null,
     nextBlockType: null,
-    delayAfterGlued: {
+    currentScore: 0,
+    level: 1,
+    goal: 10,
+    GOAL_MAX: 10,
+    autoDropCount: 0,
+    autoDropCountMax: null,
+    delayAfterLanding: {
       flag: false,
       count: 0,
       COUNT_MAX: 10,
@@ -341,7 +341,7 @@ Tetris.prototype._init = function(){
   this.createNewBlock();
   this.setSpeed(this.data.level);
   this.data.refStatus.drawLevel(this.data.level);
-  this.data.refStatus.drawGoal(this.data.goalCount);
+  this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawCurrentScore(this.data.currentScore);
 };
 Tetris.prototype._destroy = function(blockType){
@@ -350,32 +350,6 @@ Tetris.prototype._destroy = function(blockType){
   this.draw();
 };
 Tetris.prototype._calculate = function(){
-  if(this.data.isGameOverStarted) return;
-
-  var activeBlock = this.data.activeBlock;
-  this.updateCeilling();
-  this.autoDrop();
-  activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  if(activeBlock.isLanded()){
-    activeBlock.processLanding(this.data.dataArray);
-  }
-  else if(activeBlock.isGlued() && !this.data.delayAfterGlued.flag){
-    this.data.delayAfterGlued.flag = true;
-    this.changeFullLinesToStar();
-  }
-  else if(this.data.delayAfterGlued.flag){
-    if(++this.data.delayAfterGlued.count > this.data.delayAfterGlued.COUNT_MAX){
-      this.data.delayAfterGlued.flag = false;
-      this.data.delayAfterGlued.count = 0;
-      this.removeFullLines();
-      if(this.checkGameOver()){
-        this.gameOver();
-      }
-      else {
-        this.createNewBlock();
-      }
-    }
-  }
 
   var activeBlockData = this.data.activeBlock.data;
   TMD.print('tetris_debug',{
@@ -385,14 +359,43 @@ Tetris.prototype._calculate = function(){
     'activeBlockData.rotation': activeBlockData.rotation,
     'activeBlockData.x': activeBlockData.x,
     'activeBlockData.y': activeBlockData.y,
-    'activeBlock.isLanded()': activeBlock.isLanded(),
-    'activeBlockData.landed.count': activeBlockData.landed.count,
-    'activeBlockData.landed.COUNT_MAX': activeBlockData.landed.COUNT_MAX,
-    'activeBlock.isGlued()': activeBlock.isLanded(),
-    'delayAfterGlued.flag': this.data.delayAfterGlued.flag,
-    'delayAfterGlued.count': this.data.delayAfterGlued.count,
-    'delayAfterGlued.COUNT_MAX': this.data.delayAfterGlued.COUNT_MAX,
+    'activeBlockData.landing.flag': activeBlockData.landing.flag,
+    'activeBlockData.landing.count': activeBlockData.landing.count,
+    'activeBlockData.landing.COUNT_MAX': activeBlockData.landing.COUNT_MAX,
+    'activeBlockData.isLanded': activeBlockData.isLanded,
+    'delayAfterLanding.flag': this.data.delayAfterLanding.flag,
+    'delayAfterLanding.count': this.data.delayAfterLanding.count,
+    'delayAfterLanding.COUNT_MAX': this.data.delayAfterLanding.COUNT_MAX,
+    'isGameOverStarted': this.data.isGameOverStarted,
+    'isGameOverFinished': this.data.isGameOverFinished,
   });
+
+  if(this.data.isGameOverStarted) return;
+
+  var activeBlock = this.data.activeBlock;
+  this.updateCeilling();
+  this.autoDrop();
+  activeBlock.updateOnTetrisDataArray(this.data.dataArray);
+  if(activeBlock.data.landing.flag === true){
+    activeBlock.processLanding(this.data.dataArray);
+  }
+  else if(activeBlock.data.isLanded && !this.data.delayAfterLanding.flag){
+    this.data.delayAfterLanding.flag = true;
+    this.changeFullLinesToStar();
+  }
+  else if(this.data.delayAfterLanding.flag){
+    if(++this.data.delayAfterLanding.count > this.data.delayAfterLanding.COUNT_MAX){
+      this.data.delayAfterLanding.flag = false;
+      this.data.delayAfterLanding.count = 0;
+      this.removeFullLines();
+      if(this.checkGameOver()){
+        this.gameOver();
+      }
+      else {
+        this.createNewBlock();
+      }
+    }
+  }
 };
 Tetris.prototype._draw = function(){
   if(this.data.isGameOverFinished) return;
@@ -407,7 +410,7 @@ Tetris.prototype._draw = function(){
       switch(this.data.dataArray[i][j]){
         case Tetris.ACTIVE_BLOCK: //-2
           blockChar='□';
-          color = COLORSET.BLOCKS[activeBlock.getType()];
+          color = COLORSET.BLOCKS[activeBlock.data.type];
           break;
         case Tetris.GRAY_BLOCK: //-2
           blockChar='■';
@@ -509,8 +512,8 @@ Tetris.prototype.hardDrop = function(){
     this.addScore(this.data.level/2);
     this.hardDrop();
   }
-  else if(activeBlock.data.landed.flag){
-    activeBlock.data.landed.count = activeBlock.data.landed.COUNT_MAX;
+  else if(activeBlock.data.landing.flag){
+    activeBlock.data.landing.count = activeBlock.data.landing.COUNT_MAX;
   }
 };
 Tetris.prototype.autoDrop = function(){
@@ -550,8 +553,8 @@ Tetris.prototype.removeFullLines = function(){
       removedLineNum++;
       this.addScore(100 * this.data.level);
 
-      if(--this.data.goalCount === 0) this.levelUp();
-      else this.data.refStatus.drawGoal(this.data.goalCount);
+      if(--this.data.goal === 0) this.levelUp();
+      else this.data.refStatus.drawGoal(this.data.goal);
     }
   }
 };
@@ -568,7 +571,7 @@ Tetris.prototype.setSpeed = function(level){
 };
 Tetris.prototype.levelUp = function(){
   this.data.level++;
-  this.data.goalCount = this.data.goalCountMax;
+  this.data.goalCount = this.data.GOAL_MAX;
   this.setSpeed(this.data.level);
   this.data.refStatus.drawGoal(this.data.goalCount);
   this.data.refStatus.drawLevel(this.data.level);
@@ -606,12 +609,12 @@ var Tetris_ActiveBlock = function(data){
     rotation: 0,
     x: 0,
     y: 0,
-    landed: {
+    landing: {
       flag: false,
       count: 0,
       COUNT_MAX: 50,
     },
-    isGlued: false,
+    isLanded: false,
   };
   TM.IObject.call(this, data);
 };
@@ -622,11 +625,6 @@ Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 Tetris_ActiveBlock.prototype._init = function(){};
 Tetris_ActiveBlock.prototype._destroy = function(){};
 
-// Custom Functions - Getters, Setters
-Tetris_ActiveBlock.prototype.getType = function(){
-  return this.data.type;
-};
-
 // Custom Functions - Update ActiveBlock to dataArray
 Tetris_ActiveBlock.prototype.transFormTo = function(dataArray,to){
   for(var i=0; i<dataArray.length; i++){
@@ -636,11 +634,11 @@ Tetris_ActiveBlock.prototype.transFormTo = function(dataArray,to){
     }
   }
 };
-Tetris_ActiveBlock.prototype.transFormToInactiveBlock = function(dataArray){
+Tetris_ActiveBlock.prototype.setBlock = function(dataArray){
   this.transFormTo(dataArray,this.data.type+2);
 };
 Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
-  if(!this.data.isGlued){
+  if(!this.data.isLanded){
     this.transFormTo(dataArray, Tetris.EMPTY);
 
     for(var i=0; i<4; i++){
@@ -687,13 +685,13 @@ Tetris_ActiveBlock.prototype.moveLeft = function(dataArray){
 Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
   var moved = this.move(dataArray,0,1);
   if(moved){
-    this.data.landed.count = 0;
+    this.data.landing.count = 0;
     if(this.checkMoveDown(dataArray)){
-      this.data.landed.flag = false;
+      this.data.landing.flag = false;
     }
   }
   else {
-    this.data.landed.flag = true;
+    this.data.landing.flag = true;
   }
   return moved;
 };
@@ -712,19 +710,13 @@ Tetris_ActiveBlock.prototype.rotate = function(dataArray){
   return moved;
 };
 
-// Custom functions - Inactivation
-Tetris_ActiveBlock.prototype.isLanded = function(){
-  return this.data.landed.flag;
-};
-
+// Custom functions - landing
 Tetris_ActiveBlock.prototype.processLanding = function(dataArray){
-  if(++this.data.landed.count > this.data.landed.COUNT_MAX && !this.checkMoveDown(dataArray)){
-    this.data.landed.flag = false;
-    this.data.isGlued = true;
+  if(++this.data.landing.count > this.data.landing.COUNT_MAX && !this.checkMoveDown(dataArray)){
+    this.data.landing.count = 0;
+    this.data.landing.flag = false;
+    this.data.isLanded = true;
     this.updateOnTetrisDataArray(dataArray);
-    this.transFormToInactiveBlock(dataArray);
+    this.setBlock(dataArray);
   }
-};
-Tetris_ActiveBlock.prototype.isGlued = function(){
-  return this.data.isGlued;
 };
