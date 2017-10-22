@@ -117,6 +117,18 @@ TM.ScreenManager.prototype._draw = function(){
         //do not draw once it already drew for the better performance
         this.screenData[i][j].isNew = false;
       }
+
+      if(!this.screenData[i][j].isActive && this.screenData[i][j].char != '$off'){
+        this.screenData[i][j].char = '$off';
+        this.screenData[i][j].backgroundColor = this.screenSetting.backgroundColor;
+        var offX = this.blockWidth*j;
+        var offY = this.blockHeight*(i-this.scrollOffsetY);
+        var offWidth = this.blockWidth;
+        var offHeight = this.blockHeight;
+        ctx.fillStyle = this.screenData[i][j].backgroundColor;
+        ctx.fillRect(offX,offY,offWidth,offHeight);
+      }
+
     }
   }
 
@@ -220,7 +232,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
       var regex = TM.common.getFullwidthRegex(this.charGroups);
       var fullwidth = regex.test(char);
 
-      this.screenData[dataY][dataX] = new TM.ScreenManager_Char(this.screenSetting,char,fullwidth,color,backgroundColor);
+      this.screenData[dataY][dataX].update(char,fullwidth,color,backgroundColor);
 
       // to clean background outliner
       if(this.isInScreen(screenX-1,screenY)) this.screenData[dataY][dataX-1].draw = true;
@@ -265,7 +277,7 @@ TM.ScreenManager.prototype.checkReady = function(){
 TM.ScreenManager.prototype.fillScreen = function(char, color, backgroundColor){
   for(var i=this.scrollOffsetY; i<this.scrollOffsetY+this.screenSetting.row; i++){
     for(var j=0; j<this.screenSetting.column; j++){
-      this.screenData[i][j] = new TM.ScreenManager_Char(this.screenSetting, char, false, color, backgroundColor);
+      this.screenData[i][j].update(char, false, color, backgroundColor);
     }
   }
 };
