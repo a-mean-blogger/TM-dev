@@ -425,7 +425,7 @@ Tetris.prototype._draw = function(){
           color = COLORSET.WALL;
           break;
         case Tetris.STAR: //100
-          blockChar='☆';
+          blockChar='★';
           var colorNum = j%COLORSET.BLOCKS.length;
           color = COLORSET.BLOCKS[colorNum];
           break;
@@ -508,6 +508,9 @@ Tetris.prototype.hardDrop = function(){
   if(activeBlock.moveDown(this.data.dataArray)){
     this.addScore(this.data.level/2);
     this.hardDrop();
+  }
+  else if(activeBlock.data.landed.flag){
+    activeBlock.data.landed.count = activeBlock.data.landed.COUNT_MAX;
   }
 };
 Tetris.prototype.autoDrop = function(){

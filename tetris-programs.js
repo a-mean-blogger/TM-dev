@@ -130,10 +130,10 @@ Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET){
   if(TMI.keyboard.checkKey(KEYSET.DOWN)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.DOWN);
   }
-  if(TMI.keyboard.checkKey(KEYSET.ROTATE)){
+  if(TMI.keyboard.checkKeyPressed(KEYSET.ROTATE)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.ROTATE);
   }
-  if(TMI.keyboard.checkKey(KEYSET.DROP)){
+  if(TMI.keyboard.checkKeyPressed(KEYSET.DROP)){
     tetrisGame.processKeyInput(KEYSET, KEYSET.DROP);
   }
 };
