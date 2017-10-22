@@ -305,12 +305,13 @@ var Tetris = function(data){
     dataArray: null,
     activeBlock: null,
     nextBlockType: null,
-    gameOver: {
+    delayAfterGlued: {
       flag: false,
       count: 0,
-      countMax: 30,
-      popup: false,
+      COUNT_MAX: 10,
     },
+    isGameOverStarted: false,
+    isGameOverFinished: false,
   };
   TM.ILoopObject.call(this, this.speed, data);
 };
@@ -349,30 +350,52 @@ Tetris.prototype._destroy = function(blockType){
   this.draw();
 };
 Tetris.prototype._calculate = function(){
-  if(this.data.gameOver.flag) return ;
+  if(this.data.isGameOverStarted) return;
 
   var activeBlock = this.data.activeBlock;
   this.updateCeilling();
   this.autoDrop();
   activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  if(activeBlock.isInactivate1On()) this.inactivateBlock();
+  if(activeBlock.isLanded()){
+    activeBlock.processLanding(this.data.dataArray);
+  }
+  else if(activeBlock.isGlued() && !this.data.delayAfterGlued.flag){
+    this.data.delayAfterGlued.flag = true;
+    this.changeFullLinesToStar();
+  }
+  else if(this.data.delayAfterGlued.flag){
+    if(++this.data.delayAfterGlued.count > this.data.delayAfterGlued.COUNT_MAX){
+      this.data.delayAfterGlued.flag = false;
+      this.data.delayAfterGlued.count = 0;
+      this.removeFullLines();
+      if(this.checkGameOver()){
+        this.gameOver();
+      }
+      else {
+        this.createNewBlock();
+      }
+    }
+  }
 
   var activeBlockData = this.data.activeBlock.data;
-  TMD.print('test',{
-    'activeBlock.type': activeBlockData.type,
-    'activeBlock.rotation': activeBlockData.rotation,
-    'activeBlock.x': activeBlockData.x,
-    'activeBlock.y': activeBlockData.y,
+  TMD.print('tetris_debug',{
+    'speed': this.data.autoDropCountMax,
     'nextBlockType': this.data.nextBlockType,
-    'inactivate1.flag': activeBlockData.inactivate1.flag,
-    'inactivate1.count': activeBlockData.inactivate1.count,
-    'inactivate2.flag': activeBlockData.inactivate2.flag,
-    'inactivate2.count': activeBlockData.inactivate2.count,
-    'speed': this.data.autoDropCountMax
+    'activeBlockData.type': activeBlockData.type,
+    'activeBlockData.rotation': activeBlockData.rotation,
+    'activeBlockData.x': activeBlockData.x,
+    'activeBlockData.y': activeBlockData.y,
+    'activeBlock.isLanded()': activeBlock.isLanded(),
+    'activeBlockData.landed.count': activeBlockData.landed.count,
+    'activeBlockData.landed.COUNT_MAX': activeBlockData.landed.COUNT_MAX,
+    'activeBlock.isGlued()': activeBlock.isLanded(),
+    'delayAfterGlued.flag': this.data.delayAfterGlued.flag,
+    'delayAfterGlued.count': this.data.delayAfterGlued.count,
+    'delayAfterGlued.COUNT_MAX': this.data.delayAfterGlued.COUNT_MAX,
   });
 };
 Tetris.prototype._draw = function(){
-  if(this.data.gameOver.popup) return;
+  if(this.data.isGameOverFinished) return;
 
   var activeBlock = this.data.activeBlock;
   const COLORSET = this.data.COLORSET;
@@ -485,8 +508,6 @@ Tetris.prototype.hardDrop = function(){
   if(activeBlock.moveDown(this.data.dataArray)){
     this.addScore(this.data.level/2);
     this.hardDrop();
-  } else {
-    activeBlock.forceToInactivate2Ready();
   }
 };
 Tetris.prototype.autoDrop = function(){
@@ -494,26 +515,6 @@ Tetris.prototype.autoDrop = function(){
   if(++this.data.autoDropCount > this.data.autoDropCountMax){
     this.data.autoDropCount = 0;
     activeBlock.moveDown(this.data.dataArray);
-  }
-};
-Tetris.prototype.inactivateBlock = function(){
-  var activeBlock = this.data.activeBlock;
-
-  if(activeBlock.checkInactivate2Ready() && !activeBlock.checkMoveDown(this.data.dataArray)){
-    activeBlock.startInactivate2();
-    activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-    activeBlock.transFormToInactiveBlock(this.data.dataArray);
-    this.changeFullLinesToStar();
-  }
-  else if(activeBlock.checkInactivate2Finished()){
-    activeBlock.resetInactivateStatus();
-    this.removeFullLines();
-    if(this.checkGameOver()){
-      this.gameOver();
-    }
-    else {
-      this.createNewBlock();
-    }
   }
 };
 Tetris.prototype.changeFullLinesToStar = function(){
@@ -575,7 +576,7 @@ Tetris.prototype.checkGameOver = function(){
   }
 };
 Tetris.prototype.gameOver = function(){
-  this.data.gameOver.flag = true;
+  this.data.isGameOverStarted = true;
   this.data.refStatus.drawBestScore(this.data.currentScore);
   this.data.refStatus.drawLastScore(this.data.currentScore);
   var i = this.data.ROW_NUM-2;
@@ -585,7 +586,7 @@ Tetris.prototype.gameOver = function(){
       if(_self.data.dataArray[i][j]>0) _self.data.dataArray[i][j] = Tetris.GRAY_BLOCK;
     }
     if(--i<0){
-      _self.data.gameOver.popup = true;
+      _self.data.isGameOverFinished = true;
       clearInterval(interval);
     }
   },100);
@@ -602,16 +603,12 @@ var Tetris_ActiveBlock = function(data){
     rotation: 0,
     x: 0,
     y: 0,
-    inactivate1: {
+    landed: {
       flag: false,
       count: 0,
-      countMax: 50,
+      COUNT_MAX: 50,
     },
-    inactivate2: {
-      flag: false,
-      count: 0,
-      countMax: 10,
-    },
+    isGlued: false,
   };
   TM.IObject.call(this, data);
 };
@@ -640,7 +637,7 @@ Tetris_ActiveBlock.prototype.transFormToInactiveBlock = function(dataArray){
   this.transFormTo(dataArray,this.data.type+2);
 };
 Tetris_ActiveBlock.prototype.updateOnTetrisDataArray = function(dataArray){
-  if(!this.data.inactivate2.flag){
+  if(!this.data.isGlued){
     this.transFormTo(dataArray, Tetris.EMPTY);
 
     for(var i=0; i<4; i++){
@@ -687,13 +684,13 @@ Tetris_ActiveBlock.prototype.moveLeft = function(dataArray){
 Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
   var moved = this.move(dataArray,0,1);
   if(moved){
-    this.data.inactivate1.count = 0;
+    this.data.landed.count = 0;
     if(this.checkMoveDown(dataArray)){
-      this.data.inactivate1.flag = false;
+      this.data.landed.flag = false;
     }
   }
   else {
-    this.data.inactivate1.flag = true;
+    this.data.landed.flag = true;
   }
   return moved;
 };
@@ -713,32 +710,18 @@ Tetris_ActiveBlock.prototype.rotate = function(dataArray){
 };
 
 // Custom functions - Inactivation
-Tetris_ActiveBlock.prototype.isInactivate1On = function(){
-  return this.data.inactivate1.flag;
+Tetris_ActiveBlock.prototype.isLanded = function(){
+  return this.data.landed.flag;
 };
-Tetris_ActiveBlock.prototype.checkInactivate2Ready = function(){
-  var checkStatus = false;
-  if(!this.data.inactivate2.flag
-  && ++this.data.inactivate1.count > this.data.inactivate1.countMax){
-    checkStatus = true;
+
+Tetris_ActiveBlock.prototype.processLanding = function(dataArray){
+  if(++this.data.landed.count > this.data.landed.COUNT_MAX && !this.checkMoveDown(dataArray)){
+    this.data.landed.flag = false;
+    this.data.isGlued = true;
+    this.updateOnTetrisDataArray(dataArray);
+    this.transFormToInactiveBlock(dataArray);
   }
-  return checkStatus;
 };
-Tetris_ActiveBlock.prototype.startInactivate2 = function(){
-  this.data.inactivate2.flag = true;
-};
-Tetris_ActiveBlock.prototype.checkInactivate2Finished = function(){
-  var checkStatus = false;
-  if(this.data.inactivate2.flag
-  && ++this.data.inactivate2.count > this.data.inactivate2.countMax){
-    checkStatus = true;
-  }
-  return checkStatus;
-};
-Tetris_ActiveBlock.prototype.resetInactivateStatus = function(){
-  this.data.inactivate1.count = 0;
-  this.data.inactivate2.count = 0;
-};
-Tetris_ActiveBlock.prototype.forceToInactivate2Ready = function(){
-  this.data.inactivate1.count = this.data.inactivate1.countMax;
+Tetris_ActiveBlock.prototype.isGlued = function(){
+  return this.data.isGlued;
 };
