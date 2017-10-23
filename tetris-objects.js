@@ -367,7 +367,6 @@ Tetris.prototype._destroy = function(blockType){
 };
 Tetris.prototype._calculate = function(){
 
-  // for debug
   var activeBlockData = this.data.activeBlock.data;
   TMD.print('tetris_debug',{
     'speed': this.data.autoDrop.countMax,
@@ -524,8 +523,8 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
     x: Math.floor(this.data.COL_NUM/2)-1,
-    // type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
-    type: 1,
+    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
+    // type: 1,
   };
 
   this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
