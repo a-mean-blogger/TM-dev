@@ -307,23 +307,14 @@ var Tetris = function(data){
       count: 0,
       countMax: null,
     },
-    hardDropMessage: {
+    message: {
       flag: false,
       count: 0,
-      COUNT_MAX: 10,
+      COUNT_MAX: 40,
       x: null,
       y: null,
-      bonus: null,
-      text: "HARD DROP!",
-    },
-    comboMessage: {
-      flag: false,
-      count: 0,
-      COUNT_MAX: 10,
-      x: null,
-      y: null,
-      bonus: null,
-      text: " COMBO!",
+      text1: null,
+      text2: "HARD DROP!",
     },
     afterLanding: {
       flag: false,
@@ -472,28 +463,28 @@ Tetris.prototype._draw = function(){
     }
   }
 
-  if(this.data.hardDropMessage.flag){
-    this.processMessage(this.data.hardDropMessage);
-  }
-
-  if(this.data.comboMessage.flag){
-    this.processMessage(this.data.comboMessage);
+  if(this.data.message.flag){
+    this.processMessage();
   }
 };
 
 // Custom functions
-Tetris.prototype.processMessage = function(message){
+Tetris.prototype.processMessage = function(){
+  var message = this.data.message;
+  var longestText = (message.text1.length>message.text2.length)?message.text1:message.text2;
   var x = this.data.x+message.x*2;
+  var y = this.data.y+message.y-2;
   if(x<=this.data.x+2){
     x = this.data.x+4;
   }
-  else if(x+message.text.length>this.data.COL_NUM*2){
-    x = this.data.x+(this.data.COL_NUM-1 - Math.ceil(message.text.length/2))*2;
+  else if(x+longestText.length>this.data.COL_NUM*2){
+    x = this.data.x+(this.data.COL_NUM-1 - Math.ceil(longestText.length/2))*2;
   }
-  var y = message.y-2;
-  TMS.cursor.move(x,y);
-  TMS.insertText("+ "+message.bonus+"\n");
-  TMS.insertText(message.text);
+  if(y <this.data.y){
+    y = this.data.y;
+  }
+  TMS.insertTextAt(x,y  ,message.text1);
+  TMS.insertTextAt(x,y+1,message.text2);
   if(++message.count > message.COUNT_MAX){
     message.count = 0;
     message.flag = false;
@@ -533,7 +524,8 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
     x: Math.floor(this.data.COL_NUM/2)-1,
-    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7)
+    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
+    // type: 1,
   };
 
   this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
@@ -574,17 +566,21 @@ Tetris.prototype.hardDrop = function(bonus){
   else{
     var hardDropBonus = Math.floor(bonus);
     if(hardDropBonus){
-      this.showHardDropMessage(activeBlock.data.x, activeBlock.data.y, hardDropBonus);
+      var text1 = "HARD DROP!";
+      var text2 = "+ "+hardDropBonus;
+      this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
       this.addScore(hardDropBonus);
     }
   }
 
 };
-Tetris.prototype.showHardDropMessage = function(x, y, hardDropBonus){
-  this.data.hardDropMessage.flag = true;
-  this.data.hardDropMessage.x = x;
-  this.data.hardDropMessage.y = y;
-  this.data.hardDropMessage.bonus = hardDropBonus;
+Tetris.prototype.showMessage = function(x,y,text1,text2){
+  this.data.message.flag = true;
+  this.data.message.count = 0;
+  this.data.message.x = x;
+  this.data.message.y = y;
+  this.data.message.text1 = text1?text1:"";
+  this.data.message.text2 = text2?text2:"";
 };
 Tetris.prototype.processAutoDrop = function(){
   var activeBlock = this.data.activeBlock;
@@ -629,21 +625,13 @@ Tetris.prototype.removeFullLines = function(){
     }
   }
 
-  if(removedLineNum == 1){
-    this.addScore(score);
-  }
-  else if (removedLineNum > 1){
+  if(removedLineNum>0){
     var activeBlock = this.data.activeBlock;
-    var bonus = this.data.level*50*removedLineNum*2;
-    this.addScore(score+bonus);
-    this.showComboMessage(activeBlock.data.x,activeBlock.data.y,bonus);
+    score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
+    var text1 = (removedLineNum > 1)?removedLineNum+" COMBOS!":"";
+    var text2 = "+ "+score;
+    this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
   }
-};
-Tetris.prototype.showComboMessage = function(x,y,comboBonus){
-  this.data.comboMessage.flag = true;
-  this.data.comboMessage.x = x;
-  this.data.comboMessage.y = y;
-  this.data.comboMessage.bonus = comboBonus;
 };
 Tetris.prototype.addScore = function(score){
   this.data.currentScore += score;
