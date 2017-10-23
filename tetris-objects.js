@@ -314,7 +314,7 @@ var Tetris = function(data){
       x: null,
       y: null,
       text1: null,
-      text2: "HARD DROP!",
+      text2: null,
     },
     afterLanding: {
       flag: false,
@@ -524,8 +524,8 @@ Tetris.prototype.updateCeilling = function(){
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
     x: Math.floor(this.data.COL_NUM/2)-1,
-    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
-    // type: 1,
+    // type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
+    type: 1,
   };
 
   this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
@@ -567,7 +567,7 @@ Tetris.prototype.hardDrop = function(bonus){
     var hardDropBonus = Math.floor(bonus);
     if(hardDropBonus){
       var text1 = "HARD DROP!";
-      var text2 = "+ "+hardDropBonus;
+      var text2 = " + "+hardDropBonus;
       this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
       this.addScore(hardDropBonus);
     }
@@ -619,9 +619,6 @@ Tetris.prototype.removeFullLines = function(){
       i++;
       removedLineNum++;
       score += 100 * this.data.level;
-
-      if(--this.data.goal === 0) this.levelUp();
-      else this.data.refStatus.drawGoal(this.data.goal);
     }
   }
 
@@ -629,8 +626,12 @@ Tetris.prototype.removeFullLines = function(){
     var activeBlock = this.data.activeBlock;
     score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
     var text1 = (removedLineNum > 1)?removedLineNum+" COMBOS!":"";
-    var text2 = "+ "+score;
+    var text2 = " + "+score;
+    this.addScore(score);
     this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
+    this.data.goal -= removedLineNum;
+    if(this.data.goal<=0) this.levelUp();
+    else this.data.refStatus.drawGoal(this.data.goal);
   }
 };
 Tetris.prototype.addScore = function(score){
@@ -650,6 +651,11 @@ Tetris.prototype.levelUp = function(){
   this.setSpeed(this.data.level);
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawLevel(this.data.level);
+
+  var activeBlock = this.data.activeBlock;
+  var text1 = "LEVEL UP!";
+  var text2 = " SPEED UP!";
+  this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
 };
 Tetris.prototype.checkGameOver = function(){
   for(var j=1; j<this.data.COL_NUM-1; j++){
