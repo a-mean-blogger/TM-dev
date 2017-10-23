@@ -186,7 +186,7 @@ var Status = function(data){
     currentScore: 0,
     nextBlockType: null,
     level: null,
-    goal: null,
+    i: null,
   };
   TM.IObject.call(this, data);
 };
@@ -306,6 +306,24 @@ var Tetris = function(data){
     autoDrop: {
       count: 0,
       countMax: null,
+    },
+    hardDropMessage: {
+      flag: false,
+      count: 0,
+      COUNT_MAX: 10,
+      x: null,
+      y: null,
+      bonus: null,
+      text: "HARD DROP!",
+    },
+    comboMessage: {
+      flag: false,
+      count: 0,
+      COUNT_MAX: 10,
+      x: null,
+      y: null,
+      bonus: null,
+      text: " COMBO!",
     },
     afterLanding: {
       flag: false,
@@ -453,9 +471,34 @@ Tetris.prototype._draw = function(){
       TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
     }
   }
+
+  if(this.data.hardDropMessage.flag){
+    this.processMessage(this.data.hardDropMessage);
+  }
+
+  if(this.data.comboMessage.flag){
+    this.processMessage(this.data.comboMessage);
+  }
 };
 
 // Custom functions
+Tetris.prototype.processMessage = function(message){
+  var x = this.data.x+message.x*2;
+  if(x<=this.data.x+2){
+    x = this.data.x+4;
+  }
+  else if(x+message.text.length>this.data.COL_NUM*2){
+    x = this.data.x+(this.data.COL_NUM-1 - Math.ceil(message.text.length/2))*2;
+  }
+  var y = message.y-2;
+  TMS.cursor.move(x,y);
+  TMS.insertText("+ "+message.bonus+"\n");
+  TMS.insertText(message.text);
+  if(++message.count > message.COUNT_MAX){
+    message.count = 0;
+    message.flag = false;
+  }
+};
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray = [];
   for(var i=0; i<this.data.ROW_NUM; i++){
@@ -514,21 +557,34 @@ Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
       activeBlock.rotate(this.data.dataArray);
       break;
     case KEYSET.DROP:
-      this.hardDrop();
+      this.hardDrop(0);
       break;
   }
 };
-Tetris.prototype.hardDrop = function(){
+Tetris.prototype.hardDrop = function(bonus){
   var activeBlock = this.data.activeBlock;
+  bonus += this.data.level/2;
 
   if(activeBlock.data.landing.flag){
     activeBlock.data.landing.count = activeBlock.data.landing.COUNT_MAX;
   }
   else if(activeBlock.moveDown(this.data.dataArray)){
-    this.addScore(this.data.level/2);
-    this.hardDrop();
+    this.hardDrop(bonus);
+  }
+  else{
+    var hardDropBonus = Math.floor(bonus);
+    if(hardDropBonus){
+      this.showHardDropMessage(activeBlock.data.x, activeBlock.data.y, hardDropBonus);
+      this.addScore(hardDropBonus);
+    }
   }
 
+};
+Tetris.prototype.showHardDropMessage = function(x, y, hardDropBonus){
+  this.data.hardDropMessage.flag = true;
+  this.data.hardDropMessage.x = x;
+  this.data.hardDropMessage.y = y;
+  this.data.hardDropMessage.bonus = hardDropBonus;
 };
 Tetris.prototype.processAutoDrop = function(){
   var activeBlock = this.data.activeBlock;
@@ -552,6 +608,7 @@ Tetris.prototype.changeFullLinesToStar = function(){
 };
 Tetris.prototype.removeFullLines = function(){
   var removedLineNum = 0;
+  var score = 0;
   for(var i=this.data.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;
     for(var j=1; j<this.data.COL_NUM-1; j++){
@@ -565,12 +622,28 @@ Tetris.prototype.removeFullLines = function(){
     if(occupiedCount == this.data.COL_NUM-2){
       i++;
       removedLineNum++;
-      this.addScore(100 * this.data.level);
+      score += 100 * this.data.level;
 
       if(--this.data.goal === 0) this.levelUp();
       else this.data.refStatus.drawGoal(this.data.goal);
     }
   }
+
+  if(removedLineNum == 1){
+    this.addScore(score);
+  }
+  else if (removedLineNum > 1){
+    var activeBlock = this.data.activeBlock;
+    var bonus = this.data.level*50*removedLineNum*2;
+    this.addScore(score+bonus);
+    this.showComboMessage(activeBlock.data.x,activeBlock.data.y,bonus);
+  }
+};
+Tetris.prototype.showComboMessage = function(x,y,comboBonus){
+  this.data.comboMessage.flag = true;
+  this.data.comboMessage.x = x;
+  this.data.comboMessage.y = y;
+  this.data.comboMessage.bonus = comboBonus;
 };
 Tetris.prototype.addScore = function(score){
   this.data.currentScore += score;
