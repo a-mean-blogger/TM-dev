@@ -24,7 +24,7 @@ TM.ScreenManager_Cursor.prototype.constructor = TM.ScreenManager_Cursor;
 
 // TM.ILoopObject function implementations
 TM.ScreenManager_Cursor.prototype._init = function(){};
-TM.ScreenManager_Cursor.prototype._destroy = function(){};
+TM.ScreenManager_Cursor.prototype._inactivate = function(){};
 TM.ScreenManager_Cursor.prototype._calculate = function(){
   this.data.isHidden = !this.data.isHidden;
   this.data.isUpdated = true;
@@ -45,7 +45,7 @@ TM.ScreenManager_Cursor.prototype.move = function(x,y){
 };
 TM.ScreenManager_Cursor.prototype.hide = function(){
   this.data.isHidden = true;
-  this.interval.destroy();
+  this.interval.inactivate();
 };
 TM.ScreenManager_Cursor.prototype.show = function(){
   this.data.isHidden = false;

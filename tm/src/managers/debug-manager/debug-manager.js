@@ -25,7 +25,7 @@ TM.DebugManager.prototype.constructor = TM.DebugManager;
 
 // TM.IObject functions implementation
 TM.DebugManager.prototype._init = function(){};
-TM.DebugManager.prototype._destroy = function(){
+TM.DebugManager.prototype._inactivate = function(){
   this.deleteAll();
 };
 

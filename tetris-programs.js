@@ -23,7 +23,7 @@ Program_Intro.prototype.constructor = Program_Intro;
 Program_Intro.prototype._init = function(){
   TMI.keyboard.clearKey();
 };
-Program_Intro.prototype._destroy = function(){
+Program_Intro.prototype._inactivate = function(){
   TMS.clearScreen();
 };
 Program_Intro.prototype._calculate = function(){};
@@ -84,7 +84,7 @@ Program_Game.prototype._init = function(){
   this.objects.pausePopup = null;
   this.objects.gameOverPopup = null;
 };
-Program_Game.prototype._destroy = function(){};
+Program_Game.prototype._inactivate = function(){};
 Program_Game.prototype._calculate = function(){
   if(this.objects.player1Game.data.isGameOver && !this.objects.gameOverPopup){
     var player1GameData = this.objects.player1Game.data;
@@ -99,7 +99,7 @@ Program_Game.prototype._getInput = function(){
   }
   if(TMI.keyboard.checkKey(GAME_SETTINGS.KEYSET.PAUSE) && !this.objects.gameOverPopup){
     if(this.objects.pausePopup){
-      this.objects.pausePopup.destroy();
+      this.objects.pausePopup.inactivate();
       this.objects.pausePopup = null;
       TMS.clearScreen();
       this.objects.status.refresh();
@@ -107,7 +107,7 @@ Program_Game.prototype._getInput = function(){
       this.objects.player1Game.interval.init();
     }
     else {
-      this.objects.player1Game.interval.destroy();
+      this.objects.player1Game.interval.inactivate();
       TMS.fillScreen(" ", null, "rgba(0,0,0,0.4)");
       this.objects.pausePopup = new PausePopup(800,{x:15,y:11,bgColor:"#444"});
     }

@@ -72,17 +72,17 @@ var MAIN = {
   },
   init: function(){
     TMS.cursor.hide();
-    this.destroy();
+    this.inactivate();
     this.programs.intro.init();
   },
-  destroy: function(){
+  inactivate: function(){
     for(var i in this.programs){
       var program = this.programs[i];
-      program.destroy();
+      program.inactivate();
     }
   },
   changeProgram: function(program){
-    this.destroy();
+    this.inactivate();
     program.init();
   },
 };

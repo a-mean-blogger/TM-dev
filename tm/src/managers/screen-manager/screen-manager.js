@@ -59,7 +59,7 @@ TM.ScreenManager.prototype._init = function(){
     this.startLoadingFont();
   }
 };
-TM.ScreenManager.prototype._destroy = function(){};
+TM.ScreenManager.prototype._inactivate = function(){};
 TM.ScreenManager.prototype._calculate = function(){
   if(!this.isFontLoaded && TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
     this.isFontLoaded = true;

@@ -24,4 +24,4 @@ TM.InputManager.prototype.constructor = TM.InputManager;
 
 // TM.IObject functions implementation
 TM.InputManager.prototype._init = function(){};
-TM.InputManager.prototype._destroy = function(){};
+TM.InputManager.prototype._inactivate = function(){};

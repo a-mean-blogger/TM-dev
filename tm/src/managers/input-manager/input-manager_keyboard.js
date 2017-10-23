@@ -34,7 +34,7 @@ TM.InputManager_Keyboard.prototype._init = function(){
   this.refInputManager.targetDom.addEventListener('keydown', this.eventHandlers.keydown);
   this.refInputManager.targetDom.addEventListener('keyup', this.eventHandlers.keyup);
 };
-TM.InputManager_Keyboard.prototype._destroy = function(){};
+TM.InputManager_Keyboard.prototype._inactivate = function(){};
 
 // TM.InputManager_Keyboard functions - getInput
 TM.InputManager_Keyboard.prototype.getInput = function(question){

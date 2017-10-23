@@ -11,11 +11,11 @@ TM.IObject.prototype.init = function(){
   this._init();
   this.isActive = true;
 };
-TM.IObject.prototype.destroy = function(){
-  this._destroy();
+TM.IObject.prototype.inactivate = function(){
+  this._inactivate();
   this.isActive = false;
 };
 
 // TM.IObject interface functions
 TM.IObject.prototype._init = function(){};
-TM.IObject.prototype._destroy = function(){};
+TM.IObject.prototype._inactivate = function(){};

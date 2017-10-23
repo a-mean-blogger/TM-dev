@@ -17,7 +17,7 @@ TM.Interval.prototype._init = function(){
   this.stopInterval();
   this.startInterval();
 };
-TM.Interval.prototype._destroy = function(){
+TM.Interval.prototype._inactivate = function(){
   this.stopInterval();
 };
 

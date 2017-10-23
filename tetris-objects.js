@@ -19,7 +19,7 @@ Star.prototype.constructor = Star;
 
 // TM.ILoopObject functions implementation
 Star.prototype._init = function(){};
-Star.prototype._destroy = function(){
+Star.prototype._inactivate = function(){
   this.data.refContainer.splice(this.data.refContainer.indexOf(this),1);
   TMS.insertTextAt(this.data.x,this.data.y,'  ');
 };
@@ -59,7 +59,7 @@ PausePopup.prototype.constructor = PausePopup;
 PausePopup.prototype._init = function(){
   this.drawFrame();
 };
-PausePopup.prototype._destroy = function(){
+PausePopup.prototype._inactivate = function(){
   this.deleteFrame();
 };
 PausePopup.prototype._calculate = function(){
@@ -121,7 +121,7 @@ GameOverPopup.prototype._init = function(){
   this.drawFrame();
   this.drawScore();
 };
-GameOverPopup.prototype._destroy = function(){
+GameOverPopup.prototype._inactivate = function(){
   this.deleteFrame();
 };
 GameOverPopup.prototype._calculate = function(){
@@ -199,7 +199,7 @@ Status.prototype._init = function(){
   this.drawLastScore(MAIN.data.scores.lastScore);
   this.drawBestScore(MAIN.data.scores.bestScore);
 };
-Status.prototype._destroy = function(){
+Status.prototype._inactivate = function(){
   this.deleteFrame();
 };
 
@@ -360,7 +360,7 @@ Tetris.prototype._init = function(){
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawCurrentScore(this.data.currentScore);
 };
-Tetris.prototype._destroy = function(blockType){
+Tetris.prototype._inactivate = function(blockType){
   TMD.delete('tetris_debug');
   this.emptyDataArray();
   this.draw();
@@ -713,7 +713,7 @@ Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 
 // TM.IObject functions implementation
 Tetris_ActiveBlock.prototype._init = function(){};
-Tetris_ActiveBlock.prototype._destroy = function(){};
+Tetris_ActiveBlock.prototype._inactivate = function(){};
 
 // Custom Functions - Update ActiveBlock to dataArray
 Tetris_ActiveBlock.prototype.transFormTo = function(dataArray,to){

@@ -19,9 +19,9 @@ TM.ILoopObject.prototype.init = function(){
   this.interval.init();
   this.draw();
 };
-TM.ILoopObject.prototype.destroy = function(){
-  TM.IObject.prototype.destroy.call(this);
-  this.interval.destroy();
+TM.ILoopObject.prototype.inactivate = function(){
+  TM.IObject.prototype.inactivate.call(this);
+  this.interval.inactivate();
 };
 
 // TM.ILoopObject functions
@@ -34,6 +34,6 @@ TM.ILoopObject.prototype.draw = function(){
 
 // TM.ILoopObject interface functions
 TM.ILoopObject.prototype._init = function(){};
-TM.ILoopObject.prototype._destroy = function(){};
+TM.ILoopObject.prototype._inactivate = function(){};
 TM.ILoopObject.prototype._calculate = function(){};
 TM.ILoopObject.prototype._draw = function(){};

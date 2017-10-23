@@ -15,16 +15,16 @@ TM.IProgram.prototype.init = function(){
   TM.ILoopObject.prototype.init.call(this);
   this.loopCount = 0;
 };
-TM.IProgram.prototype.destroy = function(){
-  TM.ILoopObject.prototype.destroy.call(this);
+TM.IProgram.prototype.inactivate = function(){
+  TM.ILoopObject.prototype.inactivate.call(this);
   for(var key in this.objects){
     if(Array.isArray(this.objects[key])){
       for (var i=this.objects[key].length-1; i>=0; i--){
-        this.objects[key][i].destroy();
+        this.objects[key][i].inactivate();
       }
     }
     else if(this.objects[key]) {
-      this.objects[key].destroy();
+      this.objects[key].inactivate();
     }
   }
 };
@@ -49,7 +49,7 @@ TM.IProgram.prototype.getInput = function(){
 
 // TM.IProgram interface functions
 TM.IProgram.prototype._init = function(){};
-TM.IProgram.prototype._destroy = function(){};
+TM.IProgram.prototype._inactivate = function(){};
 TM.IProgram.prototype._calculate = function(){};
 TM.IProgram.prototype._draw = function(){};
 TM.IProgram.prototype._timeline = function(loopCount){};

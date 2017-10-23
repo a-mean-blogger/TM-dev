@@ -16,7 +16,7 @@ TM.ScreenManager_Char.prototype.constructor = TM.ScreenManager_Char;
 
 // TM.IObject functions implementation
 TM.ScreenManager_Char.prototype._init = function(){};
-TM.ScreenManager_Char.prototype._destroy = function(){};
+TM.ScreenManager_Char.prototype._inactivate = function(){};
 
 //TM.ScreenManager_Char functions
 TM.ScreenManager_Char.prototype.update = function(char,fullwidth,color,backgroundColor){
