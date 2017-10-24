@@ -25,7 +25,7 @@ TM.Interval.prototype._inactivate = function(){
 TM.Interval.prototype.setSpeed = function(speed){
   this.speed = speed;
   this.stopInterval();
-  this.start();
+  this.init();
 };
 
 // TM.Interval private functions

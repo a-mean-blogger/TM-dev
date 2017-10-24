@@ -2,6 +2,7 @@
 // TM.IObject
 //=============================
 TM.IObject = function(data, skipInit){
+  this.isActive = null;
   this.data = TM.common.mergeObjects(this.data, data);
   if(!skipInit) this.init();
 };

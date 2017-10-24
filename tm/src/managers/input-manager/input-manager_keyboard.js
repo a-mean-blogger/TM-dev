@@ -36,11 +36,6 @@ TM.InputManager_Keyboard.prototype._init = function(){
 };
 TM.InputManager_Keyboard.prototype._inactivate = function(){};
 
-// TM.InputManager_Keyboard functions - getInput
-TM.InputManager_Keyboard.prototype.getInput = function(question){
-  return prompt(question);
-};
-
 // TM.InputManager_Keyboard functions - keyState
 TM.InputManager_Keyboard.prototype.checkKeyState = function(keyCode){
   if(this.keyState[keyCode]) {
@@ -97,4 +92,9 @@ TM.InputManager_Keyboard.prototype.removeKey = function(keyCode){
 TM.InputManager_Keyboard.prototype.clearKey = function(){
   this.clearKeyPressed();
   this.clearKeyState();
+};
+
+// TM.InputManager_Keyboard functions - getInput
+TM.InputManager_Keyboard.prototype.getInput = function(question){
+  return prompt(question);
 };

@@ -363,6 +363,7 @@ Tetris.prototype._init = function(){
 Tetris.prototype._inactivate = function(blockType){
   TMD.delete('tetris_debug');
   this.emptyDataArray();
+  this.data.message.flag = false;
   this.draw();
 };
 Tetris.prototype._calculate = function(){
