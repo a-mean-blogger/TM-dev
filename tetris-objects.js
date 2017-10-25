@@ -539,30 +539,15 @@ Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
       activeBlock.rotate(this.data.dataArray);
       break;
     case KEYSET.DROP:
-      this.hardDrop(0);
+      var hardDropBonus = Math.floor(activeBlock.hardDrop(this.data.dataArray, this.data.level));
+      if(hardDropBonus){
+        var text1 = "HARD DROP!";
+        var text2 = " + "+hardDropBonus;
+        this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
+        this.addScore(hardDropBonus);
+      }
       break;
   }
-};
-Tetris.prototype.hardDrop = function(bonus){
-  var activeBlock = this.data.activeBlock;
-  bonus += this.data.level/2;
-
-  if(activeBlock.data.landing.flag){
-    activeBlock.data.landing.count = activeBlock.data.landing.COUNT_MAX;
-  }
-  else if(activeBlock.moveDown(this.data.dataArray)){
-    this.hardDrop(bonus);
-  }
-  else{
-    var hardDropBonus = Math.floor(bonus);
-    if(hardDropBonus){
-      var text1 = "HARD DROP!";
-      var text2 = " + "+hardDropBonus;
-      this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
-      this.addScore(hardDropBonus);
-    }
-  }
-
 };
 Tetris.prototype.showMessage = function(x,y,text1,text2){
   this.data.message.flag = true;
@@ -785,6 +770,18 @@ Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
     this.data.landing.flag = true;
   }
   return moved;
+};
+Tetris_ActiveBlock.prototype.hardDrop = function(dataArray,level,hardDropBonus){
+  if(!hardDropBonus) hardDropBonus = 0;
+
+  if(this.data.landing.flag){
+    this.data.landing.count = this.data.landing.COUNT_MAX;
+  }
+  else if(this.moveDown(dataArray)){
+    hardDropBonus += level/2;
+    return this.hardDrop(dataArray,level,hardDropBonus);
+  }
+  return hardDropBonus;
 };
 Tetris_ActiveBlock.prototype.rotate = function(dataArray){
   var rN = (this.data.rotation+1)%4;
