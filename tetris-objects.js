@@ -230,7 +230,7 @@ Status.prototype.drawNextBlock = function(blockType){
   if(blockType || blockType === 0) this.data.nextBlockType = blockType;
   var nextBlockType = this.data.nextBlockType;
   var xOffset = (nextBlockType === 0 || nextBlockType === 1)?0:1;
-  var color = this.data.COLORSET.BLOCKS[nextBlockType];
+  var color = Tetris.COLORSET.BLOCKS[nextBlockType];
   var xAdj = this.data.x+2+xOffset;
   var yAdj = this.data.y+3;
   var width = 6-xOffset;
@@ -293,9 +293,6 @@ var Tetris = function(data){
     x: undefined,
     y: undefined,
     refStatus: undefined,
-    COL_NUM: GAME_SETTINGS.COL_NUM,
-    ROW_NUM: GAME_SETTINGS.ROW_NUM,
-    COLORSET: GAME_SETTINGS.COLORSET,
     dataArray: null,
     activeBlock: null,
     nextBlockType: null,
@@ -341,6 +338,9 @@ Tetris.EMPTY = 0;
 Tetris.WALL = 1;
 Tetris.STAR = 100;
 Tetris.GRAY_BLOCK = 101;
+Tetris.COL_NUM = GAME_SETTINGS.COL_NUM;
+Tetris.ROW_NUM = GAME_SETTINGS.ROW_NUM;
+Tetris.COLORSET = GAME_SETTINGS.COLORSET;
 Tetris.BLOCKS = [
   [[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]],[[0,0,0,0],[0,1,1,0],[0,1,1,0],[0,0,0,0]]],
   [[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]],[[0,0,0,0],[0,0,0,0],[1,1,1,1],[0,0,0,0]],[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]]],
@@ -420,43 +420,41 @@ Tetris.prototype._calculate = function(){
 
 };
 Tetris.prototype._draw = function(){
+  var activeBlock = this.data.activeBlock;
   if(this.data.isGameOver) return;
 
-  var activeBlock = this.data.activeBlock;
-  const COLORSET = this.data.COLORSET;
-
-  for(var i=0; i<this.data.ROW_NUM; i++){
-    for(var j=0; j<this.data.COL_NUM; j++){
+  for(var i=0; i<Tetris.ROW_NUM; i++){
+    for(var j=0; j<Tetris.COL_NUM; j++){
       var blockChar;
       var color;
       switch(this.data.dataArray[i][j]){
         case Tetris.ACTIVE_BLOCK: //-2
           blockChar='□';
-          color = COLORSET.BLOCKS[activeBlock.data.type];
+          color = Tetris.COLORSET.BLOCKS[activeBlock.data.type];
           break;
         case Tetris.GRAY_BLOCK: //-2
           blockChar='■';
-          color = COLORSET.GAME_OVER_BLOCK;
+          color = Tetris.COLORSET.GAME_OVER_BLOCK;
           break;
         case Tetris.CEILING: // -1
           blockChar='•';
-          color = COLORSET.CEILING;
+          color = Tetris.COLORSET.CEILING;
           break;
         case Tetris.EMPTY: //0
           blockChar='  ';
           break;
         case Tetris.WALL: // 1
           blockChar='▣';
-          color = COLORSET.WALL;
+          color = Tetris.COLORSET.WALL;
           break;
         case Tetris.STAR: //100
           blockChar='★';
-          var colorNum = j%COLORSET.BLOCKS.length;
-          color = COLORSET.BLOCKS[colorNum];
+          var colorNum = j%Tetris.COLORSET.BLOCKS.length;
+          color = Tetris.COLORSET.BLOCKS[colorNum];
           break;
         default: // 2~
           blockChar='■';
-          color = COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
+          color = Tetris.COLORSET.BLOCKS[this.data.dataArray[i][j]-2];
           break;
       }
       TMS.insertTextAt(this.data.x+j*2,this.data.y+i,blockChar,color);
@@ -477,8 +475,8 @@ Tetris.prototype.processMessage = function(){
   if(x<=this.data.x+2){
     x = this.data.x+4;
   }
-  else if(x+longestText.length>this.data.COL_NUM*2){
-    x = this.data.x+(this.data.COL_NUM-1 - Math.ceil(longestText.length/2))*2;
+  else if(x+longestText.length>Tetris.COL_NUM*2){
+    x = this.data.x+(Tetris.COL_NUM-1 - Math.ceil(longestText.length/2))*2;
   }
   if(y <this.data.y){
     y = this.data.y;
@@ -492,13 +490,13 @@ Tetris.prototype.processMessage = function(){
 };
 Tetris.prototype.resetDataArray = function(){
   this.data.dataArray = [];
-  for(var i=0; i<this.data.ROW_NUM; i++){
+  for(var i=0; i<Tetris.ROW_NUM; i++){
     this.data.dataArray[i] = [];
-    for(var j=0; j<this.data.COL_NUM; j++){
-      if(i == this.data.ROW_NUM-1){
+    for(var j=0; j<Tetris.COL_NUM; j++){
+      if(i == Tetris.ROW_NUM-1){
         this.data.dataArray[i][j] = Tetris.WALL;
       }
-      else if(j === 0 || j == this.data.COL_NUM-1){
+      else if(j === 0 || j == Tetris.COL_NUM-1){
         this.data.dataArray[i][j] = Tetris.WALL;
       }
       else {
@@ -509,21 +507,21 @@ Tetris.prototype.resetDataArray = function(){
 };
 Tetris.prototype.emptyDataArray = function(){
   this.data.dataArray = [];
-  for(var i=0; i<this.data.ROW_NUM; i++){
+  for(var i=0; i<Tetris.ROW_NUM; i++){
     this.data.dataArray[i] = [];
-    for(var j=0; j<this.data.COL_NUM; j++){
+    for(var j=0; j<Tetris.COL_NUM; j++){
       this.data.dataArray[i][j] = Tetris.EMPTY;
     }
   }
 };
 Tetris.prototype.updateCeilling = function(){
-  for(var j=1; j<this.data.COL_NUM-1; j++){
+  for(var j=1; j<Tetris.COL_NUM-1; j++){
     if(this.data.dataArray[3][j] <= 0) this.data.dataArray[3][j] = Tetris.CEILING;
   }
 };
 Tetris.prototype.createNewBlock = function(){
   var newBlock = {
-    x: Math.floor(this.data.COL_NUM/2)-1,
+    x: Math.floor(Tetris.COL_NUM/2)-1,
     type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
     // type: 1,
   };
@@ -590,13 +588,13 @@ Tetris.prototype.processAutoDrop = function(){
   }
 };
 Tetris.prototype.changeFullLinesToStar = function(){
-  for(var i=this.data.ROW_NUM-2; i>=0; i--){
+  for(var i=Tetris.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;
-    for(var j=1; j<this.data.COL_NUM-1; j++){
+    for(var j=1; j<Tetris.COL_NUM-1; j++){
       if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
-    if(occupiedCount == this.data.COL_NUM-2){
-      for(j=1; j<this.data.COL_NUM-1; j++){
+    if(occupiedCount == Tetris.COL_NUM-2){
+      for(j=1; j<Tetris.COL_NUM-1; j++){
         this.data.dataArray[i][j] = Tetris.STAR;
       }
     }
@@ -605,9 +603,9 @@ Tetris.prototype.changeFullLinesToStar = function(){
 Tetris.prototype.removeFullLines = function(){
   var removedLineNum = 0;
   var score = 0;
-  for(var i=this.data.ROW_NUM-2; i>=0; i--){
+  for(var i=Tetris.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;
-    for(var j=1; j<this.data.COL_NUM-1; j++){
+    for(var j=1; j<Tetris.COL_NUM-1; j++){
       if(removedLineNum){
         if(i<removedLineNum) this.data.dataArray[i][j] = 0;
         else if(i === 0 || this.data.dataArray[i-removedLineNum][j] == Tetris.CEILING) this.data.dataArray[i][j] = Tetris.EMPTY;
@@ -615,7 +613,7 @@ Tetris.prototype.removeFullLines = function(){
       }
       if(this.data.dataArray[i][j]>0) occupiedCount++;
     }
-    if(occupiedCount == this.data.COL_NUM-2){
+    if(occupiedCount == Tetris.COL_NUM-2){
       i++;
       removedLineNum++;
       score += 100 * this.data.level;
@@ -658,7 +656,7 @@ Tetris.prototype.levelUp = function(){
   this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
 };
 Tetris.prototype.checkGameOver = function(){
-  for(var j=1; j<this.data.COL_NUM-1; j++){
+  for(var j=1; j<Tetris.COL_NUM-1; j++){
     if(this.data.dataArray[3][j]>0) return true;
   }
 };
@@ -667,7 +665,7 @@ Tetris.prototype.processGameOver = function(){
   if(++gameOver.count > gameOver.COUNT_MAX){
     gameOver.count = 0;
 
-    for(var j=1; j<this.data.COL_NUM-1; j++){
+    for(var j=1; j<Tetris.COL_NUM-1; j++){
       if(this.data.dataArray[gameOver.rowNum][j]>0) this.data.dataArray[gameOver.rowNum][j] = Tetris.GRAY_BLOCK;
     }
     if(--gameOver.rowNum<0){
@@ -676,7 +674,7 @@ Tetris.prototype.processGameOver = function(){
   }
 };
 Tetris.prototype.gameOver = function(){
-  var i = this.data.ROW_NUM-2;
+  var i = Tetris.ROW_NUM-2;
   var _self = this;
   var interval = setInterval(function(){
     for(var j=1; j<_self.data.COL_NUM-1; j++){
