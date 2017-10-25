@@ -520,32 +520,6 @@ Tetris.prototype.createNewBlock = function(activeBlock){
   activeBlock.updateOnTetrisDataArray(this.data.dataArray);
   this.data.refStatus.drawNextBlock(activeBlock.data.nextBlockType);
 };
-Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
-  var activeBlock = this.data.activeBlock;
-  switch (keyInput) {
-    case KEYSET.RIGHT:
-      activeBlock.moveRight(this.data.dataArray);
-      break;
-    case KEYSET.LEFT:
-      activeBlock.moveLeft(this.data.dataArray);
-      break;
-    case KEYSET.DOWN:
-      activeBlock.moveDown(this.data.dataArray);
-      break;
-    case KEYSET.ROTATE:
-      activeBlock.rotate(this.data.dataArray);
-      break;
-    case KEYSET.DROP:
-      var hardDropBonus = Math.floor(activeBlock.hardDrop(this.data.dataArray, this.data.level));
-      if(hardDropBonus){
-        var text1 = "HARD DROP!";
-        var text2 = " + "+hardDropBonus;
-        this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
-        this.addScore(hardDropBonus);
-      }
-      break;
-  }
-};
 Tetris.prototype.showMessage = function(x,y,text1,text2){
   this.data.message.flag = true;
   this.data.message.count = 0;
@@ -554,6 +528,11 @@ Tetris.prototype.showMessage = function(x,y,text1,text2){
   this.data.message.text1 = text1?text1:"";
   this.data.message.text2 = text2?text2:"";
 };
+Tetris.prototype.showHardDropBonusMessage = function(x,y,hardDropBonus){
+  var text1 = "HARD DROP!";
+  var text2 = " + "+hardDropBonus;
+  this.showMessage(x,y,text1,text2);
+}
 Tetris.prototype.changeFullLinesToStar = function(){
   for(var i=Tetris.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;

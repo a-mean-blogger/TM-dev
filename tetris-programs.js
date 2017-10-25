@@ -115,25 +115,32 @@ Program_Game.prototype._getInput = function(){
   }
 
   if(!this.data.isPaused){
-    this.checkTetrisInput(this.objects.player1Game, GAME_SETTINGS.PLAYER1.KEYSET);
+    var player1Game = this.objects.player1Game;
+    var player1ActiveBlock = this.objects.player1Game.data.activeBlock;
+    this.checkTetrisInput(player1Game,GAME_SETTINGS.PLAYER1.KEYSET,player1ActiveBlock);
   }
 };
 
 // Custom functions
-Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET){
+Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET, activeBlock){
+  var dataArray = tetrisGame.data.dataArray;
   if(TMI.keyboard.checkKey(KEYSET.RIGHT)){
-    tetrisGame.processKeyInput(KEYSET, KEYSET.RIGHT);
+    activeBlock.moveRight(dataArray);
   }
   if(TMI.keyboard.checkKey(KEYSET.LEFT)){
-    tetrisGame.processKeyInput(KEYSET, KEYSET.LEFT);
+    activeBlock.moveLeft(dataArray);
   }
   if(TMI.keyboard.checkKey(KEYSET.DOWN)){
-    tetrisGame.processKeyInput(KEYSET, KEYSET.DOWN);
+    activeBlock.moveDown(dataArray);
   }
   if(TMI.keyboard.checkKeyPressed(KEYSET.ROTATE)){
-    tetrisGame.processKeyInput(KEYSET, KEYSET.ROTATE);
+    activeBlock.rotate(dataArray);
   }
   if(TMI.keyboard.checkKeyPressed(KEYSET.DROP)){
-    tetrisGame.processKeyInput(KEYSET, KEYSET.DROP);
+    var hardDropBonus = Math.floor(activeBlock.hardDrop(dataArray, tetrisGame.data.level));
+    if(hardDropBonus){
+      tetrisGame.addScore(hardDropBonus);
+      tetrisGame.showHardDropBonusMessage(activeBlock.data.x,activeBlock.data.y,hardDropBonus);
+    }
   }
 };
