@@ -308,7 +308,7 @@ var Tetris = function(data){
       text1: null,
       text2: null,
     },
-    afterLanding: {
+    delayAfterBlockLanded: {
       flag: false,
       count: 0,
       COUNT_MAX: 10,
@@ -367,36 +367,31 @@ Tetris.prototype._calculate = function(){
   var activeBlock = this.data.activeBlock;
   var status = this.data.refGameObjects.status;
 
-  TMD.print('tetris_debug',{
-    'speed': activeBlock.data.autoDrop.countMax,
-    'activeBlock.data.nextBlockType': activeBlock.data.nextBlockType,
-    'activeBlock.data.type': activeBlock.data.type,
-    'activeBlock.data.rotation': activeBlock.data.rotation,
-    'activeBlock.data.x': activeBlock.data.x,
-    'activeBlock.data.y': activeBlock.data.y,
-    'activeBlock.data.landing.flag': activeBlock.data.landing.flag,
-    'activeBlock.data.landing.count': activeBlock.data.landing.count,
-    'activeBlock.data.landing.COUNT_MAX': activeBlock.data.landing.COUNT_MAX,
-    'activeBlock.data.isLanded': activeBlock.data.isLanded,
-    'afterLanding.flag': this.data.afterLanding.flag,
-    'afterLanding.count': this.data.afterLanding.count,
-    'afterLanding.COUNT_MAX': this.data.afterLanding.COUNT_MAX,
-    'gameOver.flag': this.data.gameOver.flag,
-    'isGameOver': this.data.isGameOver,
-  });
+  if(this.data.isGameOver) {
+    return;
+  }
+  else if(this.data.gameOver.flag){
+    this.processGameOver();
+  }
+  else if(!this.data.delayAfterBlockLanded.flag){
+    this.updateCeilling();
+    activeBlock.processAutoDrop(this.data.dataArray);
+    activeBlock.updateOnTetrisDataArray(this.data.dataArray);
 
-  if(this.data.isGameOver) return;
-  else if(this.data.gameOver.flag) return this.processGameOver();
-
-  this.updateCeilling();
-  activeBlock.processAutoDrop(this.data.dataArray);
-  activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  if(this.data.afterLanding.flag){
-    //process afterLanding
-    if(++this.data.afterLanding.count > this.data.afterLanding.COUNT_MAX){
-      this.data.afterLanding.flag = false;
-      this.data.afterLanding.count = 0;
-      var removedLineNum = this.removeFullLines(activeBlock, status);
+    if(activeBlock.data.landing.flag === true){
+      activeBlock.processLanding(this.data.dataArray);
+    }
+    else if(activeBlock.data.isLanded){
+      this.data.delayAfterBlockLanded.flag = true;
+      this.changeFullLinesToStar();
+    }
+  }
+  else {
+    //process delayAfterBlockLanded
+    if(++this.data.delayAfterBlockLanded.count > this.data.delayAfterBlockLanded.COUNT_MAX){
+      this.data.delayAfterBlockLanded.flag = false;
+      this.data.delayAfterBlockLanded.count = 0;
+      var removedLineNum = this.removeFullLines(activeBlock,status);
       if(removedLineNum){
         var score = removedLineNum * 100 * this.data.level;
         score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
@@ -417,14 +412,23 @@ Tetris.prototype._calculate = function(){
       }
     }
   }
-  else if(activeBlock.data.isLanded && !this.data.afterLanding.flag){
-    this.data.afterLanding.flag = true;
-    this.changeFullLinesToStar();
-  }
-  else if(activeBlock.data.landing.flag === true){
-    activeBlock.processLanding(this.data.dataArray);
-  }
 
+  TMD.print('tetris_debug',{
+    'speed': activeBlock.data.autoDrop.countMax,
+    'activeBlock.data.nextBlockType': activeBlock.data.nextBlockType,
+    'activeBlock.data.type': activeBlock.data.type,
+    'activeBlock.data.rotation': activeBlock.data.rotation,
+    'activeBlock.data.x': activeBlock.data.x,
+    'activeBlock.data.y': activeBlock.data.y,
+    'activeBlock.data.landing.flag': activeBlock.data.landing.flag,
+    'activeBlock.data.landing.count': activeBlock.data.landing.count,
+    'activeBlock.data.landing.COUNT_MAX': activeBlock.data.landing.COUNT_MAX,
+    'activeBlock.data.isLanded': activeBlock.data.isLanded,
+    'delayAfterBlockLanded.flag': this.data.delayAfterBlockLanded.flag,
+    'delayAfterBlockLanded.count': this.data.delayAfterBlockLanded.count,
+    'delayAfterBlockLanded.COUNT_MAX': this.data.delayAfterBlockLanded.COUNT_MAX,
+    'gameOver.flag': this.data.gameOver.flag,
+  });
 };
 Tetris.prototype._draw = function(){
   var activeBlock = this.data.activeBlock;
