@@ -348,9 +348,11 @@ Tetris.BLOCKS = [
 
 // TM.ILoopObject functions inheritance
 Tetris.prototype._init = function(){
-  this.resetDataArray();
   this.data.activeBlock = new Tetris_ActiveBlock();
-  this.data.activeBlock.setSpeed(this.data.level);
+  var activeBlock = this.data.activeBlock;
+  this.resetDataArray();
+  this.createNewBlock(activeBlock);
+  activeBlock.setSpeed(this.data.level);
   this.data.refStatus.drawLevel(this.data.level);
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawCurrentScore(this.data.currentScore);
@@ -362,19 +364,19 @@ Tetris.prototype._inactivate = function(blockType){
   this.draw();
 };
 Tetris.prototype._calculate = function(){
+  var activeBlock = this.data.activeBlock;
 
-  var activeBlockData = this.data.activeBlock.data;
   TMD.print('tetris_debug',{
-    'speed': activeBlockData.autoDrop.countMax,
-    'activeBlockData.nextBlockType': activeBlockData.nextBlockType,
-    'activeBlockData.type': activeBlockData.type,
-    'activeBlockData.rotation': activeBlockData.rotation,
-    'activeBlockData.x': activeBlockData.x,
-    'activeBlockData.y': activeBlockData.y,
-    'activeBlockData.landing.flag': activeBlockData.landing.flag,
-    'activeBlockData.landing.count': activeBlockData.landing.count,
-    'activeBlockData.landing.COUNT_MAX': activeBlockData.landing.COUNT_MAX,
-    'activeBlockData.isLanded': activeBlockData.isLanded,
+    'speed': activeBlock.data.autoDrop.countMax,
+    'activeBlock.data.nextBlockType': activeBlock.data.nextBlockType,
+    'activeBlock.data.type': activeBlock.data.type,
+    'activeBlock.data.rotation': activeBlock.data.rotation,
+    'activeBlock.data.x': activeBlock.data.x,
+    'activeBlock.data.y': activeBlock.data.y,
+    'activeBlock.data.landing.flag': activeBlock.data.landing.flag,
+    'activeBlock.data.landing.count': activeBlock.data.landing.count,
+    'activeBlock.data.landing.COUNT_MAX': activeBlock.data.landing.COUNT_MAX,
+    'activeBlock.data.isLanded': activeBlock.data.isLanded,
     'afterLanding.flag': this.data.afterLanding.flag,
     'afterLanding.count': this.data.afterLanding.count,
     'afterLanding.COUNT_MAX': this.data.afterLanding.COUNT_MAX,
@@ -385,7 +387,6 @@ Tetris.prototype._calculate = function(){
   if(this.data.isGameOver) return;
   else if(this.data.gameOver.flag) return this.processGameOver();
 
-  var activeBlock = this.data.activeBlock;
   this.updateCeilling();
   activeBlock.processAutoDrop(this.data.dataArray);
   activeBlock.updateOnTetrisDataArray(this.data.dataArray);
@@ -401,7 +402,7 @@ Tetris.prototype._calculate = function(){
         this.data.refStatus.drawLastScore(this.data.currentScore);
       }
       else {
-        this.createNewBlock();
+        this.createNewBlock(activeBlock);
       }
     }
   }
@@ -514,10 +515,10 @@ Tetris.prototype.updateCeilling = function(){
     if(this.data.dataArray[3][j] <= 0) this.data.dataArray[3][j] = Tetris.CEILING;
   }
 };
-Tetris.prototype.createNewBlock = function(){
-  this.data.activeBlock.init();
-  this.data.activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  this.data.refStatus.drawNextBlock(this.data.activeBlock.nextBlockType);
+Tetris.prototype.createNewBlock = function(activeBlock){
+  activeBlock.init();
+  activeBlock.updateOnTetrisDataArray(this.data.dataArray);
+  this.data.refStatus.drawNextBlock(activeBlock.data.nextBlockType);
 };
 Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
   var activeBlock = this.data.activeBlock;
