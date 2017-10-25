@@ -117,12 +117,12 @@ Program_Game.prototype._getInput = function(){
   if(!this.data.isPaused){
     var player1Game = this.objects.player1Game;
     var player1ActiveBlock = this.objects.player1Game.data.activeBlock;
-    this.checkTetrisInput(player1Game,GAME_SETTINGS.PLAYER1.KEYSET,player1ActiveBlock);
+    this.processInput(player1Game,GAME_SETTINGS.PLAYER1.KEYSET,player1ActiveBlock);
   }
 };
 
 // Custom functions
-Program_Game.prototype.checkTetrisInput = function(tetrisGame, KEYSET, activeBlock){
+Program_Game.prototype.processInput = function(tetrisGame, KEYSET, activeBlock){
   var dataArray = tetrisGame.data.dataArray;
   if(TMI.keyboard.checkKey(KEYSET.RIGHT)){
     activeBlock.moveRight(dataArray);

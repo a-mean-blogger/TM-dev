@@ -528,9 +528,19 @@ Tetris.prototype.showMessage = function(x,y,text1,text2){
   this.data.message.text1 = text1?text1:"";
   this.data.message.text2 = text2?text2:"";
 };
-Tetris.prototype.showHardDropBonusMessage = function(x,y,hardDropBonus){
+Tetris.prototype.showHardDropBonusMessage = function(x,y,score){
   var text1 = "HARD DROP!";
-  var text2 = " + "+hardDropBonus;
+  var text2 = " + "+score;
+  this.showMessage(x,y,text1,text2);
+}
+Tetris.prototype.showComboBonusMessage = function(x,y,combo,score){
+  var text1 = (combo > 1)?combo+" COMBOS!":"";
+  var text2 = " + "+score;
+  this.showMessage(x,y,text1,text2);
+}
+Tetris.prototype.showLevelUpMessage = function(x,y){
+  var text1 = "LEVEL UP!";
+  var text2 = " SPEED UP!";
   this.showMessage(x,y,text1,text2);
 }
 Tetris.prototype.changeFullLinesToStar = function(){
@@ -568,10 +578,8 @@ Tetris.prototype.removeFullLines = function(activeBlock){
 
   if(removedLineNum>0){
     score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
-    var text1 = (removedLineNum > 1)?removedLineNum+" COMBOS!":"";
-    var text2 = " + "+score;
+    this.showComboBonusMessage(activeBlock.data.x,activeBlock.data.y,removedLineNum,score);
     this.addScore(score);
-    this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
     this.data.goal -= removedLineNum;
     if(this.data.goal<=0) this.levelUp(activeBlock);
     else this.data.refStatus.drawGoal(this.data.goal);
@@ -587,10 +595,7 @@ Tetris.prototype.levelUp = function(activeBlock){
   activeBlock.setSpeed(this.data.level);
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawLevel(this.data.level);
-
-  var text1 = "LEVEL UP!";
-  var text2 = " SPEED UP!";
-  this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
+  this.showLevelUpMessage(activeBlock.data.x,activeBlock.data.y);
 };
 Tetris.prototype.checkGameOver = function(){
   for(var j=1; j<Tetris.COL_NUM-1; j++){
