@@ -292,9 +292,9 @@ var Tetris = function(data){
   this.data = {
     x: undefined,
     y: undefined,
-    refStatus: undefined,
+    refGameObjects: undefined,
     dataArray: null,
-    activeBlock: null,
+    activeBlock: new Tetris_ActiveBlock(),
     currentScore: 0,
     level: 1,
     goal: 10,
@@ -348,14 +348,14 @@ Tetris.BLOCKS = [
 
 // TM.ILoopObject functions inheritance
 Tetris.prototype._init = function(){
-  this.data.activeBlock = new Tetris_ActiveBlock();
   var activeBlock = this.data.activeBlock;
+  var status = this.data.refGameObjects.status;
   this.resetDataArray();
-  this.createNewBlock(activeBlock);
+  this.createNewBlock(activeBlock,status);
   activeBlock.setSpeed(this.data.level);
-  this.data.refStatus.drawLevel(this.data.level);
-  this.data.refStatus.drawGoal(this.data.goal);
-  this.data.refStatus.drawCurrentScore(this.data.currentScore);
+  status.drawLevel(this.data.level);
+  status.drawGoal(this.data.goal);
+  status.drawCurrentScore(this.data.currentScore);
 };
 Tetris.prototype._inactivate = function(blockType){
   TMD.delete('tetris_debug');
@@ -365,6 +365,7 @@ Tetris.prototype._inactivate = function(blockType){
 };
 Tetris.prototype._calculate = function(){
   var activeBlock = this.data.activeBlock;
+  var status = this.data.refGameObjects.status;
 
   TMD.print('tetris_debug',{
     'speed': activeBlock.data.autoDrop.countMax,
@@ -395,14 +396,24 @@ Tetris.prototype._calculate = function(){
     if(++this.data.afterLanding.count > this.data.afterLanding.COUNT_MAX){
       this.data.afterLanding.flag = false;
       this.data.afterLanding.count = 0;
-      this.removeFullLines(activeBlock);
+      var removedLineNum = this.removeFullLines(activeBlock, status);
+      if(removedLineNum){
+        var score = removedLineNum * 100 * this.data.level;
+        score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
+        this.showComboBonusMessage(activeBlock.data.x,activeBlock.data.y,removedLineNum,score);
+        this.data.goal -= removedLineNum;
+        this.addScore(status,score);
+        if(this.data.goal<=0) this.levelUp(activeBlock);
+        else status.drawGoal(this.data.goal);
+      }
+
       if(this.checkGameOver()){
         this.data.gameOver.flag = true;
-        this.data.refStatus.drawBestScore(this.data.currentScore);
-        this.data.refStatus.drawLastScore(this.data.currentScore);
+        status.drawBestScore(this.data.currentScore);
+        status.drawLastScore(this.data.currentScore);
       }
       else {
-        this.createNewBlock(activeBlock);
+        this.createNewBlock(activeBlock,status);
       }
     }
   }
@@ -515,10 +526,10 @@ Tetris.prototype.updateCeilling = function(){
     if(this.data.dataArray[3][j] <= 0) this.data.dataArray[3][j] = Tetris.CEILING;
   }
 };
-Tetris.prototype.createNewBlock = function(activeBlock){
+Tetris.prototype.createNewBlock = function(activeBlock,status){
   activeBlock.init();
   activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  this.data.refStatus.drawNextBlock(activeBlock.data.nextBlockType);
+  status.drawNextBlock(activeBlock.data.nextBlockType);
 };
 Tetris.prototype.showMessage = function(x,y,text1,text2){
   this.data.message.flag = true;
@@ -556,9 +567,8 @@ Tetris.prototype.changeFullLinesToStar = function(){
     }
   }
 };
-Tetris.prototype.removeFullLines = function(activeBlock){
+Tetris.prototype.removeFullLines = function(activeBlock,status){
   var removedLineNum = 0;
-  var score = 0;
   for(var i=Tetris.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;
     for(var j=1; j<Tetris.COL_NUM-1; j++){
@@ -572,29 +582,20 @@ Tetris.prototype.removeFullLines = function(activeBlock){
     if(occupiedCount == Tetris.COL_NUM-2){
       i++;
       removedLineNum++;
-      score += 100 * this.data.level;
     }
   }
-
-  if(removedLineNum>0){
-    score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
-    this.showComboBonusMessage(activeBlock.data.x,activeBlock.data.y,removedLineNum,score);
-    this.addScore(score);
-    this.data.goal -= removedLineNum;
-    if(this.data.goal<=0) this.levelUp(activeBlock);
-    else this.data.refStatus.drawGoal(this.data.goal);
-  }
+  return removedLineNum;
 };
-Tetris.prototype.addScore = function(score){
+Tetris.prototype.addScore = function(status, score){
   this.data.currentScore += score;
-  this.data.refStatus.drawCurrentScore(this.data.currentScore);
+  status.drawCurrentScore(this.data.currentScore);
 };
-Tetris.prototype.levelUp = function(activeBlock){
+Tetris.prototype.levelUp = function(activeBlock, status){
   this.data.level++;
   this.data.goal = this.data.GOAL_MAX;
   activeBlock.setSpeed(this.data.level);
-  this.data.refStatus.drawGoal(this.data.goal);
-  this.data.refStatus.drawLevel(this.data.level);
+  status.drawGoal(this.data.goal);
+  status.drawLevel(this.data.level);
   this.showLevelUpMessage(activeBlock.data.x,activeBlock.data.y);
 };
 Tetris.prototype.checkGameOver = function(){

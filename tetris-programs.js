@@ -80,7 +80,7 @@ Program_Game.prototype.constructor = Program_Game;
 Program_Game.prototype._init = function(){
   TMI.keyboard.clearKey();
   this.objects.status = new Status({x:28,y:3});
-  this.objects.player1Game = new Tetris({x:3,y:1,refStatus:this.objects.status});
+  this.objects.player1Game = new Tetris({x:3,y:1,refGameObjects:this.objects});
   this.objects.pausePopup = null;
   this.objects.gameOverPopup = null;
 };
@@ -139,7 +139,7 @@ Program_Game.prototype.processInput = function(tetrisGame, KEYSET, activeBlock){
   if(TMI.keyboard.checkKeyPressed(KEYSET.DROP)){
     var hardDropBonus = Math.floor(activeBlock.hardDrop(dataArray, tetrisGame.data.level));
     if(hardDropBonus){
-      tetrisGame.addScore(hardDropBonus);
+      tetrisGame.addScore(this.objects.status,hardDropBonus);
       tetrisGame.showHardDropBonusMessage(activeBlock.data.x,activeBlock.data.y,hardDropBonus);
     }
   }
