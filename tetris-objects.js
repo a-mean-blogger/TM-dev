@@ -395,7 +395,7 @@ Tetris.prototype._calculate = function(){
     if(++this.data.afterLanding.count > this.data.afterLanding.COUNT_MAX){
       this.data.afterLanding.flag = false;
       this.data.afterLanding.count = 0;
-      this.removeFullLines();
+      this.removeFullLines(activeBlock);
       if(this.checkGameOver()){
         this.data.gameOver.flag = true;
         this.data.refStatus.drawBestScore(this.data.currentScore);
@@ -567,7 +567,7 @@ Tetris.prototype.changeFullLinesToStar = function(){
     }
   }
 };
-Tetris.prototype.removeFullLines = function(){
+Tetris.prototype.removeFullLines = function(activeBlock){
   var removedLineNum = 0;
   var score = 0;
   for(var i=Tetris.ROW_NUM-2; i>=0; i--){
@@ -588,7 +588,6 @@ Tetris.prototype.removeFullLines = function(){
   }
 
   if(removedLineNum>0){
-    var activeBlock = this.data.activeBlock;
     score += (removedLineNum > 1)?this.data.level*50*removedLineNum*2:0;
     var text1 = (removedLineNum > 1)?removedLineNum+" COMBOS!":"";
     var text2 = " + "+score;
@@ -610,7 +609,6 @@ Tetris.prototype.levelUp = function(activeBlock){
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawLevel(this.data.level);
 
-  var activeBlock = this.data.activeBlock;
   var text1 = "LEVEL UP!";
   var text2 = " SPEED UP!";
   this.showMessage(activeBlock.data.x,activeBlock.data.y,text1,text2);
