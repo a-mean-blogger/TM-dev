@@ -295,7 +295,6 @@ var Tetris = function(data){
     refStatus: undefined,
     dataArray: null,
     activeBlock: null,
-    nextBlockType: null,
     currentScore: 0,
     level: 1,
     goal: 10,
@@ -354,8 +353,8 @@ Tetris.BLOCKS = [
 // TM.ILoopObject functions inheritance
 Tetris.prototype._init = function(){
   this.resetDataArray();
-  this.createNewBlock();
   this.setSpeed(this.data.level);
+  this.data.activeBlock = new Tetris_ActiveBlock();
   this.data.refStatus.drawLevel(this.data.level);
   this.data.refStatus.drawGoal(this.data.goal);
   this.data.refStatus.drawCurrentScore(this.data.currentScore);
@@ -371,7 +370,7 @@ Tetris.prototype._calculate = function(){
   var activeBlockData = this.data.activeBlock.data;
   TMD.print('tetris_debug',{
     'speed': this.data.autoDrop.countMax,
-    'nextBlockType': this.data.nextBlockType,
+    'activeBlockData.nextBlockType': activeBlockData.nextBlockType,
     'activeBlockData.type': activeBlockData.type,
     'activeBlockData.rotation': activeBlockData.rotation,
     'activeBlockData.x': activeBlockData.x,
@@ -520,16 +519,9 @@ Tetris.prototype.updateCeilling = function(){
   }
 };
 Tetris.prototype.createNewBlock = function(){
-  var newBlock = {
-    x: Math.floor(Tetris.COL_NUM/2)-1,
-    type: TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7),
-    // type: 1,
-  };
-
-  this.data.activeBlock = new Tetris_ActiveBlock(newBlock);
+  this.data.activeBlock.init();
   this.data.activeBlock.updateOnTetrisDataArray(this.data.dataArray);
-  this.data.nextBlockType = Math.floor(Math.random()*7);
-  this.data.refStatus.drawNextBlock(this.data.nextBlockType);
+  this.data.refStatus.drawNextBlock(this.data.activeBlock.nextBlockType);
 };
 Tetris.prototype.processKeyInput = function(KEYSET, keyInput){
   var activeBlock = this.data.activeBlock;
@@ -694,10 +686,11 @@ Tetris.prototype.gameOver = function(){
 // Description: Contains active tetris block status and functions to control it
 var Tetris_ActiveBlock = function(data){
   this.data = {
-    type: 0,
-    rotation: 0,
-    x: 0,
-    y: 0,
+    type: null,
+    nextBlockType: null,
+    rotation: null,
+    x: null,
+    y: null,
     landing: {
       flag: false,
       count: 0,
@@ -711,7 +704,16 @@ Tetris_ActiveBlock.prototype = Object.create(TM.IObject.prototype);
 Tetris_ActiveBlock.prototype.constructor = Tetris_ActiveBlock;
 
 // TM.IObject functions implementation
-Tetris_ActiveBlock.prototype._init = function(){};
+Tetris_ActiveBlock.prototype._init = function(){
+  this.data.x = Math.floor(Tetris.COL_NUM/2)-1;
+  this.data.y = 0;
+  this.data.rotation = 0;
+  this.data.type = TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
+  this.data.nextBlockType = Math.floor(Math.random()*7);
+  this.data.landing.flag = false;
+  this.data.landing.count = 0;
+  this.data.isLanded = false;
+};
 Tetris_ActiveBlock.prototype._inactivate = function(){};
 
 // Custom Functions - Update ActiveBlock to dataArray
