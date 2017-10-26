@@ -29,6 +29,22 @@ TM.DebugManager.prototype._inactivate = function(){
   this.deleteAll();
 };
 
+// TM.DebugManager private functions
+TM.DebugManager.prototype.replacer = function() {
+  var checkedObjects = [];
+
+  return function(key, value) {
+    if(typeof(value) === 'object'){
+      var index = checkedObjects.indexOf(value);
+      if(index>-1){
+        return '[Circular]';
+      }
+    }
+    checkedObjects.push(value);
+    return value;
+  }
+}
+
 // TM.DebugManager pulbic functions
 TM.DebugManager.prototype.print = function(name,data){
   if(this.debugSetting.devMode && this.isActive){
@@ -37,7 +53,7 @@ TM.DebugManager.prototype.print = function(name,data){
       this.outputDom.appendChild(this.doms[name]);
     }
     var title = '-- '+name+' --\n';
-    var dataJson = JSON.stringify(data,null,2);
+    var dataJson = JSON.stringify(data,this.replacer(data),2);
     this.doms[name].innerHTML = title+dataJson;
   }
   else {

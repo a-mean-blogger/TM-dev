@@ -60,7 +60,7 @@ PausePopup.prototype._init = function(){
   this.drawFrame();
 };
 PausePopup.prototype._inactivate = function(){
-  this.deleteFrame();
+  this.drawFrame(true);
 };
 PausePopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
@@ -70,21 +70,16 @@ PausePopup.prototype._draw = function(){
 };
 
 // Custom functions
-PausePopup.prototype.drawFrame = function(){
+PausePopup.prototype.drawFrame = function(remove){
   TMS.cursor.move(this.data.x,this.data.y);
   for(var i=0; i<this.data.frame.length; i++){
-    TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
+    if(remove) TMS.deleteText(this.data.frame[i]);
+    else TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
   }
 };
 PausePopup.prototype.blinkText = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
   TMS.insertTextAt(this.data.x+3,this.data.y+2,this.data.text,color,this.data.bgColor);
-};
-PausePopup.prototype.deleteFrame = function(){
-  TMS.cursor.move(this.data.x,this.data.y);
-  for(var i=0; i<this.data.frame.length; i++){
-    TMS.deleteText(this.data.frame[i]);
-  }
 };
 
 //=============================
@@ -122,7 +117,7 @@ GameOverPopup.prototype._init = function(){
   this.drawScore();
 };
 GameOverPopup.prototype._inactivate = function(){
-  this.deleteFrame();
+  this.drawFrame(true);
 };
 GameOverPopup.prototype._calculate = function(){
   this.data.blink = (this.data.blink+1)%2;
@@ -132,10 +127,11 @@ GameOverPopup.prototype._draw = function(){
 };
 
 // Custom functions
-GameOverPopup.prototype.drawFrame = function(){
+GameOverPopup.prototype.drawFrame = function(remove){
   TMS.cursor.move(this.data.x,this.data.y);
   for(var i=0; i<this.data.frame.length; i++){
-    TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
+    if(remove) TMS.deleteText(this.data.frame[i]);
+    else TMS.insertText(this.data.frame[i],'#fff',this.data.bgColor);
   }
 };
 GameOverPopup.prototype.drawScore = function(){
@@ -145,12 +141,6 @@ GameOverPopup.prototype.drawScore = function(){
 GameOverPopup.prototype.blinkText = function(){
   var color = this.data.blink%2===0?'#fff':'gray';
   TMS.insertTextAt(this.data.x+6,this.data.y+6,this.data.text,color,this.data.bgColor);
-};
-GameOverPopup.prototype.deleteFrame = function(){
-  TMS.cursor.move(this.data.x,this.data.y);
-  for(var i=0; i<this.data.frame.length; i++){
-    TMS.deleteText(this.data.frame[i]);
-  }
 };
 
 //=============================
@@ -200,7 +190,7 @@ Status.prototype._init = function(){
   this.drawBestScore(MAIN.data.scores.bestScore);
 };
 Status.prototype._inactivate = function(){
-  this.deleteFrame();
+  this.drawFrame(true);
 };
 
 // Custom functions - Static functions
@@ -214,16 +204,11 @@ Status.convertScore = function(score){
 };
 
 // Custom functions
-Status.prototype.drawFrame = function(){
+Status.prototype.drawFrame = function(remove){
   TMS.cursor.move(this.data.x,this.data.y);
   for(var i=0; i<this.data.frame.length; i++){
-    TMS.insertText(this.data.frame[i]);
-  }
-};
-Status.prototype.deleteFrame = function(){
-  TMS.cursor.move(this.data.x,this.data.y);
-  for(var i=0; i<this.data.frame.length; i++){
-    TMS.deleteText(this.data.frame[i]);
+    if(remove) TMS.deleteText(this.data.frame[i]);
+    else TMS.insertText(this.data.frame[i]);
   }
 };
 Status.prototype.drawNextBlock = function(blockType){
