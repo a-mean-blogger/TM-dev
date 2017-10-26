@@ -378,8 +378,8 @@ Tetris.prototype._calculate = function(){
     activeBlock.processAutoDrop(this.data.dataArray);
     activeBlock.updateOnTetrisDataArray(this.data.dataArray);
 
-    if(activeBlock.data.landing.flag === true){
-      activeBlock.processLanding(this.data.dataArray);
+    if(activeBlock.data.sliding.flag === true){
+      activeBlock.processSliding(this.data.dataArray);
     }
     else if(activeBlock.data.isLanded){
       this.data.delayAfterBlockLanded.flag = true;
@@ -420,9 +420,9 @@ Tetris.prototype._calculate = function(){
     'activeBlock.data.rotation': activeBlock.data.rotation,
     'activeBlock.data.x': activeBlock.data.x,
     'activeBlock.data.y': activeBlock.data.y,
-    'activeBlock.data.landing.flag': activeBlock.data.landing.flag,
-    'activeBlock.data.landing.count': activeBlock.data.landing.count,
-    'activeBlock.data.landing.COUNT_MAX': activeBlock.data.landing.COUNT_MAX,
+    'activeBlock.data.sliding.flag': activeBlock.data.sliding.flag,
+    'activeBlock.data.sliding.count': activeBlock.data.sliding.count,
+    'activeBlock.data.sliding.COUNT_MAX': activeBlock.data.sliding.COUNT_MAX,
     'activeBlock.data.isLanded': activeBlock.data.isLanded,
     'delayAfterBlockLanded.flag': this.data.delayAfterBlockLanded.flag,
     'delayAfterBlockLanded.count': this.data.delayAfterBlockLanded.count,
@@ -646,7 +646,7 @@ var Tetris_ActiveBlock = function(data){
     rotation: null,
     x: null,
     y: null,
-    landing: {
+    sliding: {
       flag: false,
       count: 0,
       COUNT_MAX: 50,
@@ -670,8 +670,8 @@ Tetris_ActiveBlock.prototype._init = function(){
   this.data.autoDrop.count = 0;
   this.data.type = TM.common.isNumber(this.data.nextBlockType)?this.data.nextBlockType:Math.floor(Math.random()*7);
   this.data.nextBlockType = Math.floor(Math.random()*7);
-  this.data.landing.flag = false;
-  this.data.landing.count = 0;
+  this.data.sliding.flag = false;
+  this.data.sliding.count = 0;
   this.data.isLanded = false;
 };
 Tetris_ActiveBlock.prototype._inactivate = function(){};
@@ -750,21 +750,21 @@ Tetris_ActiveBlock.prototype.moveLeft = function(dataArray){
 Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
   var moved = this.move(dataArray,0,1);
   if(moved){
-    this.data.landing.count = 0;
+    this.data.sliding.count = 0;
     if(this.checkMoveDown(dataArray)){
-      this.data.landing.flag = false;
+      this.data.sliding.flag = false;
     }
   }
   else {
-    this.data.landing.flag = true;
+    this.data.sliding.flag = true;
   }
   return moved;
 };
 Tetris_ActiveBlock.prototype.hardDrop = function(dataArray,level,hardDropBonus){
   if(!hardDropBonus) hardDropBonus = 0;
 
-  if(this.data.landing.flag){
-    this.data.landing.count = this.data.landing.COUNT_MAX;
+  if(this.data.sliding.flag){
+    this.data.sliding.count = this.data.sliding.COUNT_MAX;
   }
   else if(this.moveDown(dataArray)){
     hardDropBonus += level/2;
@@ -786,11 +786,11 @@ Tetris_ActiveBlock.prototype.processAutoDrop = function(dataArray){
   }
 };
 
-// Custom functions - landing
-Tetris_ActiveBlock.prototype.processLanding = function(dataArray){
-  if(++this.data.landing.count > this.data.landing.COUNT_MAX && !this.checkMoveDown(dataArray)){
-    this.data.landing.count = 0;
-    this.data.landing.flag = false;
+// Custom functions - sliding
+Tetris_ActiveBlock.prototype.processSliding = function(dataArray){
+  if(++this.data.sliding.count > this.data.sliding.COUNT_MAX && !this.checkMoveDown(dataArray)){
+    this.data.sliding.count = 0;
+    this.data.sliding.flag = false;
     this.data.isLanded = true;
     this.updateOnTetrisDataArray(dataArray);
     this.setBlock(dataArray);
