@@ -308,11 +308,6 @@ var Tetris = function(data){
       text1: null,
       text2: null,
     },
-    delayAfterBlockLanded: {
-      flag: false,
-      count: 0,
-      COUNT_MAX: 10,
-    },
     gameOver: {
       flag: false,
       count: 0,
@@ -367,28 +362,26 @@ Tetris.prototype._calculate = function(){
   var activeBlock = this.data.activeBlock;
   var status = this.data.refGameObjects.status;
 
-  if(this.data.isGameOver) {
-    return;
-  }
-  else if(this.data.gameOver.flag){
-    this.processGameOver();
-  }
-  else if(!this.data.delayAfterBlockLanded.flag){
+  if(this.data.isGameOver) return;
+  if(this.data.gameOver.flag) return this.processGameOver();
+
+  if(!activeBlock.data.landing.flag){
     this.updateCeilling();
     activeBlock.processAutoDrop(this.data.dataArray);
     activeBlock.updateOnTetrisDataArray(this.data.dataArray);
+  }
 
-    if(activeBlock.data.sliding.flag === true){
-      activeBlock.processSliding(this.data.dataArray);
-    }
-    else if(activeBlock.data.isLanded){
-      this.data.delayAfterBlockLanded.flag = true;
+  if(activeBlock.data.sliding.flag){
+    var slidingFinished = activeBlock.processSliding(this.data.dataArray);
+    if(slidingFinished){
+      activeBlock.data.landing.flag = true;
+      activeBlock.setBlock(this.data.dataArray);
       this.changeFullLinesToStar();
     }
   }
-  else {
-    //process delayAfterBlockLanded
-    if(++this.data.delayAfterBlockLanded.count > this.data.delayAfterBlockLanded.COUNT_MAX){
+  else if(activeBlock.data.landing.flag){
+    var landingFinished = activeBlock.processLanding(this.data.dataArray);
+    if(landingFinished){
       this.data.delayAfterBlockLanded.flag = false;
       this.data.delayAfterBlockLanded.count = 0;
       var removedLineNum = this.removeFullLines(activeBlock,status);
@@ -413,22 +406,7 @@ Tetris.prototype._calculate = function(){
     }
   }
 
-  TMD.print('tetris_debug',{
-    'speed': activeBlock.data.autoDrop.countMax,
-    'activeBlock.data.nextBlockType': activeBlock.data.nextBlockType,
-    'activeBlock.data.type': activeBlock.data.type,
-    'activeBlock.data.rotation': activeBlock.data.rotation,
-    'activeBlock.data.x': activeBlock.data.x,
-    'activeBlock.data.y': activeBlock.data.y,
-    'activeBlock.data.sliding.flag': activeBlock.data.sliding.flag,
-    'activeBlock.data.sliding.count': activeBlock.data.sliding.count,
-    'activeBlock.data.sliding.COUNT_MAX': activeBlock.data.sliding.COUNT_MAX,
-    'activeBlock.data.isLanded': activeBlock.data.isLanded,
-    'delayAfterBlockLanded.flag': this.data.delayAfterBlockLanded.flag,
-    'delayAfterBlockLanded.count': this.data.delayAfterBlockLanded.count,
-    'delayAfterBlockLanded.COUNT_MAX': this.data.delayAfterBlockLanded.COUNT_MAX,
-    'gameOver.flag': this.data.gameOver.flag,
-  });
+  TMD.print('tetris_debug',activeBlock.data);
 };
 Tetris.prototype._draw = function(){
   var activeBlock = this.data.activeBlock;
@@ -646,15 +624,19 @@ var Tetris_ActiveBlock = function(data){
     rotation: null,
     x: null,
     y: null,
+    autoDrop: {
+      count: 0,
+      countMax: null,
+    },
     sliding: {
       flag: false,
       count: 0,
       COUNT_MAX: 50,
     },
-    isLanded: false,
-    autoDrop: {
+    landing: {
+      flag: false,
       count: 0,
-      countMax: null,
+      COUNT_MAX: 10,
     },
   };
   TM.IObject.call(this, data);
@@ -788,11 +770,20 @@ Tetris_ActiveBlock.prototype.processAutoDrop = function(dataArray){
 
 // Custom functions - sliding
 Tetris_ActiveBlock.prototype.processSliding = function(dataArray){
+  var slidingFinished = false;
   if(++this.data.sliding.count > this.data.sliding.COUNT_MAX && !this.checkMoveDown(dataArray)){
     this.data.sliding.count = 0;
     this.data.sliding.flag = false;
-    this.data.isLanded = true;
-    this.updateOnTetrisDataArray(dataArray);
-    this.setBlock(dataArray);
+    slidingFinished = true;
   }
+  return slidingFinished;
+};
+Tetris_ActiveBlock.prototype.processLanding = function(dataArray){
+  var landingFinished = false;
+  if(++this.data.landing.count > this.data.landing.COUNT_MAX){
+    this.data.landing.count = 0;
+    this.data.landing.flag = false;
+    landingFinished = true;
+  }
+  return landingFinished;
 };
