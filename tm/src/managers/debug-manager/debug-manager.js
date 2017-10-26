@@ -33,14 +33,12 @@ TM.DebugManager.prototype._inactivate = function(){
 TM.DebugManager.prototype.print = function(name,data){
   if(this.debugSetting.devMode && this.isActive){
     if(!this.doms[name]){
-      this.doms[name] = document.createElement('div');
+      this.doms[name] = document.createElement('pre');
       this.outputDom.appendChild(this.doms[name]);
     }
-    var text = '';
-    for(var key in data){
-      text += key + ': ' + data[key] + '\n';
-    }
-    this.doms[name].innerText = text;
+    var title = '-- '+name+' --\n';
+    var dataJson = JSON.stringify(data,null,2);
+    this.doms[name].innerHTML = title+dataJson;
   }
   else {
     this.delete(name);
