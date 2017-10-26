@@ -382,8 +382,6 @@ Tetris.prototype._calculate = function(){
   else if(activeBlock.data.landing.flag){
     var landingFinished = activeBlock.processLanding(this.data.dataArray);
     if(landingFinished){
-      this.data.delayAfterBlockLanded.flag = false;
-      this.data.delayAfterBlockLanded.count = 0;
       var removedLineNum = this.removeFullLines(activeBlock,status);
       if(removedLineNum){
         var score = removedLineNum * 100 * this.data.level;
