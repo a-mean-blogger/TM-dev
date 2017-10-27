@@ -33,9 +33,9 @@ TM.common.isNumber = function(num){
   else return false;
 };
 TM.common.getCharGroup = function(charGroups, char){
-for(var group in charGroups){
-  var charset = charGroups[group];
-    var regex = new RegExp('^['+charset.regex+']$');
+  for(var group in charGroups){
+    var charset = charGroups[group];
+    var regex = new RegExp('^['+charset.chars+']$');
     if(regex.test(char)) return charset;
   }
 };
@@ -43,7 +43,7 @@ TM.common.getFullwidthRegex = function(charGroups){
   var string = '';
   for(var group in charGroups){
     var charset = charGroups[group];
-    if(charset&&charset.isFullwidth) string += charset.regex;
+    if(charset&&charset.isFullwidth) string += charset.chars;
   }
   if(string) return new RegExp('(['+string+'])','g');
 };

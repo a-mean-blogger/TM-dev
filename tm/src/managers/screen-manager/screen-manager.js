@@ -232,7 +232,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
       || (this.screenData[dataY][dataX].char[0] == '$' && this.screenData[dataY][dataX-1].isNew)
     ){
       var regex = TM.common.getFullwidthRegex(this.charGroups);
-      var fullwidth = regex.test(char);
+      var fullwidth = regex?regex.test(char):false;
 
       this.screenData[dataY][dataX].update(char,fullwidth,color,backgroundColor);
 
@@ -307,7 +307,7 @@ TM.ScreenManager.prototype.clearScreen = function(){
 };
 TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
   var regex = TM.common.getFullwidthRegex(this.charGroups);
-  text = text.toString().replace(regex,'$1 ');
+  if(regex) text = text.toString().replace(regex,'$1 ');
 
   var sX = this.cursor.data.x; // store the starting x position
   var cursorData = this.cursor.data;
@@ -327,7 +327,7 @@ TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
         this.cursor.move(0,cursorData.y);
         break;
       default:
-        var fullwidth = regex.test(text[i]);
+        var fullwidth = regex?regex.test(text[i]):false;
         this.insertChar(text[i],color,backgroundColor);
         if(fullwidth){
           i++;

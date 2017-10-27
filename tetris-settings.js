@@ -11,14 +11,14 @@ var screenSetting = {
 
 var charGroups = {
   fullwidth: {//■     □     ★     ☆     △     ▷     ▽     ◁     ▣    •
-    regex: '\u2500-\u2BFF\u2022\u2008',
+    chars: '\u2500-\u2BFF\u2022\u2008',
     isFullwidth: true,
     sizeAdj: 1.2,
     xAdj: -0.05,
     yAdj: 0.03,
   },
   brackets: {//[,],(,)
-    regex: '\\[\\](){}',
+    chars: '\\[\\](){}',
     isFullwidth: false,
     sizeAdj: 0.95,
     xAdj: 0,

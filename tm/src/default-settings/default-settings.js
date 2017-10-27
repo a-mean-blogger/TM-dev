@@ -16,7 +16,7 @@ TM.defaultSettings = {
   },
   charGroups: {
     korean: {//ㄱ     -힝
-      regex: '\u3131-\uD79D',
+      chars: '\u3131-\uD79D',
       isFullwidth: true,
       sizeAdj: 1,
       xAdj: 0,
