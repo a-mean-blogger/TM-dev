@@ -508,17 +508,17 @@ Tetris.prototype.showHardDropBonusMessage = function(x,y,score){
   var text1 = "HARD DROP!";
   var text2 = " + "+score;
   this.showMessage(x,y,text1,text2);
-}
+};
 Tetris.prototype.showComboBonusMessage = function(x,y,combo,score){
   var text1 = (combo > 1)?combo+" COMBOS!":"";
   var text2 = " + "+score;
   this.showMessage(x,y,text1,text2);
-}
+};
 Tetris.prototype.showLevelUpMessage = function(x,y){
   var text1 = "LEVEL UP!";
   var text2 = " SPEED UP!";
   this.showMessage(x,y,text1,text2);
-}
+};
 Tetris.prototype.changeFullLinesToStar = function(){
   for(var i=Tetris.ROW_NUM-2; i>=0; i--){
     var occupiedCount = 0;

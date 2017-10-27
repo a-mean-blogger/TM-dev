@@ -15,13 +15,13 @@ var screenSetting = {
 };
 
 var debugSetting = {
-  // devMode: true,
+  // devMode: false,
   // outputDomId: 'tm-debug-output',
   devMode: true,
 };
 
 var TMS = new TM.ScreenManager(screenSetting),
-    TMI = new TM.InputManager(),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 var x = 1;
@@ -35,7 +35,7 @@ TMS.insertText('I\'m Text Game Maker JS!');
 TMS.insertTextAt(x,y+5,'Find more information of me at:');
 TMS.insertTextAt(x+3,y+6, blogUrl);
 
-TMD.print('debug1',{
+TMD.print('debug-data',{
   x: x,
   y: y,
   'Blog Url': blogUrl,

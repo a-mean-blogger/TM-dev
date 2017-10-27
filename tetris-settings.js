@@ -26,7 +26,7 @@ var charGroups = {
   },
 };
 
-var debug = {
+var debugSetting = {
   devMode: true,
 };
 

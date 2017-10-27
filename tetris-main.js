@@ -1,9 +1,9 @@
 console.log('tetris-main.js loaded');
 
 var TMS = new TM.ScreenManager(screenSetting, charGroups),
-    TMD = new TM.DebugManager(debug),
-    TMI = new TM.InputManager(null, debug.devMode);
-    
+    TMI = new TM.InputManager(screenSetting.canvasId, debugSetting.devMode),
+    TMD = new TM.DebugManager(debugSetting);
+
 var MAIN = {
   programs: {
     intro: new Program_Intro(),

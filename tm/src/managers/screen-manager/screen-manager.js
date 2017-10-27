@@ -63,6 +63,8 @@ TM.ScreenManager.prototype._inactivate = function(){};
 TM.ScreenManager.prototype._calculate = function(){
   if(!this.isFontLoaded && TM.common.checkFontLoadedByWebFont(this.screenSetting.fontFamily)){
     this.isFontLoaded = true;
+    this.drawLoading(true);
+    this.cursor.move(0,0);
     this.refreshScreen();
   }
   if(this.checkReady()){
@@ -72,7 +74,7 @@ TM.ScreenManager.prototype._calculate = function(){
     }
   }
   else {
-    this.showLoading();
+    this.drawLoading();
   }
 };
 TM.ScreenManager.prototype._draw = function(){
@@ -253,8 +255,10 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
 
   }
 };
-TM.ScreenManager.prototype.showLoading = function(){
-  this.insertTextAt(0,0,"Loading...");
+TM.ScreenManager.prototype.drawLoading = function(remove){
+  var text = "Loading...";
+  if(remove) this.deleteTextAt(0,0,text);
+  else this.insertTextAt(0,0,text);
 };
 
 // TM.ScreenManager public functions
