@@ -22,11 +22,11 @@ gulp.task('default', function() {
   .pipe(uglify())
   .pipe(header(headerText))
   .pipe(gulp.dest('./dist/text-game-maker-1.0.0.min.js'))
-  .pipe(gulp.dest('./dist/text-game-maker-js-1.0.0-starter-package'));
+  .pipe(gulp.dest('./dist/text-game-maker-js-starter-program'));
 
   gulp.src(['./readme.txt'])
   .pipe(gulp.dest('./dist/text-game-maker-1.0.0.min.js'))
-  .pipe(gulp.dest('./dist/text-game-maker-js-1.0.0-starter-package'));
+  .pipe(gulp.dest('./dist/text-game-maker-js-starter-program'));
 });
 
 var headerText = `/*

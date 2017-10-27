@@ -167,6 +167,11 @@ TM.ScreenManager.prototype.startLoadingFont = function(){
 TM.ScreenManager.prototype.loadWebFont = function(){
   var _self = this;
   return function(){
+    var link = document.createElement("link");
+    link.rel ="stylesheet";
+    link.href=_self.screenSetting.fontSource;
+    document.head.appendChild(link);
+
     WebFont.load({
       custom: {
         families: [_self.screenSetting.fontFamily],
