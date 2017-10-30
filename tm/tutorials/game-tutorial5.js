@@ -19,7 +19,7 @@ var screenSetting = {
 };
 
 var charGroups = {
-  fullwidth: {
+  wall: {
     chars: '■',
     isFullwidth: true,
     sizeAdj: 1.2,
@@ -35,7 +35,7 @@ var debugSetting = {
 };
 
 var TMS = new TM.ScreenManager(screenSetting,charGroups),
-    TMI = new TM.InputManager(null,debugSetting.devMode),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 TMS.cursor.hide();
@@ -131,5 +131,6 @@ TMS.onReady(function(){
   mainInterval = window.setInterval(function(){
     calculate();
     draw();
+    TMD.print("Player",{x:player.x,y:player.y});
   },30);
 });

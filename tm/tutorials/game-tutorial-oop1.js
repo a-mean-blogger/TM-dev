@@ -8,7 +8,7 @@ var screenSetting = {
 };
 
 var charGroups = {
-  fullwidth: {
+  wall: {
     chars: '■',
     isFullwidth: true,
     sizeAdj: 1.2,
@@ -22,7 +22,7 @@ var debugSetting = {
 };
 
 var TMS = new TM.ScreenManager(screenSetting,charGroups),
-    TMI = new TM.InputManager(null,debugSetting.devMode),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 TMS.cursor.hide();
@@ -30,7 +30,7 @@ TMS.cursor.hide();
 //=============================
 // Frame
 //=============================
-// Object Type: TM.Ibject
+// Object Type: TM.IObject
 var Frame = function(data){
   this.data = {
     x: undefined,

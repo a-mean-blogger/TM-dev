@@ -8,7 +8,7 @@ var screenSetting = {
 };
 
 var charGroups = {
-  fullwidth: {
+  wall: {
     chars: '■',
     isFullwidth: true,
     sizeAdj: 1.2,
@@ -22,13 +22,13 @@ var debugSetting = {
 };
 
 var TMS = new TM.ScreenManager(screenSetting,charGroups),
-    TMI = new TM.InputManager(null,debugSetting.devMode),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 //=============================
 // Frame
 //=============================
-// Object Type: TM.Ibject
+// Object Type: TM.IObject
 var Frame = function(data){
   this.data = {
     x: undefined,
@@ -143,13 +143,13 @@ Enemy.prototype.checkHitFrame = function(frame){
 //=============================
 // Object Type: TM.IProgrm
 var Program_Main = function(){
-  var speed = 30;
+  this.speed = 30;
   this.data = {};
   this.objects = {
     frame: null,
     enemy: null,
   };
-  TM.IProgram.call(this, speed);
+  TM.IProgram.call(this, this.speed);
 };
 Program_Main.prototype = Object.create(TM.IProgram.prototype);
 Program_Main.prototype.constructor = Program_Main;

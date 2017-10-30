@@ -25,7 +25,7 @@ var debugSetting = {
 };
 
 var TMS = new TM.ScreenManager(screenSetting),
-    TMI = new TM.InputManager(null,debugSetting.devMode),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 TMS.cursor.hide();

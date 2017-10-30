@@ -8,7 +8,7 @@ var screenSetting = {
 };
 
 var charGroups = {
-  fullwidth: {
+  wall: {
     chars: '■',
     isFullwidth: true,
     sizeAdj: 1.2,
@@ -22,13 +22,13 @@ var debugSetting = {
 };
 
 var TMS = new TM.ScreenManager(screenSetting,charGroups),
-    TMI = new TM.InputManager(null,debugSetting.devMode),
+    TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
 //=============================
 // Frame
 //=============================
-// Object Type: TM.Ibject
+// Object Type: TM.IObject
 var Frame = function(data){
   this.data = {
     x: undefined,
@@ -195,14 +195,14 @@ Player.prototype.updateDirection = function(dX,dY){
 //=============================
 // Object Type: TM.IProgrm
 var Program_Main = function(){
-  var speed = 30;
+  this.speed = 30;
   this.data = {};
   this.objects = {
     frame: null,
     enemy: null,
     player: null,
   };
-  TM.IProgram.call(this, speed);
+  TM.IProgram.call(this, this.speed);
 };
 Program_Main.prototype = Object.create(TM.IProgram.prototype);
 Program_Main.prototype.constructor = Program_Main;
@@ -223,7 +223,10 @@ Program_Main.prototype._init = function(){
   this.objects.player = new Player({x:22,y:10,refMainObjects:this.objects});
 };
 Program_Main.prototype._inactivate = function(){};
-Program_Main.prototype._calculate = function(){};
+Program_Main.prototype._calculate = function(){
+  var player = this.objects.player;
+  TMD.print("Player",{x:player.data.x,y:player.data.y});
+};
 Program_Main.prototype._draw = function(){};
 Program_Main.prototype._timeline = function(loopCount){};
 Program_Main.prototype._getInput = function(){
