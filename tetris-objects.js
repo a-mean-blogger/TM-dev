@@ -728,13 +728,13 @@ Tetris_ActiveBlock.prototype.moveDown = function(dataArray){
 Tetris_ActiveBlock.prototype.hardDrop = function(dataArray,level,hardDropBonus){
   if(!hardDropBonus) hardDropBonus = 0;
 
-  if(this.data.sliding.flag){
-    this.data.sliding.count = this.data.sliding.COUNT_MAX;
-  }
-  else if(this.moveDown(dataArray)){
+  if(this.moveDown(dataArray)){
     hardDropBonus += level/2;
     return this.hardDrop(dataArray,level,hardDropBonus);
   }
+
+  this.data.sliding.flag = true;
+  this.data.sliding.count = this.data.sliding.COUNT_MAX;
   return hardDropBonus;
 };
 Tetris_ActiveBlock.prototype.setSpeed = function(level){
