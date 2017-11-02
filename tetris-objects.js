@@ -287,7 +287,7 @@ var Tetris = function(data){
     message: {
       flag: false,
       count: 0,
-      COUNT_MAX: 40,
+      COUNT_MAX: 20,
       x: null,
       y: null,
       text1: null,
