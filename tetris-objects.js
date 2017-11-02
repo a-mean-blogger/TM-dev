@@ -374,7 +374,7 @@ Tetris.prototype._calculate = function(){
         this.showComboBonusMessage(activeBlock.data.x,activeBlock.data.y,removedLineNum,score);
         this.data.goal -= removedLineNum;
         this.addScore(status,score);
-        if(this.data.goal<=0) this.levelUp(activeBlock);
+        if(this.data.goal<=0) this.levelUp(activeBlock, status);
         else status.drawGoal(this.data.goal);
       }
 
