@@ -34,7 +34,7 @@ TM.DebugManager.prototype.replacer = function() {
   var checkedObjects = [];
 
   return function(key, value) {
-    if(typeof(value) === 'object'){
+    if(value && typeof(value) === 'object'){
       var index = checkedObjects.indexOf(value);
       if(index>-1){
         return '[Circular]';
@@ -43,7 +43,7 @@ TM.DebugManager.prototype.replacer = function() {
     checkedObjects.push(value);
     return value;
   }
-}
+};
 
 // TM.DebugManager pulbic functions
 TM.DebugManager.prototype.print = function(name,data){
