@@ -119,10 +119,7 @@ Enemy.prototype._calculate = function(){
   if(this.checkHitFrame(frame)){
     this.init();
   }
-  if(this.checkCollusion(player)){
-    this.init();
-    frame.addScore();
-  }
+  player.processCollusionToEnemy(this,frame);
 };
 Enemy.prototype._draw = function(){
   var frame = this.data.refMainObjects.frame;
@@ -141,9 +138,6 @@ Enemy.prototype.move = function(){
 };
 Enemy.prototype.checkHitFrame = function(frame){
   return (this.data.y>frame.data.height-2);
-};
-Enemy.prototype.checkCollusion = function(player){
-  return (this.data.y==player.data.y && this.data.x>=player.data.x && this.data.x<=player.data.x+player.data.text.length);
 };
 
 //=============================
@@ -177,10 +171,7 @@ Player.prototype._calculate = function(){
   var enemy = this.data.refMainObjects.enemy;
   var frame = this.data.refMainObjects.frame;
   this.move();
-  if(this.checkCollusionToEnery(enemy)){
-    frame.addScore();
-    enemy.init();
-  }
+  this.processCollusionToEnemy(enemy,frame);
 };
 Player.prototype._draw = function(){
   var frame = this.data.refMainObjects.frame;
@@ -203,8 +194,11 @@ Player.prototype.updateDirection = function(dX,dY){
   this.data.dX += dX;
   this.data.dY += dY;
 };
-Player.prototype.checkCollusionToEnery = function(enemy){
-  return (this.data.y==enemy.data.y && this.data.x<=enemy.data.x && this.data.x+this.data.text.length>=enemy.data.x);
+Player.prototype.processCollusionToEnemy = function(enemy,frame){
+  if(this.data.y==enemy.data.y && this.data.x<=enemy.data.x && this.data.x+this.data.text.length>=enemy.data.x){
+    frame.addScore();
+    enemy.init();
+  }
 };
 
 //=============================

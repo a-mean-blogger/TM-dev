@@ -72,7 +72,7 @@ function calculate(){
   if(TMI.keyboard.checkKey(KEYSET.UP) && player.y>1) player.y--;
   if(TMI.keyboard.checkKey(KEYSET.RIGHT) && player.x+player.text.length<frame.width-2) player.x++;
   if(TMI.keyboard.checkKey(KEYSET.DOWN) && player.y<frame.height-2) player.y++;
-  checkCollusion();
+  processCollusion();
 
   //reset enemy
   if(enemy.y===null || enemy.y>frame.height-3){
@@ -84,7 +84,7 @@ function calculate(){
     enemy.turnCount = 0;
     enemy.y++;
   }
-  checkCollusion();
+  processCollusion();
 }
 
 function draw(){
@@ -119,7 +119,7 @@ function resetEnemy(){
   enemy.turnCountMax = 3;
 }
 
-function checkCollusion(){
+function processCollusion(){
   if(player.y==enemy.y && player.x<=enemy.x && player.x+player.text.length>=enemy.x){
     resetEnemy();
     frame.score += 100;

@@ -24,8 +24,8 @@ var TMS = new TM.ScreenManager(screenSetting),
     TMI = new TM.InputManager(screenSetting.canvasId,debugSetting.devMode),
     TMD = new TM.DebugManager(debugSetting);
 
-var x = 1;
-    y = 1;
+var x = 1,
+    y = 1,
     blogUrl = 'http://a-mean-blog.com/en/blog/Text-Game-Maker-JS';
 
 TMS.cursor.move(x,y);
