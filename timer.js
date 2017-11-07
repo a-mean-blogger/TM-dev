@@ -24,7 +24,8 @@ Timer.prototype.process = function(){
     this.data.count = 0;
 
     this.data.time2 = Date.now();
-    this.data.aveTime = (this.data.time2 - this.data.time1)/(this.data.countMax+1);
+    this.data.aveTime = Math.floor(this.data.time2 - this.data.time1)/(this.data.countMax+1);
+    this.data.aveTime = Math.round(this.data.aveTime * 100) / 100
     this.data.time1 = this.data.time2;
 
     if(TMS){
@@ -34,4 +35,5 @@ Timer.prototype.process = function(){
 };
 
 
-tmsT = new Timer({x:0,y:0,text:"tmsT",countMax:20});
+tmr1 = new Timer({x:0,y:0,text:"tmr1",countMax:20});
+tmr2 = new Timer({x:20,y:0,text:"tmr2",countMax:20});

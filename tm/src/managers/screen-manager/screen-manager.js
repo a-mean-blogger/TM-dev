@@ -47,6 +47,8 @@ TM.ScreenManager = function(customSreenSetting, customCharGroups){
     size: 0.1,
   });
 
+  this.FullwidthRegex = TM.common.getFullwidthRegex(this.charGroups);
+
   TM.ILoopObject.call(this, this.speed);
 };
 TM.ScreenManager.prototype = Object.create(TM.ILoopObject.prototype);
@@ -237,7 +239,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
       || this.screenData[dataY][dataX].backgroundColor != (backgroundColor?backgroundColor:this.screenSetting.backgroundColor)
       || (this.screenData[dataY][dataX].char[0] == '$' && this.screenData[dataY][dataX-1].isNew)
     ){
-      var regex = TM.common.getFullwidthRegex(this.charGroups);
+      var regex = this.FullwidthRegex;
       var fullwidth = regex?regex.test(char):false;
 
       this.screenData[dataY][dataX].update(char,fullwidth,color,backgroundColor);
@@ -312,7 +314,7 @@ TM.ScreenManager.prototype.clearScreen = function(){
   this.fillScreen(' ');
 };
 TM.ScreenManager.prototype.insertText = function(text,color,backgroundColor){
-  var regex = TM.common.getFullwidthRegex(this.charGroups);
+  var regex = this.FullwidthRegex;
   if(regex) text = text.toString().replace(regex,'$1 ');
 
   var sX = this.cursor.data.x; // store the starting x position
@@ -349,7 +351,7 @@ TM.ScreenManager.prototype.insertTextAt = function(x,y,text,color,backgroundColo
   }
 };
 TM.ScreenManager.prototype.deleteText = function(text){
-  var regex = TM.common.getFullwidthRegex(this.charGroups);
+  var regex = this.FullwidthRegex;
   text = text.toString().replace(regex,'$1 ');
   this.insertText(text.replace(/./g,' '));
 };
