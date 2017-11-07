@@ -146,7 +146,8 @@ TM.ScreenManager.prototype._draw = function(){
       var cursorHeight = this.blockHeight*cursorData.size;
       var cursorX = this.blockWidth*cursorData.x;
       var cursorY = (this.blockHeight)*(cursorData.y)+(this.blockHeight-cursorHeight);
-      ctx.fillStyle = cursorData.color;
+      var cursorColor = this.screenSetting.fontColor;
+      ctx.fillStyle = cursorColor;
       ctx.fillRect(cursorX,cursorY,cursorWidth,cursorHeight);
     }
   }
@@ -232,7 +233,7 @@ TM.ScreenManager.prototype.insertChar = function(char,color,backgroundColor){
   if(this.isInScreen(screenX,screenY)){
 
     if(this.screenData[dataY][dataX].char != char
-      || this.screenData[dataY][dataX].color != (color?color:this.screenSetting.defaultFontColor)
+      || this.screenData[dataY][dataX].color != (color?color:this.screenSetting.fontColor)
       || this.screenData[dataY][dataX].backgroundColor != (backgroundColor?backgroundColor:this.screenSetting.backgroundColor)
       || (this.screenData[dataY][dataX].char[0] == '$' && this.screenData[dataY][dataX-1].isNew)
     ){

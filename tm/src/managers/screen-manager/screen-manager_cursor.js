@@ -10,7 +10,6 @@ TM.ScreenManager_Cursor = function(data){
     y: 0,
     xMax: undefined,
     yMax: undefined,
-    color: "gray",
     width: this.blockWidth,
     size: 0.1,
     isHidden: false,
